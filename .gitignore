@@ -29,5 +29,9 @@ go.work.sum
 .env
 
 # Editor/IDE
-# .idea/
-# .vscode/
+.idea/
+.vscode/
+PLAN.md
+
+tmp
+var/

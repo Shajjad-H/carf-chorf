@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CARFAX Reports{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  {% block head %}{% endblock %}
+</head>
+<body class="h-full font-sans text-slate-800 antialiased">
+  <div class="flex min-h-full flex-col">
+    {% block header %}{% include "components/layout/header.html" %}{% endblock %}
+
+    {% include "components/flashes/success.html" %}
+    {% include "components/flashes/error.html" %}
+
+    <main class="mx-auto w-full max-w-5xl flex-1 px-4 py-8">
+      {% block content %}{% endblock %}
+    </main>
+
+    {% block footer %}{% include "components/layout/footer.html" %}{% endblock %}
+  </div>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

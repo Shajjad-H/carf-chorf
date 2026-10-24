@@ -1,0 +1,9 @@
+{% if errors %}
+<div class="mx-auto mt-4 w-full max-w-5xl px-4">
+  <div role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+    {% for message in errors %}
+    <p>{{ message }}</p>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

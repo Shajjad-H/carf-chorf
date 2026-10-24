@@ -1,0 +1,9 @@
+{% if flashes %}
+<div class="mx-auto mt-4 w-full max-w-5xl px-4">
+  <div role="alert" class="rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-800">
+    {% for message in flashes %}
+    <p>{{ message }}</p>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

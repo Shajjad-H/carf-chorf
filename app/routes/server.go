@@ -10,7 +10,9 @@ import (
 )
 
 func ServerRoutes(router chi.Router) {
-	router.Handle("/public/*", http.StripPrefix("/public", static.Handler("public")))
+	handler := http.StripPrefix("/public", static.Handler("public"))
+	router.Get("/public/*", handler.ServeHTTP)
+	router.Head("/public/*", handler.ServeHTTP)
 
 	router.Get("/", home.Index)
 

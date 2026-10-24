@@ -76,3 +76,19 @@ func (d *discordConfig) Validate() error {
 		),
 	)
 }
+
+func (m *mailConfig) Validate() error {
+	return validation.ValidateStruct(m,
+		validation.Field(&m.Host, validation.Required.Error("MAIL_HOST is required")),
+		validation.Field(&m.Port,
+			validation.Required.Error("MAIL_PORT is required"),
+			is.Port.Error("MAIL_PORT must be a valid port number"),
+		),
+		validation.Field(&m.Username, validation.Required.Error("MAIL_USERNAME is required")),
+		validation.Field(&m.Password, validation.Required.Error("MAIL_PASSWORD is required")),
+		validation.Field(&m.From,
+			validation.Required.Error("MAIL_FROM is required"),
+			is.Email.Error("MAIL_FROM must be a valid email address"),
+		),
+	)
+}

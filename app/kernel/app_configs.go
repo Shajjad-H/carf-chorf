@@ -7,6 +7,7 @@ var (
 	Database       databaseConfig
 	ReportProvider reportProviderConfig
 	Discord        discordConfig
+	Mail           mailConfig
 )
 
 type DatabaseDriver string
@@ -23,6 +24,7 @@ func Init() {
 	config_loader.Register("DatabaseConfig", &Database)
 	config_loader.Register("ReportProvider", &ReportProvider)
 	config_loader.Register("DiscordConfig", &Discord)
+	config_loader.Register("MailConfig", &Mail)
 	// config_loader.Register("StorageConfig", &Storage)
 	// config_loader.Register("DashboardConfig", &Dashboard)
 
@@ -62,6 +64,15 @@ type (
 
 	discordConfig struct {
 		ContactWebhookURL string `env:"DISCORD_CONTACT_WEBHOOK_URL"`
+	}
+
+	mailConfig struct {
+		Host     string `env:"MAIL_HOST"`
+		Port     string `env:"MAIL_PORT"`
+		Username string `env:"MAIL_USERNAME"`
+		Password string `env:"MAIL_PASSWORD"`
+		From     string `env:"MAIL_FROM"`
+		FromName string `env:"MAIL_FROM_NAME"`
 	}
 )
 

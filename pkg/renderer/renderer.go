@@ -5,9 +5,11 @@ import (
 	"net/http"
 
 	"carf-chorf.com/app/app/kernel"
+	auth_service "carf-chorf.com/app/app/services/auth"
 	flashes_service "carf-chorf.com/app/app/services/flashes"
 	"carf-chorf.com/app/pkg/response"
 	"github.com/flosch/pongo2/v7"
+	"github.com/gorilla/csrf"
 )
 
 var templateSet *pongo2.TemplateSet
@@ -42,9 +44,14 @@ func registerFilters() {
 }
 
 func baseContext(w http.ResponseWriter, r *http.Request, extra pongo2.Context) pongo2.Context {
+	state, authenticated := auth_service.Current(r)
+
 	ctx := pongo2.Context{
-		"flashes": flashes_service.GetFlashes(w, r, "success"),
-		"errors":  flashes_service.GetFlashes(w, r, "error"),
+		"flashes":            flashes_service.GetFlashes(w, r, "success"),
+		"errors":             flashes_service.GetFlashes(w, r, "error"),
+		"csrf_token":         csrf.Token(r),
+		"authenticated":      authenticated,
+		"current_user_email": state.Email,
 	}
 
 	if extra != nil {

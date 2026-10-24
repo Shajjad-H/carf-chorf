@@ -1,0 +1,21 @@
+<script>
+  function resendCountdown(seconds) {
+    return {
+      remaining: seconds,
+      timer: null,
+      init() {
+        this.timer = setInterval(() => {
+          if (this.remaining <= 1) {
+            this.remaining = 0;
+            clearInterval(this.timer);
+            return;
+          }
+          this.remaining--;
+        }, 1000);
+      },
+      destroy() {
+        clearInterval(this.timer);
+      },
+    };
+  }
+</script>

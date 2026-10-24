@@ -1,0 +1,76 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Contact us{% endblock %}
+
+{% block head %}
+<style>[x-cloak] { display: none !important; }</style>
+{% endblock %}
+
+{% block content %}
+<section class="relative isolate">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 -top-24 -z-10 flex justify-center overflow-hidden blur-3xl">
+    <div class="aspect-[1108/632] w-[69.25rem] flex-none bg-gradient-to-r from-indigo-200 via-sky-200 to-emerald-200 opacity-40"></div>
+  </div>
+
+  <div class="mx-auto max-w-3xl">
+    <div class="text-center">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">Contact</p>
+      <h1 class="mt-4 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">Get in touch</h1>
+      <p class="mx-auto mt-4 max-w-xl text-base leading-7 text-slate-600">
+        Questions about a report, an order, or anything else? Send us a message and we'll get back to you.
+      </p>
+    </div>
+
+    <div class="mt-10 rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-xl shadow-slate-200/60 backdrop-blur sm:p-10">
+      <form method="POST" action="/contact" class="space-y-6" x-data="{ sending: false }" @submit="sending = true">
+        <div class="grid gap-6 sm:grid-cols-2">
+          <div>
+            <label for="email" class="block text-sm font-medium text-slate-700">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required value="{{ form.email }}"
+              class="mt-2 w-full rounded-xl border {% if field_errors.email %}border-red-300{% else %}border-slate-200{% endif %} bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+              placeholder="you@example.com" />
+            {% if field_errors.email %}
+            <p class="mt-2 text-sm text-red-600">{{ field_errors.email }}</p>
+            {% endif %}
+          </div>
+
+          <div>
+            <label for="phone" class="block text-sm font-medium text-slate-700">
+              Phone <span class="text-slate-400">(US)</span>
+            </label>
+            <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required value="{{ form.phone }}"
+              class="mt-2 w-full rounded-xl border {% if field_errors.phone %}border-red-300{% else %}border-slate-200{% endif %} bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+              placeholder="+1 (555) 123-4567" />
+            {% if field_errors.phone %}
+            <p class="mt-2 text-sm text-red-600">{{ field_errors.phone }}</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div>
+          <label for="message" class="block text-sm font-medium text-slate-700">Message</label>
+          <textarea id="message" name="message" rows="6" required
+            class="mt-2 w-full resize-y rounded-xl border {% if field_errors.message %}border-red-300{% else %}border-slate-200{% endif %} bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+            placeholder="How can we help?">{{ form.message }}</textarea>
+          {% if field_errors.message %}
+          <p class="mt-2 text-sm text-red-600">{{ field_errors.message }}</p>
+          {% endif %}
+        </div>
+
+        <div class="flex flex-col-reverse items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p class="text-xs text-slate-500">We usually reply within one business day.</p>
+          <button type="submit" :disabled="sending"
+            class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-sky-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:from-indigo-500 hover:to-sky-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/30 disabled:cursor-not-allowed disabled:opacity-70">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m22 2-7 20-4-9-9-4Z" />
+              <path d="M22 2 11 13" />
+            </svg>
+            <span x-show="!sending">Send message</span>
+            <span x-show="sending" x-cloak>Sending…</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

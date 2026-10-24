@@ -67,3 +67,12 @@ func (v *reportProviderConfig) Validate() error {
 		validation.Field(&v.CarbpiTokenSecret, validation.Required.Error("CARBPI_TOKEN_SECRET is required")),
 	)
 }
+
+func (d *discordConfig) Validate() error {
+	return validation.ValidateStruct(d,
+		validation.Field(&d.ContactWebhookURL,
+			validation.Required.Error("DISCORD_CONTACT_WEBHOOK_URL is required"),
+			is.URL.Error("DISCORD_CONTACT_WEBHOOK_URL must be a valid URL"),
+		),
+	)
+}

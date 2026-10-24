@@ -6,6 +6,7 @@ var (
 	Server         serverConfig
 	Database       databaseConfig
 	ReportProvider reportProviderConfig
+	Discord        discordConfig
 )
 
 type DatabaseDriver string
@@ -21,6 +22,7 @@ func Init() {
 	config_loader.Register("ServerConfig", &Server)
 	config_loader.Register("DatabaseConfig", &Database)
 	config_loader.Register("ReportProvider", &ReportProvider)
+	config_loader.Register("DiscordConfig", &Discord)
 	// config_loader.Register("StorageConfig", &Storage)
 	// config_loader.Register("DashboardConfig", &Dashboard)
 
@@ -56,6 +58,10 @@ type (
 	reportProviderConfig struct {
 		CarbpiTokenName   string `env:"CARBPI_TOKEN_NAME"`
 		CarbpiTokenSecret string `env:"CARBPI_TOKEN_SECRET"`
+	}
+
+	discordConfig struct {
+		ContactWebhookURL string `env:"DISCORD_CONTACT_WEBHOOK_URL"`
 	}
 )
 

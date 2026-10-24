@@ -36,7 +36,9 @@ func startup() {
 
 	renderer.InitTemplates("templates")
 
-	database.GetDB()
+	if _, err := database.GetDB(); err != nil {
+		simple_logger.Fatalf("%v", err)
+	}
 
 	session_service.Init()
 }

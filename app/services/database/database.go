@@ -9,6 +9,7 @@ import (
 	"sync"
 	"time"
 
+	"carf-chorf.com/app/app/domaine"
 	"carf-chorf.com/app/app/kernel"
 	"carf-chorf.com/app/pkg/simple_logger"
 	"gorm.io/driver/mysql"
@@ -29,27 +30,21 @@ func GetDB() (*gorm.DB, error) {
 	return db, dbErr
 }
 
-// func Migrate() error {
-// 	g, err := GetDB()
-// 	if err != nil {
-// 		return err
-// 	}
-// 	for _, m := range domaine.MigrationModels() {
-// 		simple_logger.Infof("migrating: %v", m)
-// 		if err := g.AutoMigrate(m); err != nil {
-// 			return err
-// 		}
-// 	}
-// 	// legacy cleanup: vin_provider moved from Vehicle to Registration
-// 	if g.Migrator().HasColumn(&domaine.Vehicle{}, "vin_provider") {
-// 		if err := g.Migrator().DropColumn(&domaine.Vehicle{}, "vin_provider"); err != nil {
-// 			return err
-// 		}
-// 		simple_logger.Infof("dropped legacy column vehicles.vin_provider")
-// 	}
+func Migrate() error {
+	g, err := GetDB()
+	if err != nil {
+		return err
+	}
 
-// 	return nil
-// }
+	for _, m := range domaine.MigrationModels() {
+		simple_logger.Infof("migrating: %v", m)
+		if err := g.AutoMigrate(m); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
 
 func openDB() (*gorm.DB, error) {
 	var dialector gorm.Dialector

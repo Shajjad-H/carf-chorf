@@ -40,5 +40,11 @@ func startup() {
 		simple_logger.Fatalf("%v", err)
 	}
 
+	if kernel.Database.Migrate {
+		if err := database.Migrate(); err != nil {
+			simple_logger.Fatalf("migration failed: %v", err)
+		}
+	}
+
 	session_service.Init()
 }

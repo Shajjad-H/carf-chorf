@@ -54,6 +54,10 @@ func (v *serverConfig) Validate() error {
 			validation.Required.Error("APP_DOMAIN is required"),
 			is.URL.Error("APP_DOMAIN must be a valid URL"),
 		),
+		validation.Field(&v.SessionSecret,
+			validation.Required.Error("SESSION_SECRET is required"),
+			validation.Length(32, 0).Error("SESSION_SECRET must be at least 32 characters"),
+		),
 	)
 }
 

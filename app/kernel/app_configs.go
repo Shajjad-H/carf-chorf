@@ -39,7 +39,8 @@ type (
 		// build absolute asset URLs for contexts that can't resolve relative
 		// paths — namely the logo in transactional emails, since mail clients
 		// load images straight from the public internet, not from this server.
-		Domain string `env:"APP_DOMAIN"`
+		Domain        string `env:"APP_DOMAIN"`
+		SessionSecret string `env:"SESSION_SECRET"`
 	}
 
 	databaseConfig struct {

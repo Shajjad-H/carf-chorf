@@ -77,6 +77,13 @@ func (d *discordConfig) Validate() error {
 	)
 }
 
+func (t *turnstileConfig) Validate() error {
+	return validation.ValidateStruct(t,
+		validation.Field(&t.SiteKey, validation.Required.Error("TURNSTILE_SITE_KEY is required")),
+		validation.Field(&t.SecretKey, validation.Required.Error("TURNSTILE_SECRET_KEY is required")),
+	)
+}
+
 func (m *mailConfig) Validate() error {
 	return validation.ValidateStruct(m,
 		validation.Field(&m.Host, validation.Required.Error("MAIL_HOST is required")),

@@ -8,6 +8,7 @@ var (
 	ReportProvider reportProviderConfig
 	Discord        discordConfig
 	Mail           mailConfig
+	Turnstile      turnstileConfig
 )
 
 type DatabaseDriver string
@@ -25,6 +26,7 @@ func Init() {
 	config_loader.Register("ReportProvider", &ReportProvider)
 	config_loader.Register("DiscordConfig", &Discord)
 	config_loader.Register("MailConfig", &Mail)
+	config_loader.Register("TurnstileConfig", &Turnstile)
 	// config_loader.Register("StorageConfig", &Storage)
 	// config_loader.Register("DashboardConfig", &Dashboard)
 
@@ -57,6 +59,7 @@ type (
 		Migrate  bool           `env:"MIGRATE_DB"`
 	}
 
+	// reportProviderConfig holds the credentials sent to carbpi.fr.
 	reportProviderConfig struct {
 		CarbpiTokenName   string `env:"CARBPI_TOKEN_NAME"`
 		CarbpiTokenSecret string `env:"CARBPI_TOKEN_SECRET"`
@@ -73,6 +76,14 @@ type (
 		Password string `env:"MAIL_PASSWORD"`
 		From     string `env:"MAIL_FROM"`
 		FromName string `env:"MAIL_FROM_NAME"`
+	}
+
+	// turnstileConfig holds the Cloudflare Turnstile keys. The site key is
+	// embedded in the lookup form; the secret key is only used server-side
+	// when verifying the challenge response.
+	turnstileConfig struct {
+		SiteKey   string `env:"TURNSTILE_SITE_KEY"`
+		SecretKey string `env:"TURNSTILE_SECRET_KEY"`
 	}
 )
 

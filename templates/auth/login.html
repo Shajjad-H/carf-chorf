@@ -18,6 +18,7 @@
     <div class="mt-8 rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-xl shadow-slate-200/60 backdrop-blur sm:p-8">
       <form method="POST" action="/login" class="space-y-5">
         {% include "components/forms/csrf.html" %}
+        {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
         <div>
           <label for="email" class="block text-sm font-medium text-slate-700">Email</label>
           <input id="email" name="email" type="email" autocomplete="email" required value="{{ email }}"
@@ -33,7 +34,7 @@
 
       <p class="mt-6 text-center text-sm text-slate-500">
         Don't have an account?
-        <a href="/getstarted" class="font-medium text-indigo-600 transition hover:text-indigo-500">Get started</a>
+        <a href="/getstarted{% if next %}?next={{ next_encoded }}{% endif %}" class="font-medium text-indigo-600 transition hover:text-indigo-500">Get started</a>
       </p>
     </div>
   </div>

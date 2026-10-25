@@ -1,0 +1,74 @@
+<div class="group relative flex h-full flex-col rounded-[1.85rem] p-px shadow-xl shadow-slate-200/60 transition duration-300 hover:-translate-y-1 hover:shadow-2xl {{ card_class }}">
+  <div class="flex h-full flex-col rounded-[calc(1.85rem-1px)] bg-white/95 p-6 backdrop-blur sm:p-7">
+    <div class="flex items-start justify-between gap-3">
+      <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl text-lg font-bold {{ icon_class }}">
+        {{ p.Credits }}
+      </span>
+      {% if p.Badge %}
+      <span class="rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white {{ badge_class }}">{{ p.Badge }}</span>
+      {% else %}
+      <span class="rounded-full bg-slate-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400 ring-1 ring-slate-200/70">Starter</span>
+      {% endif %}
+    </div>
+
+    <div class="mt-5">
+      <p class="text-sm font-semibold {{ accent_text_class }}">{{ p.Name }}</p>
+      <div class="mt-2 flex items-end gap-2">
+        <p class="text-4xl font-bold tracking-tight text-slate-900">{{ p.Price }}</p>
+        <span class="pb-1 text-sm text-slate-400">one-time</span>
+      </div>
+      <div class="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+        <span>{{ p.PerCredit }} per credit</span>
+        {% if p.Savings %}
+        <span class="inline-flex items-center rounded-full px-2 py-0.5 font-semibold {{ savings_class }}">{{ p.Savings }}</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <p class="mt-5 flex-1 text-sm leading-6 text-slate-600">{{ p.Description }}</p>
+
+    <ul class="mt-6 space-y-2.5 text-sm text-slate-600">
+      <li class="flex items-start gap-2.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="mt-0.5 h-4 w-4 flex-none {{ check_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5" /></svg>
+        {{ p.Credits }} CARFAX report credit{% if p.Credits != 1 %}s{% endif %}
+      </li>
+      <li class="flex items-start gap-2.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="mt-0.5 h-4 w-4 flex-none {{ check_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5" /></svg>
+        Use credits whenever you're ready
+      </li>
+      <li class="flex items-start gap-2.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="mt-0.5 h-4 w-4 flex-none {{ check_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5" /></svg>
+        No subscription or recurring charges
+      </li>
+      <li class="flex items-start gap-2.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="mt-0.5 h-4 w-4 flex-none {{ check_class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5" /></svg>
+        Secure PayPal checkout
+      </li>
+    </ul>
+
+    <div class="mt-7">
+      {% if authenticated %}
+      <a href="/checkout?credits={{ p.Credits }}"
+        class="group/cta inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r px-5 py-3 text-sm font-semibold text-white shadow-lg transition focus:outline-none focus:ring-4 {{ cta_class }}">
+        Choose this package
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition group-hover/cta:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+      </a>
+      {% else %}
+        {% if p.Credits == 1 %}
+        <a href="/"
+          class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-sky-300 hover:bg-sky-50/60 focus:outline-none focus:ring-4 focus:ring-sky-500/15">
+          Start with a vehicle lookup
+        </a>
+        {% else %}
+        <button type="button" @click="showLogin()"
+          class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition {{ guest_cta_class }} focus:outline-none focus:ring-4">
+          Log in to choose
+        </button>
+        {% endif %}
+      {% endif %}
+      <p class="mt-3 text-center text-[11px] text-slate-400">
+        {% if authenticated %}Instant access after payment{% elif p.Credits == 1 %}Requires a vehicle lookup{% else %}Account required{% endif %}
+      </p>
+    </div>
+  </div>
+</div>

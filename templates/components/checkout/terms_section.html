@@ -1,0 +1,29 @@
+<div class="border-t border-slate-100 px-6 py-6 sm:px-8">
+  <div class="flex items-center gap-2">
+    <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg ring-1 transition"
+      :class="termsAccepted ? 'bg-emerald-50 text-emerald-600 ring-emerald-100' : 'bg-amber-50 text-amber-600 ring-amber-100'">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+      </svg>
+    </span>
+    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Terms</p>
+  </div>
+
+  <div class="mt-4 rounded-2xl border p-4 transition"
+    :class="termsAccepted ? 'border-emerald-300 bg-emerald-50/60 ring-1 ring-emerald-200' : 'border-amber-200 bg-amber-50/60'">
+    <label class="flex cursor-pointer items-start gap-3 text-sm text-slate-700">
+      <input id="terms" type="checkbox" name="terms" x-model="termsAccepted" required class="peer sr-only" />
+      <span class="mt-0.5 inline-flex h-6 w-6 flex-none items-center justify-center rounded-md border-2 transition peer-focus-visible:ring-4 peer-focus-visible:ring-indigo-500/20"
+        :class="termsAccepted ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-amber-400 bg-white text-transparent'">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m20 6-11 11-5-5" />
+        </svg>
+      </span>
+      <span>
+        I agree to the
+        <a href="/terms" target="_blank" rel="noopener" @click.stop class="font-semibold text-indigo-600 underline-offset-2 transition hover:text-indigo-500 hover:underline">Terms and Conditions</a>.
+      </span>
+    </label>
+    <p class="mt-2 pl-9 text-xs text-slate-500">Credits are added to your account after payment is confirmed.</p>
+  </div>
+</div>

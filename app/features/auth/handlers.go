@@ -4,11 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
 	auth_service "carf-chorf.com/app/app/services/auth"
 	flashes_service "carf-chorf.com/app/app/services/flashes"
+	"carf-chorf.com/app/app/services/user_service"
 	"carf-chorf.com/app/pkg/renderer"
 	"carf-chorf.com/app/pkg/simple_logger"
 	"github.com/flosch/pongo2/v7"
@@ -21,29 +23,31 @@ const (
 )
 
 func LoginPage(w http.ResponseWriter, r *http.Request) {
-	renderEmailForm(w, r, loginTemplate, "", http.StatusOK, "")
+	next := safeNext(r.URL.Query().Get("next"))
+	renderEmailForm(w, r, loginTemplate, "", next, http.StatusOK, "")
 }
 
 func LoginSubmit(w http.ResponseWriter, r *http.Request) {
+	next := safeNext(r.PostFormValue("next"))
 	email := normalizeEmail(r.PostFormValue("email"))
 	if err := validateEmail(email); err != nil {
-		renderEmailForm(w, r, loginTemplate, email, http.StatusUnprocessableEntity, err.Error())
+		renderEmailForm(w, r, loginTemplate, email, next, http.StatusUnprocessableEntity, err.Error())
 		return
 	}
 
-	user, err := findUserByEmail(email)
+	user, err := user_service.FindByEmail(email)
 	if err != nil {
 		simple_logger.Errorf("auth: find user: %v", err)
-		renderEmailForm(w, r, loginTemplate, email, http.StatusInternalServerError, "Something went wrong. Please try again.")
+		renderEmailForm(w, r, loginTemplate, email, next, http.StatusInternalServerError, "Something went wrong. Please try again.")
 		return
 	}
 
 	_ = auth_service.ClearChallenge(w, r)
 
 	send := user != nil && user.IsActive
-	if err := beginChallenge(w, r, IntentLogin, email, send); err != nil {
+	if err := beginChallenge(w, r, IntentLogin, email, next, send); err != nil {
 		simple_logger.Errorf("auth: begin login challenge: %v", err)
-		renderEmailForm(w, r, loginTemplate, email, http.StatusInternalServerError, "We could not send the code. Please try again.")
+		renderEmailForm(w, r, loginTemplate, email, next, http.StatusInternalServerError, "We could not send the code. Please try again.")
 		return
 	}
 
@@ -51,21 +55,23 @@ func LoginSubmit(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetStartedPage(w http.ResponseWriter, r *http.Request) {
-	renderEmailForm(w, r, getStartedTemplate, "", http.StatusOK, "")
+	next := safeNext(r.URL.Query().Get("next"))
+	renderEmailForm(w, r, getStartedTemplate, "", next, http.StatusOK, "")
 }
 
 func GetStartedSubmit(w http.ResponseWriter, r *http.Request) {
+	next := safeNext(r.PostFormValue("next"))
 	email := normalizeEmail(r.PostFormValue("email"))
 	if err := validateEmail(email); err != nil {
-		renderEmailForm(w, r, getStartedTemplate, email, http.StatusUnprocessableEntity, err.Error())
+		renderEmailForm(w, r, getStartedTemplate, email, next, http.StatusUnprocessableEntity, err.Error())
 		return
 	}
 
 	_ = auth_service.ClearChallenge(w, r)
 
-	if err := beginChallenge(w, r, IntentRegister, email, true); err != nil {
+	if err := beginChallenge(w, r, IntentRegister, email, next, true); err != nil {
 		simple_logger.Errorf("auth: begin register challenge: %v", err)
-		renderEmailForm(w, r, getStartedTemplate, email, http.StatusInternalServerError, "We could not send the code. Please try again.")
+		renderEmailForm(w, r, getStartedTemplate, email, next, http.StatusInternalServerError, "We could not send the code. Please try again.")
 		return
 	}
 
@@ -142,7 +148,7 @@ func Verify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := findUserByEmail(challenge.Email)
+	user, err := user_service.FindByEmail(challenge.Email)
 	if err != nil {
 		simple_logger.Errorf("auth: find user after verification: %v", err)
 		flashes_service.AddFlash(w, r, "error", "Something went wrong. Please try again.")
@@ -158,7 +164,7 @@ func Verify(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		user, err = createUser(challenge.Email)
+		user, err = user_service.Create(challenge.Email)
 		if err != nil {
 			simple_logger.Errorf("auth: create user: %v", err)
 			flashes_service.AddFlash(w, r, "error", "Something went wrong. Please try again.")
@@ -187,7 +193,7 @@ func Verify(w http.ResponseWriter, r *http.Request) {
 		message = "Welcome! Your account is ready."
 	}
 	flashes_service.AddFlash(w, r, "success", message)
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, safeNext(challenge.Next), http.StatusSeeOther)
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
@@ -199,9 +205,11 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-func renderEmailForm(w http.ResponseWriter, r *http.Request, template, email string, status int, errMsg string) {
+func renderEmailForm(w http.ResponseWriter, r *http.Request, template, email, next string, status int, errMsg string) {
 	ctx := pongo2.Context{
-		"email": email,
+		"email":        email,
+		"next":         next,
+		"next_encoded": url.QueryEscape(next),
 	}
 
 	if errMsg != "" {

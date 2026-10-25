@@ -52,6 +52,7 @@ func baseContext(w http.ResponseWriter, r *http.Request, extra pongo2.Context) p
 		"csrf_token":         csrf.Token(r),
 		"authenticated":      authenticated,
 		"current_user_email": state.Email,
+		"turnstile_site_key": kernel.Turnstile.SiteKey,
 	}
 
 	if extra != nil {

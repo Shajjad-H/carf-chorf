@@ -8,7 +8,7 @@ import (
 	"carf-chorf.com/app/app/services/mail_service"
 )
 
-func beginChallenge(w http.ResponseWriter, r *http.Request, intent, email string, send bool) error {
+func beginChallenge(w http.ResponseWriter, r *http.Request, intent, email, next string, send bool) error {
 	code, err := GenerateCode()
 	if err != nil {
 		return err
@@ -20,7 +20,7 @@ func beginChallenge(w http.ResponseWriter, r *http.Request, intent, email string
 		}
 	}
 
-	return auth_service.SetChallenge(w, r, NewChallenge(intent, email, code, send))
+	return auth_service.SetChallenge(w, r, NewChallenge(intent, email, code, next, send))
 }
 
 func resendChallenge(w http.ResponseWriter, r *http.Request, challenge auth_service.OTPChallenge) error {
@@ -39,5 +39,5 @@ func resendChallenge(w http.ResponseWriter, r *http.Request, challenge auth_serv
 		}
 	}
 
-	return auth_service.SetChallenge(w, r, NewChallenge(challenge.Intent, challenge.Email, code, challenge.Send))
+	return auth_service.SetChallenge(w, r, NewChallenge(challenge.Intent, challenge.Email, code, challenge.Next, challenge.Send))
 }

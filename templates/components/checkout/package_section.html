@@ -1,0 +1,40 @@
+<div class="border-t border-slate-100 px-6 py-6 sm:px-8">
+  <div class="flex items-end justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m12 2 9 5-9 5-9-5 9-5Z" />
+            <path d="m3 12 9 5 9-5" />
+            <path d="m3 17 9 5 9-5" />
+          </svg>
+        </span>
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Package</p>
+      </div>
+      <p class="mt-1 text-sm text-slate-600">Choose how many report credits you want.</p>
+    </div>
+    {% if authenticated %}
+    <span class="hidden rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-600 ring-1 ring-indigo-100 sm:inline-flex">
+      Balance: {{ user_credits }} credit{% if user_credits != 1 %}s{% endif %}
+    </span>
+    {% endif %}
+  </div>
+
+  <div class="mt-4 grid gap-3 md:grid-cols-3">
+    {% for p in packages %}
+      {% if p.Credits == 1 %}
+        {% with selected_class="border-sky-400 bg-gradient-to-br from-sky-50 to-cyan-50 shadow-sm" unselected_class="border-slate-200 bg-white hover:border-sky-200 hover:bg-sky-50/30" focus_class="focus:ring-sky-500/15" badge_class="bg-sky-600" name_class="text-sky-600" savings_class="bg-sky-50 text-sky-600" check_selected_class="border-sky-500 bg-sky-500" action_class="text-sky-600" %}
+          {% include "components/checkout/package_card.html" %}
+        {% endwith %}
+      {% elif p.Credits == 2 %}
+        {% with selected_class="border-indigo-400 bg-gradient-to-br from-indigo-50 to-violet-50 shadow-sm" unselected_class="border-slate-200 bg-white hover:border-indigo-200 hover:bg-indigo-50/30" focus_class="focus:ring-indigo-500/15" badge_class="bg-indigo-600" name_class="text-indigo-600" savings_class="bg-indigo-50 text-indigo-600" check_selected_class="border-indigo-500 bg-indigo-500" action_class="text-indigo-600" %}
+          {% include "components/checkout/package_card.html" %}
+        {% endwith %}
+      {% else %}
+        {% with selected_class="border-emerald-400 bg-gradient-to-br from-emerald-50 to-teal-50 shadow-sm" unselected_class="border-slate-200 bg-white hover:border-emerald-200 hover:bg-emerald-50/30" focus_class="focus:ring-emerald-500/15" badge_class="bg-emerald-600" name_class="text-emerald-600" savings_class="bg-emerald-50 text-emerald-600" check_selected_class="border-emerald-500 bg-emerald-500" action_class="text-emerald-600" %}
+          {% include "components/checkout/package_card.html" %}
+        {% endwith %}
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>

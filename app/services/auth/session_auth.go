@@ -21,6 +21,7 @@ type OTPChallenge struct {
 	Email     string
 	CodeHash  string
 	Intent    string
+	Next      string
 	ExpiresAt int64
 	SentAt    int64
 	Attempts  int

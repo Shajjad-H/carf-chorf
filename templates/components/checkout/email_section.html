@@ -1,0 +1,61 @@
+<div class="border-t border-slate-100 px-6 py-6 sm:px-8">
+  <div class="flex items-center gap-2">
+    <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-violet-50 text-violet-600 ring-1 ring-violet-100">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="2" y="4" width="20" height="16" rx="2" />
+        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+      </svg>
+    </span>
+    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Email</p>
+  </div>
+  <p class="mt-1 text-sm text-slate-600">We'll send your receipt and account access details here.</p>
+
+  {% if authenticated %}
+  <div class="mt-4 flex flex-col gap-3 rounded-2xl border border-violet-100 bg-violet-50/40 p-4 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex items-center gap-3">
+      <span class="inline-flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-white text-violet-600 shadow-sm ring-1 ring-violet-100">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2" />
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+        </svg>
+      </span>
+      <div>
+        <p class="text-sm font-semibold text-slate-900">{{ current_user_email }}</p>
+        <p class="mt-0.5 text-xs text-slate-500">Purchasing as your signed-in account</p>
+      </div>
+    </div>
+    <span class="inline-flex w-fit items-center rounded-full bg-white px-3 py-1 text-xs font-medium text-violet-600 ring-1 ring-violet-100">
+      {{ user_credits }} credit{% if user_credits != 1 %}s{% endif %} now
+    </span>
+  </div>
+  {% else %}
+  <div class="mt-4 rounded-2xl border border-violet-100 bg-violet-50/30 p-4">
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div>
+        <label for="email" class="block text-sm font-medium text-slate-700">Email</label>
+        <div class="relative mt-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-violet-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+          </svg>
+          <input id="email" name="email" type="email" autocomplete="email" required
+            placeholder="you@example.com"
+            class="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-violet-400 focus:ring-4 focus:ring-violet-500/10" />
+        </div>
+      </div>
+      <div>
+        <label for="confirm_email" class="block text-sm font-medium text-slate-700">Confirm email</label>
+        <div class="relative mt-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-violet-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+          </svg>
+          <input id="confirm_email" name="confirm_email" type="email" autocomplete="email" required
+            placeholder="you@example.com"
+            class="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-violet-400 focus:ring-4 focus:ring-violet-500/10" />
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>

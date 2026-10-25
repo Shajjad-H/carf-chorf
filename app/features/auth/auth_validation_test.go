@@ -30,6 +30,35 @@ func TestValidateEmail(t *testing.T) {
 	}
 }
 
+func TestSafeNext(t *testing.T) {
+	valid := map[string]string{
+		"/":                                 "/",
+		"/checkout":                         "/checkout",
+		"/checkout?token=abc&credits=2":     "/checkout?token=abc&credits=2",
+		"  /checkout?token=abc&credits=4  ": "/checkout?token=abc&credits=4",
+	}
+	for input, want := range valid {
+		if got := safeNext(input); got != want {
+			t.Errorf("safeNext(%q) = %q, want %q", input, got, want)
+		}
+	}
+
+	invalid := []string{
+		"",
+		"https://evil.example",
+		"//evil.example",
+		"/\\evil.example",
+		"/%5cevil.example",
+		"evil.example",
+		"javascript:alert(1)",
+	}
+	for _, input := range invalid {
+		if got := safeNext(input); got != "/" {
+			t.Errorf("safeNext(%q) = %q, want %q", input, got, "/")
+		}
+	}
+}
+
 func TestValidateCode(t *testing.T) {
 	for _, code := range []string{"AB12CD34", "12345678"} {
 		if err := validateCode(code); err != nil {

@@ -54,12 +54,13 @@ func HashCode(code string) string {
 	return hex.EncodeToString(sum[:])
 }
 
-func NewChallenge(intent, email, code string, send bool) auth_service.OTPChallenge {
+func NewChallenge(intent, email, code, next string, send bool) auth_service.OTPChallenge {
 	now := time.Now()
 	return auth_service.OTPChallenge{
 		Email:     email,
 		CodeHash:  HashCode(code),
 		Intent:    intent,
+		Next:      next,
 		ExpiresAt: now.Add(OTPTTL).Unix(),
 		SentAt:    now.Unix(),
 		Attempts:  MaxAttempts,

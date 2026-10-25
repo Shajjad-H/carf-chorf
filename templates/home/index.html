@@ -1,4 +1,45 @@
 {% extends "layouts/base.html" %}
 
+{% block title %}Check a vehicle's CARFAX records{% endblock %}
 
-{% block content %}{% endblock %}
+{% block content %}
+<section class="relative isolate">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 -top-24 -z-10 flex justify-center overflow-hidden blur-3xl">
+    <div class="aspect-[1108/632] w-[69.25rem] flex-none bg-gradient-to-r from-indigo-200 via-sky-200 to-emerald-200 opacity-40"></div>
+  </div>
+
+  <div class="mx-auto max-w-3xl">
+    <div class="text-center">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">Vehicle history, simplified</p>
+      <h1 class="mt-4 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">Check a vehicle's CARFAX records</h1>
+      <p class="mx-auto mt-4 max-w-xl text-base leading-7 text-slate-600">
+        Enter a VIN or a US license plate to see the vehicle and how many CARFAX records are available.
+      </p>
+    </div>
+
+    <div class="mt-10 rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-xl shadow-slate-200/60 backdrop-blur sm:p-8">
+      {% include "components/vehicle/lookup_form.html" %}
+    </div>
+
+    <div class="mt-10 grid gap-4 sm:grid-cols-3">
+      <div class="rounded-2xl border border-slate-200/70 bg-white/70 p-5">
+        <p class="text-sm font-semibold text-slate-900">Instant check</p>
+        <p class="mt-1 text-sm leading-6 text-slate-600">Records are cached so repeat lookups are fast.</p>
+      </div>
+      <div class="rounded-2xl border border-slate-200/70 bg-white/70 p-5">
+        <p class="text-sm font-semibold text-slate-900">CARFAX data</p>
+        <p class="mt-1 text-sm leading-6 text-slate-600">Vehicle details come directly from our data provider.</p>
+      </div>
+      <div class="rounded-2xl border border-slate-200/70 bg-white/70 p-5">
+        <p class="text-sm font-semibold text-slate-900">No signup to check</p>
+        <p class="mt-1 text-sm leading-6 text-slate-600">Create an account only when you are ready to order.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script defer src="/public/js/vehicle-lookup.js"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+{% endblock %}

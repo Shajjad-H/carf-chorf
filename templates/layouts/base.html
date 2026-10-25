@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}CARFAX Reports{% endblock %}</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="/public/vendor/tailwindcss.js"></script>
+  <style>[x-cloak] { display: none !important; }</style>
   {% block head %}{% endblock %}
 </head>
 <body class="h-full font-sans text-slate-800 antialiased">
@@ -23,5 +23,8 @@
   </div>
 
   {% block scripts %}{% endblock %}
+
+  <!-- Keep Alpine after page scripts so externally defined components are registered first. -->
+  <script defer src="/public/vendor/alpinejs.min.js"></script>
 </body>
 </html>

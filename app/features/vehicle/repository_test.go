@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"carf-chorf.com/app/app/domaine"
+	"carf-chorf.com/app/app/kernel"
+	"carf-chorf.com/app/app/services/database"
 	"github.com/google/uuid"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -36,17 +38,29 @@ func TestNewToken(t *testing.T) {
 	}
 }
 
-func TestFindRecordByInvalidToken(t *testing.T) {
+func TestFindRecordByTokenNotFound(t *testing.T) {
+	kernel.Database.Driver = kernel.DatabaseSQLite
+	kernel.Database.Name = filepath.Join(t.TempDir(), "tokens.db")
+
+	db, err := database.GetDB()
+	if err != nil {
+		t.Fatalf("get database: %v", err)
+	}
+	if err := db.AutoMigrate(&domaine.CacheRecord{}); err != nil {
+		t.Fatalf("migrate: %v", err)
+	}
+
 	for _, token := range []string{
 		"too-short",
 		"00000000-0000-0000-0000-00000000000z",
+		uuid.NewString(),
 	} {
 		record, err := FindRecordByToken(token)
 		if err != nil {
 			t.Fatalf("FindRecordByToken(%q) error = %v", token, err)
 		}
 		if record != nil {
-			t.Fatalf("expected nil record for invalid token %q", token)
+			t.Fatalf("expected nil record for unknown token %q", token)
 		}
 	}
 }
@@ -91,7 +105,51 @@ func TestFirstOrNil(t *testing.T) {
 	}
 }
 
-func TestFillMissingPlateState(t *testing.T) {
+func TestUpsertRecordInserts(t *testing.T) {
+	dsn := filepath.Join(t.TempDir(), "vehicle.db")
+	db, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
+	if err != nil {
+		t.Fatalf("open database: %v", err)
+	}
+	if err := db.AutoMigrate(&domaine.CacheRecord{}); err != nil {
+		t.Fatalf("migrate: %v", err)
+	}
+
+	incoming := &domaine.CacheRecord{
+		Vin:           "1HGCM82633A004352",
+		Provider:      domaine.CarbpiProvider,
+		Plate:         "ABC123",
+		State:         "CA",
+		Vehicle:       "2003 Honda Accord",
+		CarfaxRecords: 3,
+	}
+
+	saved, err := upsertRecord(db, incoming)
+	if err != nil {
+		t.Fatalf("upsertRecord() error = %v", err)
+	}
+	if saved.Token == "" {
+		t.Fatal("inserted record has no token")
+	}
+	if _, err := uuid.Parse(saved.Token); err != nil {
+		t.Fatalf("token is not a UUID: %v", err)
+	}
+	if saved.Plate != "ABC123" || saved.State != "CA" {
+		t.Fatalf("plate/state = %q/%q", saved.Plate, saved.State)
+	}
+
+	var count int64
+	if err := db.Model(&domaine.CacheRecord{}).Count(&count).Error; err != nil {
+		t.Fatalf("count: %v", err)
+	}
+	if count != 1 {
+		t.Fatalf("record count = %d, want 1", count)
+	}
+}
+
+func TestUpsertRecordUpdatesExisting(t *testing.T) {
 	dsn := filepath.Join(t.TempDir(), "vehicle.db")
 	db, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
@@ -123,9 +181,9 @@ func TestFillMissingPlateState(t *testing.T) {
 		CarfaxRecords: 9,
 	}
 
-	updated, err := fillMissingPlateState(db, existing, incoming)
+	updated, err := upsertRecord(db, incoming)
 	if err != nil {
-		t.Fatalf("fillMissingPlateState() error = %v", err)
+		t.Fatalf("upsertRecord() error = %v", err)
 	}
 	if updated.Token != existing.Token {
 		t.Fatal("token changed")
@@ -143,12 +201,24 @@ func TestFillMissingPlateState(t *testing.T) {
 		Plate:    "ZZZ999",
 		State:    "NY",
 	}
-	updated, err = fillMissingPlateState(db, updated, secondIncoming)
+	updated, err = upsertRecord(db, secondIncoming)
 	if err != nil {
-		t.Fatalf("fillMissingPlateState() error = %v", err)
+		t.Fatalf("upsertRecord() error = %v", err)
 	}
-	if updated.Plate != "ABC123" || updated.State != "CA" {
-		t.Fatal("existing plate/state was overwritten")
+	if updated.Plate != "ZZZ999" || updated.State != "NY" {
+		t.Fatalf("changed plate/state not applied: %q/%q", updated.Plate, updated.State)
+	}
+
+	thirdIncoming := &domaine.CacheRecord{
+		Vin:      existing.Vin,
+		Provider: existing.Provider,
+	}
+	updated, err = upsertRecord(db, thirdIncoming)
+	if err != nil {
+		t.Fatalf("upsertRecord() error = %v", err)
+	}
+	if updated.Plate != "ZZZ999" || updated.State != "NY" {
+		t.Fatalf("empty incoming plate/state overwrote existing: %q/%q", updated.Plate, updated.State)
 	}
 
 	var count int64
@@ -157,5 +227,42 @@ func TestFillMissingPlateState(t *testing.T) {
 	}
 	if count != 1 {
 		t.Fatalf("record count = %d, want 1", count)
+	}
+}
+
+func TestUpsertRecordGeneratesMissingToken(t *testing.T) {
+	dsn := filepath.Join(t.TempDir(), "vehicle.db")
+	db, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
+	if err != nil {
+		t.Fatalf("open database: %v", err)
+	}
+	if err := db.AutoMigrate(&domaine.CacheRecord{}); err != nil {
+		t.Fatalf("migrate: %v", err)
+	}
+
+	existing := &domaine.CacheRecord{
+		Vin:      "1HGCM82633A004352",
+		Provider: domaine.CarbpiProvider,
+	}
+	if err := db.Create(existing).Error; err != nil {
+		t.Fatalf("create existing: %v", err)
+	}
+
+	updated, err := upsertRecord(db, &domaine.CacheRecord{
+		Vin:      existing.Vin,
+		Provider: existing.Provider,
+		Plate:    "ABC123",
+		State:    "CA",
+	})
+	if err != nil {
+		t.Fatalf("upsertRecord() error = %v", err)
+	}
+	if updated.Token == "" {
+		t.Fatal("expected a generated token")
+	}
+	if _, err := uuid.Parse(updated.Token); err != nil {
+		t.Fatalf("token is not a UUID: %v", err)
 	}
 }

@@ -50,13 +50,6 @@ func firstOrNil(query *gorm.DB) (*domaine.CacheRecord, error) {
 // FindRecordByToken looks up the public vehicle handle used by checkout.
 // Tokens are canonical UUIDv4 strings, so malformed values skip the query.
 func FindRecordByToken(token string) (*domaine.CacheRecord, error) {
-	if len(token) != 36 {
-		return nil, nil
-	}
-	if _, err := uuid.Parse(token); err != nil {
-		return nil, nil
-	}
-
 	db, err := database.GetDB()
 	if err != nil {
 		return nil, err
@@ -65,12 +58,26 @@ func FindRecordByToken(token string) (*domaine.CacheRecord, error) {
 	return firstOrNil(db.Where("token = ?", token))
 }
 
-// createRecord inserts a new tokenized record. If another request inserted the
-// same (vin, provider) concurrently, it merges into that row instead.
-func createRecord(incoming *domaine.CacheRecord) (*domaine.CacheRecord, error) {
+// saveRecord upserts a provider response by its (vin, provider) cache key.
+func saveRecord(incoming *domaine.CacheRecord) (*domaine.CacheRecord, error) {
 	db, err := database.GetDB()
 	if err != nil {
 		return nil, err
+	}
+	return upsertRecord(db, incoming)
+}
+
+// upsertRecord inserts a new record or updates the matching VIN row. A rare
+// concurrent insert can fail; the user can retry the lookup.
+func upsertRecord(db *gorm.DB, incoming *domaine.CacheRecord) (*domaine.CacheRecord, error) {
+	existing, err := firstOrNil(
+		db.Where("vin = ? AND provider = ?", incoming.Vin, incoming.Provider),
+	)
+	if err != nil {
+		return nil, err
+	}
+	if existing != nil {
+		return updateRecord(db, existing, incoming)
 	}
 
 	if incoming.Token == "" {
@@ -82,53 +89,21 @@ func createRecord(incoming *domaine.CacheRecord) (*domaine.CacheRecord, error) {
 	}
 
 	if err := db.Create(incoming).Error; err != nil {
-		raced, findErr := firstOrNil(
-			db.Where("vin = ? AND provider = ?", incoming.Vin, incoming.Provider),
-		)
-		if findErr != nil {
-			return nil, findErr
-		}
-		if raced == nil {
-			return nil, err
-		}
-		return fillMissingPlateState(db, raced, incoming)
+		return nil, err
 	}
-
 	return incoming, nil
 }
 
-// mergeOrCreateRecord is used after a plate lookup, when the VIN is only known
-// from the provider response. It updates an existing VIN row with missing
-// plate/state values, or creates a new row when none exists.
-func mergeOrCreateRecord(incoming *domaine.CacheRecord) (*domaine.CacheRecord, error) {
-	db, err := database.GetDB()
-	if err != nil {
-		return nil, err
-	}
-
-	existing, err := firstOrNil(
-		db.Where("vin = ? AND provider = ?", incoming.Vin, incoming.Provider),
-	)
-	if err != nil {
-		return nil, err
-	}
-	if existing == nil {
-		return createRecord(incoming)
-	}
-
-	return fillMissingPlateState(db, existing, incoming)
-}
-
-// fillMissingPlateState adds plate/state to a VIN-only record without
-// overwriting values it already has. It avoids a write when nothing changes.
-func fillMissingPlateState(db *gorm.DB, existing, incoming *domaine.CacheRecord) (*domaine.CacheRecord, error) {
+// updateRecord applies the latest plate/state values and saves only when
+// something changed. Vehicle data and the existing token are preserved.
+func updateRecord(db *gorm.DB, existing, incoming *domaine.CacheRecord) (*domaine.CacheRecord, error) {
 	changed := false
 
-	if existing.Plate == "" && incoming.Plate != "" {
+	if incoming.Plate != "" && existing.Plate != incoming.Plate {
 		existing.Plate = incoming.Plate
 		changed = true
 	}
-	if existing.State == "" && incoming.State != "" {
+	if incoming.State != "" && existing.State != incoming.State {
 		existing.State = incoming.State
 		changed = true
 	}
@@ -144,11 +119,9 @@ func fillMissingPlateState(db *gorm.DB, existing, incoming *domaine.CacheRecord)
 	if !changed {
 		return existing, nil
 	}
-
 	if err := db.Save(existing).Error; err != nil {
 		return nil, err
 	}
-
 	return existing, nil
 }
 

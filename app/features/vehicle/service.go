@@ -12,6 +12,7 @@ import (
 // miss it queries carbpi and stores the response. Records are keyed by VIN;
 // plate/state is an alternate lookup path into the same cache.
 func lookup(ctx context.Context, req dto.LookupRequest) (*domaine.CacheRecord, error) {
+	// search by vin or plate and state
 	cached, err := findCachedRecord(req)
 	if err != nil {
 		return nil, err
@@ -19,32 +20,32 @@ func lookup(ctx context.Context, req dto.LookupRequest) (*domaine.CacheRecord, e
 	if cached != nil {
 		return cached, nil
 	}
+	// did not found in db cache
 
-	data, err := fetchFromCarbpi(ctx, req)
+	incoming, err := fetchFromCarbpi(ctx, req)
 	if err != nil {
 		return nil, err
 	}
 
-	incoming := buildRecord(data, req)
-
-	// The initial VIN lookup already proved there is no record for this VIN,
-	// so create it directly. createRecord handles a concurrent insert race.
-	if req.Vin != "" {
-		return createRecord(incoming)
-	}
-
-	// A plate lookup only learns the VIN from the API response. If a VIN-only
-	// record already exists, fill in the plate/state from this request instead
-	// of creating a duplicate.
-	return mergeOrCreateRecord(incoming)
+	return saveRecord(incoming)
 }
 
-// fetchFromCarbpi chooses the documented carbpi endpoint for the request.
-func fetchFromCarbpi(ctx context.Context, req dto.LookupRequest) (*carbpi_service.Record, error) {
+// fetchFromCarbpi chooses the documented carbpi endpoint for the request and
+// converts the provider response into the record shape we cache.
+func fetchFromCarbpi(ctx context.Context, req dto.LookupRequest) (*domaine.CacheRecord, error) {
+	var data *carbpi_service.Record
+	var err error
+
 	if req.Vin != "" {
-		return carbpi_service.CheckCarfaxRecords(ctx, req.Vin)
+		data, err = carbpi_service.CheckCarfaxRecords(ctx, req.Vin)
+	} else {
+		data, err = carbpi_service.CheckCarfaxRecordsByPlate(ctx, req.Plate, req.State)
 	}
-	return carbpi_service.CheckCarfaxRecordsByPlate(ctx, req.Plate, req.State)
+	if err != nil {
+		return nil, err
+	}
+
+	return buildRecord(data, req), nil
 }
 
 // buildRecord converts a carbpi response into the record shape we cache. The

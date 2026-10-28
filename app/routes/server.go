@@ -26,6 +26,7 @@ func ServerRoutes(router chi.Router) {
 	router.Head("/public/*", handler.ServeHTTP)
 
 	router.Get("/", home.Index)
+
 	// A lookup can spend provider credits, so cap it per IP before the handler
 	// runs Turnstile verification and the carbpi request.
 	router.With(httprate.LimitBy(3, 10*time.Minute, lookupRateKey,
@@ -33,6 +34,7 @@ func ServerRoutes(router chi.Router) {
 			http.Error(w, "Too many lookups. Please try again in a few minutes.", http.StatusTooManyRequests)
 		}),
 	)).Post("/lookup", vehicle.Lookup)
+
 	router.Get("/checkout", checkout.Index)
 	router.Post("/checkout", checkout.Create)
 	router.Get("/payment", payment.Show)

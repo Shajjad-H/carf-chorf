@@ -1,6 +1,10 @@
 package kernel
 
 import (
+	"errors"
+	"fmt"
+	"strings"
+
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
 )
@@ -98,4 +102,38 @@ func (m *mailConfig) Validate() error {
 			is.Email.Error("MAIL_FROM must be a valid email address"),
 		),
 	)
+}
+
+func (p *pricesConfig) Validate() error {
+	if len(p.Packages) == 0 {
+		return errors.New("at least one package is required")
+	}
+
+	seen := make(map[uint]struct{}, len(p.Packages))
+	hasSingleCredit := false
+
+	for i, pkg := range p.Packages {
+		if pkg.Credits == 0 {
+			return fmt.Errorf("packages[%d].credits must be greater than zero", i)
+		}
+		if pkg.AmountCents == 0 {
+			return fmt.Errorf("packages[%d].amount_cents must be greater than zero", i)
+		}
+		if strings.TrimSpace(pkg.Name) == "" {
+			return fmt.Errorf("packages[%d].name is required", i)
+		}
+		if _, exists := seen[pkg.Credits]; exists {
+			return fmt.Errorf("packages[%d].credits %d is duplicated", i, pkg.Credits)
+		}
+
+		seen[pkg.Credits] = struct{}{}
+		if pkg.Credits == 1 {
+			hasSingleCredit = true
+		}
+	}
+
+	if !hasSingleCredit {
+		return errors.New("a 1-credit package is required")
+	}
+	return nil
 }

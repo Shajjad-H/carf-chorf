@@ -1,8 +1,28 @@
 package checkout
 
-import "testing"
+import (
+	"testing"
+
+	"carf-chorf.com/app/app/kernel"
+)
+
+func setTestPrices(t *testing.T) {
+	t.Helper()
+
+	previous := kernel.Prices.Packages
+	kernel.Prices.Packages = []kernel.PricePackage{
+		{Credits: 1, AmountCents: 1900, Name: "1 Report Credit", Description: "One CARFAX report credit."},
+		{Credits: 2, AmountCents: 3400, Name: "2 Report Credits", Description: "Two credits at a lower per-report price.", Badge: "Popular"},
+		{Credits: 4, AmountCents: 5900, Name: "4 Report Credits", Description: "Four credits, our best per-report value.", Badge: "Best value"},
+	}
+	t.Cleanup(func() {
+		kernel.Prices.Packages = previous
+	})
+}
 
 func TestFind(t *testing.T) {
+	setTestPrices(t)
+
 	tests := []struct {
 		credits uint
 		amount  uint
@@ -28,6 +48,8 @@ func TestFind(t *testing.T) {
 }
 
 func TestPackageViews(t *testing.T) {
+	setTestPrices(t)
+
 	views := PackageViews()
 	if len(views) != 3 {
 		t.Fatalf("PackageViews() length = %d", len(views))
@@ -37,5 +59,25 @@ func TestPackageViews(t *testing.T) {
 	}
 	if views[1].Savings == "" || views[2].Savings == "" {
 		t.Fatal("multi-credit packages should show savings")
+	}
+}
+
+func TestPackageViewsUsesSingleCreditBase(t *testing.T) {
+	previous := kernel.Prices.Packages
+	kernel.Prices.Packages = []kernel.PricePackage{
+		{Credits: 4, AmountCents: 5900, Name: "4 Report Credits"},
+		{Credits: 2, AmountCents: 3400, Name: "2 Report Credits"},
+		{Credits: 1, AmountCents: 1900, Name: "1 Report Credit"},
+	}
+	t.Cleanup(func() {
+		kernel.Prices.Packages = previous
+	})
+
+	views := PackageViews()
+	if len(views) != 3 {
+		t.Fatalf("PackageViews() length = %d", len(views))
+	}
+	if views[0].Savings == "" || views[1].Savings == "" {
+		t.Fatal("savings should use the 1-credit package as the base regardless of order")
 	}
 }

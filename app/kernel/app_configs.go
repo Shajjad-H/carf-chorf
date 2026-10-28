@@ -9,6 +9,7 @@ var (
 	Discord        discordConfig
 	Mail           mailConfig
 	Turnstile      turnstileConfig
+	Prices         pricesConfig
 )
 
 type DatabaseDriver string
@@ -27,6 +28,7 @@ func Init() {
 	config_loader.Register("DiscordConfig", &Discord)
 	config_loader.Register("MailConfig", &Mail)
 	config_loader.Register("TurnstileConfig", &Turnstile)
+	config_loader.RegisterYAML("PricesConfig", "config/prices.yml", &Prices)
 	// config_loader.Register("StorageConfig", &Storage)
 	// config_loader.Register("DashboardConfig", &Dashboard)
 
@@ -84,6 +86,19 @@ type (
 	turnstileConfig struct {
 		SiteKey   string `env:"TURNSTILE_SITE_KEY"`
 		SecretKey string `env:"TURNSTILE_SECRET_KEY"`
+	}
+
+	pricesConfig struct {
+		Packages []PricePackage `yaml:"packages"`
+	}
+
+	// PricePackage is one purchasable credit bundle from config/prices.yml.
+	PricePackage struct {
+		Credits     uint   `yaml:"credits"`
+		AmountCents uint   `yaml:"amount_cents"`
+		Name        string `yaml:"name"`
+		Description string `yaml:"description"`
+		Badge       string `yaml:"badge"`
 	}
 )
 

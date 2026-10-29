@@ -31,16 +31,16 @@ func validateCode(code string) error {
 }
 
 // safeNext only allows local paths so the post-login redirect cannot leave the
-// site. Invalid or external values fall back to the home page.
+// site. Invalid or external values fall back to the dashboard.
 func safeNext(next string) string {
 	next = strings.TrimSpace(next)
 	if next == "" || !strings.HasPrefix(next, "/") || strings.HasPrefix(next, "//") {
-		return "/"
+		return "/dashboard"
 	}
 
 	u, err := url.Parse(next)
 	if err != nil || u.Scheme != "" || u.Host != "" || strings.ContainsRune(u.Path, '\\') {
-		return "/"
+		return "/dashboard"
 	}
 
 	return next

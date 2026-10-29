@@ -13,6 +13,11 @@ import (
 
 const maxContentLength = 2000
 
+// SendSOSNotification sends an operational alert to the SOS webhook.
+func SendSOSNotification(message string) error {
+	return sendNotification(kernel.Discord.SOSWebhookURL, message)
+}
+
 func SendContactNotification(email, phone, message string) error {
 	content := fmt.Sprintf(
 		"📬 **New contact message**\n**Email:** %s\n**Phone:** %s\n**Message:**\n%s",

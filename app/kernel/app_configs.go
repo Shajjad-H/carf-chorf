@@ -10,6 +10,8 @@ var (
 	Mail           mailConfig
 	Turnstile      turnstileConfig
 	Prices         pricesConfig
+	PayPal         paypalConfig
+	ReportStorage  reportStorageConfig
 )
 
 type DatabaseDriver string
@@ -29,6 +31,8 @@ func Init() {
 	config_loader.Register("MailConfig", &Mail)
 	config_loader.Register("TurnstileConfig", &Turnstile)
 	config_loader.RegisterYAML("PricesConfig", "config/prices.yml", &Prices)
+	config_loader.Register("PayPalConfig", &PayPal)
+	config_loader.Register("ReportStorageConfig", &ReportStorage)
 	// config_loader.Register("StorageConfig", &Storage)
 	// config_loader.Register("DashboardConfig", &Dashboard)
 
@@ -69,6 +73,7 @@ type (
 
 	discordConfig struct {
 		ContactWebhookURL string `env:"DISCORD_CONTACT_WEBHOOK_URL"`
+		SOSWebhookURL     string `env:"DISCORD_SOS_WEBHOOK_URL"`
 	}
 
 	mailConfig struct {
@@ -99,6 +104,16 @@ type (
 		Name        string `yaml:"name"`
 		Description string `yaml:"description"`
 		Badge       string `yaml:"badge"`
+	}
+
+	paypalConfig struct {
+		ClientID     string `env:"PAYPAL_CLIENT_ID"`
+		ClientSecret string `env:"PAYPAL_CLIENT_SECRET"`
+		APIURL       string `env:"PAYPAL_API_URL"`
+	}
+
+	reportStorageConfig struct {
+		Path string `env:"REPORTS_PATH"`
 	}
 )
 

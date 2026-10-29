@@ -78,6 +78,10 @@ func (d *discordConfig) Validate() error {
 			validation.Required.Error("DISCORD_CONTACT_WEBHOOK_URL is required"),
 			is.URL.Error("DISCORD_CONTACT_WEBHOOK_URL must be a valid URL"),
 		),
+		validation.Field(&d.SOSWebhookURL,
+			validation.Required.Error("DISCORD_SOS_WEBHOOK_URL is required"),
+			is.URL.Error("DISCORD_SOS_WEBHOOK_URL must be a valid URL"),
+		),
 	)
 }
 
@@ -102,6 +106,21 @@ func (m *mailConfig) Validate() error {
 			is.Email.Error("MAIL_FROM must be a valid email address"),
 		),
 	)
+}
+
+func (p *paypalConfig) Validate() error {
+	return validation.ValidateStruct(p,
+		validation.Field(&p.ClientID, validation.Required.Error("PAYPAL_CLIENT_ID is required")),
+		validation.Field(&p.ClientSecret, validation.Required.Error("PAYPAL_CLIENT_SECRET is required")),
+		validation.Field(&p.APIURL,
+			validation.Required.Error("PAYPAL_API_URL is required"),
+			is.URL.Error("PAYPAL_API_URL must be a valid URL"),
+		),
+	)
+}
+
+func (r *reportStorageConfig) Validate() error {
+	return nil
 }
 
 func (p *pricesConfig) Validate() error {

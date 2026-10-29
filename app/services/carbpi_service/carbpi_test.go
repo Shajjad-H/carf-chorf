@@ -125,3 +125,42 @@ func TestCheckCarfaxRecordsMissingVIN(t *testing.T) {
 		t.Fatalf("expected ErrNoVIN, got %v", err)
 	}
 }
+
+func TestReportEndpoints(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if got := r.Header.Get("X-Token-Name"); got != "name" {
+			t.Fatalf("X-Token-Name = %q", got)
+		}
+		if got := r.Header.Get("X-Access-Token"); got != "secret" {
+			t.Fatalf("X-Access-Token = %q", got)
+		}
+
+		switch r.URL.Path {
+		case "/report/carfax/1HGCM82633A004352/archive":
+			_, _ = io.WriteString(w, "<html>archive</html>")
+		case "/report/carfax/1HGCM82633A004352":
+			_, _ = io.WriteString(w, "<html>purchased</html>")
+		default:
+			t.Fatalf("unexpected path = %q", r.URL.Path)
+		}
+	}))
+	defer server.Close()
+
+	client := NewClient(server.URL, "name", "secret", server.Client())
+
+	archive, err := client.GetArchiveReport(context.Background(), "1HGCM82633A004352")
+	if err != nil {
+		t.Fatalf("GetArchiveReport() error = %v", err)
+	}
+	if string(archive) != "<html>archive</html>" {
+		t.Fatalf("archive = %q", archive)
+	}
+
+	purchased, err := client.BuyReport(context.Background(), "1HGCM82633A004352")
+	if err != nil {
+		t.Fatalf("BuyReport() error = %v", err)
+	}
+	if string(purchased) != "<html>purchased</html>" {
+		t.Fatalf("purchased = %q", purchased)
+	}
+}

@@ -66,3 +66,64 @@ func TestPricesConfigFile(t *testing.T) {
 		}
 	}
 }
+
+func TestPayPalConfigValidate(t *testing.T) {
+	valid := paypalConfig{
+		ClientID:     "client",
+		ClientSecret: "secret",
+		APIURL:       "https://api-m.sandbox.paypal.com",
+	}
+	if err := valid.Validate(); err != nil {
+		t.Fatalf("Validate() error = %v", err)
+	}
+
+	tests := []struct {
+		name string
+		cfg  paypalConfig
+	}{
+		{name: "missing client id", cfg: paypalConfig{ClientSecret: valid.ClientSecret, APIURL: valid.APIURL}},
+		{name: "missing secret", cfg: paypalConfig{ClientID: valid.ClientID, APIURL: valid.APIURL}},
+		{name: "invalid url", cfg: paypalConfig{ClientID: valid.ClientID, ClientSecret: valid.ClientSecret, APIURL: "not-a-url"}},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			if err := tc.cfg.Validate(); err == nil {
+				t.Fatal("Validate() unexpectedly succeeded")
+			}
+		})
+	}
+}
+
+func TestDiscordConfigValidate(t *testing.T) {
+	valid := discordConfig{
+		ContactWebhookURL: "https://discord.com/api/webhooks/contact",
+		SOSWebhookURL:     "https://discord.com/api/webhooks/sos",
+	}
+	if err := valid.Validate(); err != nil {
+		t.Fatalf("Validate() error = %v", err)
+	}
+
+	tests := []struct {
+		name string
+		cfg  discordConfig
+	}{
+		{name: "missing contact", cfg: discordConfig{SOSWebhookURL: valid.SOSWebhookURL}},
+		{name: "missing sos", cfg: discordConfig{ContactWebhookURL: valid.ContactWebhookURL}},
+		{
+			name: "invalid sos",
+			cfg: discordConfig{
+				ContactWebhookURL: valid.ContactWebhookURL,
+				SOSWebhookURL:     "not-a-url",
+			},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			if err := tc.cfg.Validate(); err == nil {
+				t.Fatal("Validate() unexpectedly succeeded")
+			}
+		})
+	}
+}

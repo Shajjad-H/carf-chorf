@@ -53,8 +53,8 @@ func TestSafeNext(t *testing.T) {
 		"javascript:alert(1)",
 	}
 	for _, input := range invalid {
-		if got := safeNext(input); got != "/" {
-			t.Errorf("safeNext(%q) = %q, want %q", input, got, "/")
+		if got := safeNext(input); got != "/dashboard" {
+			t.Errorf("safeNext(%q) = %q, want %q", input, got, "/dashboard")
 		}
 	}
 }

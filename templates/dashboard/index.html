@@ -1,0 +1,157 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block head %}
+<meta name="csrf-token" content="{{ csrf_token }}" />
+{% endblock %}
+
+{% block content %}
+<section class="relative isolate" x-data="dashboardPage()" data-credits="{{ credits }}"
+  data-lookup-url="/dashboard/report/lookup" data-purchase-url="/dashboard/report/purchase">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 -top-32 -z-10 flex justify-center overflow-hidden blur-3xl">
+    <div class="aspect-[1108/632] w-[69.25rem] flex-none bg-gradient-to-r from-indigo-100 via-sky-100 to-emerald-100 opacity-60"></div>
+  </div>
+
+  <div class="mx-auto max-w-4xl">
+    <div class="flex flex-col gap-1">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">Your account</p>
+      <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Dashboard</h1>
+      <p class="text-sm text-slate-500">Signed in as {{ email }}</p>
+    </div>
+
+    <div class="mt-8 grid items-start gap-5 md:grid-cols-[15rem_minmax(0,1fr)]">
+      <aside class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div class="flex items-center justify-between">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Available credits</p>
+          <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="5" width="20" height="14" rx="2" />
+              <path d="M2 10h20" />
+            </svg>
+          </span>
+        </div>
+        <p class="mt-3 text-5xl font-semibold tracking-tight text-slate-900">{{ credits }}</p>
+        <p class="mt-1 text-xs leading-5 text-slate-500">1 credit = 1 vehicle report</p>
+        <a href="/checkout" class="mt-6 inline-flex w-full items-center justify-center rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700">
+          Buy more credits
+        </a>
+      </aside>
+
+      <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h2 class="text-base font-semibold text-slate-900">Purchase a report</h2>
+            <p class="mt-1 text-sm text-slate-500">Look up a vehicle and use 1 credit for its report.</p>
+          </div>
+        </div>
+
+        <form @submit.prevent="submitLookup()" class="mt-5 space-y-5">
+          <div class="grid w-full grid-cols-2 rounded-lg bg-slate-100 p-1 sm:inline-flex sm:w-auto" role="tablist" aria-label="Lookup type">
+            <button type="button" role="tab" :aria-selected="tab === 'vin'" @click="tab = 'vin'"
+              :class="tab === 'vin' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
+              class="inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition focus:outline-none focus:ring-4 focus:ring-indigo-500/20 sm:px-4 sm:text-sm">
+              VIN
+            </button>
+            <button type="button" role="tab" :aria-selected="tab === 'plate'" @click="tab = 'plate'"
+              :class="tab === 'plate' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
+              class="inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition focus:outline-none focus:ring-4 focus:ring-indigo-500/20 sm:px-4 sm:text-sm">
+              License plate
+            </button>
+          </div>
+
+          <div x-show="tab === 'vin'" x-cloak>
+            <label for="vin" class="block text-sm font-medium text-slate-700">VIN</label>
+            <input id="vin" name="vin" type="text" x-model="vin" @input="vin = vin.toUpperCase()"
+              :required="tab === 'vin'" pattern="[A-HJ-NPR-Z0-9]{17}" maxlength="17" spellcheck="false" autocomplete="off" autocapitalize="characters"
+              placeholder="1HGCM82633A004352"
+              class="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 font-mono text-sm uppercase tracking-[0.16em] text-slate-900 outline-none transition placeholder:text-slate-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10" />
+          </div>
+
+          <div x-show="tab === 'plate'" x-cloak>
+            <div class="grid gap-4 sm:grid-cols-[minmax(0,1fr)_13rem]">
+              <div>
+                <label for="plate" class="block text-sm font-medium text-slate-700">License plate</label>
+                <input id="plate" name="plate" type="text" x-model="plate" @input="plate = plate.toUpperCase()"
+                  :required="tab === 'plate'" pattern="[A-Z0-9 -]{1,10}" maxlength="10" spellcheck="false" autocomplete="off" autocapitalize="characters"
+                  placeholder="ABC1234"
+                  class="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 font-mono text-sm uppercase tracking-widest text-slate-900 outline-none transition placeholder:text-slate-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10" />
+              </div>
+              <div>
+                <label for="state" class="block text-sm font-medium text-slate-700">State</label>
+                <select id="state" name="state" x-model="state" :required="tab === 'plate'"
+                  class="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10">
+                  <option value="">Select state</option>
+                  {% for s in states %}
+                  <option value="{{ s.code }}">{{ s.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <p x-show="error" x-cloak class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700" x-text="error"></p>
+
+          <button type="submit" :disabled="submitting"
+            class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/25 disabled:cursor-not-allowed disabled:opacity-70">
+            <span x-show="!submitting">Look up vehicle</span>
+            <span x-show="submitting" x-cloak>Checking...</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    {% include "components/dashboard/report_list.html" %}
+  </div>
+
+  <div x-show="noCreditsOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/40" @click="noCreditsOpen = false"></div>
+    <div class="relative w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-2xl">
+      <h3 class="text-base font-semibold text-slate-900">No credits available</h3>
+      <p class="mt-2 text-sm leading-6 text-slate-600">You have no credits. Buy more credits to purchase a report.</p>
+      <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-center">
+        <button type="button" @click="noCreditsOpen = false"
+          class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+          Cancel
+        </button>
+        <a href="/checkout"
+          class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">
+          Buy more credits
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div x-show="confirm.open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/40" @click="confirm.open = false"></div>
+    <div class="relative w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
+      <h3 class="text-base font-semibold text-slate-900">Confirm purchase</h3>
+      <p class="mt-2 text-sm text-slate-600">You're about to use <strong>1 credit</strong> to buy this report.</p>
+
+      <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <p class="text-sm font-semibold text-slate-900" x-text="confirm.vehicle"></p>
+        <p class="mt-1 font-mono text-xs uppercase tracking-widest text-slate-500">VIN <span x-text="confirm.vin"></span></p>
+        <p class="mt-1 text-xs text-slate-500"><span x-text="confirm.records"></span> record(s) available</p>
+      </div>
+
+      <p x-show="error" x-cloak class="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700" x-text="error"></p>
+
+      <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <button type="button" @click="confirm.open = false; error = ''"
+          class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+          Cancel
+        </button>
+        <button type="button" @click="purchase()" :disabled="purchasing"
+          class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-70">
+          <span x-show="!purchasing">Confirm — 1 credit</span>
+          <span x-show="purchasing" x-cloak>Processing...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script defer src="/public/js/dashboard.js"></script>
+{% endblock %}

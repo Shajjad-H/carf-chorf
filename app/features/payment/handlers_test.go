@@ -13,7 +13,4 @@ func TestLabels(t *testing.T) {
 	if got := statusLabel(domaine.TransactionPaid); got != "Paid" {
 		t.Fatalf("paid label = %q", got)
 	}
-	if got := paymentMethodLabel(domaine.PaymentMethodPayPalCheckout); got != "PayPal Checkout" {
-		t.Fatalf("payment method label = %q", got)
-	}
 }

@@ -8,11 +8,14 @@ import (
 	"carf-chorf.com/app/app/features/auth"
 	"carf-chorf.com/app/app/features/checkout"
 	"carf-chorf.com/app/app/features/contact"
+	"carf-chorf.com/app/app/features/dashboard"
 	"carf-chorf.com/app/app/features/home"
 	"carf-chorf.com/app/app/features/pages"
 	"carf-chorf.com/app/app/features/payment"
+	"carf-chorf.com/app/app/features/reports"
 	"carf-chorf.com/app/app/features/static"
 	"carf-chorf.com/app/app/features/vehicle"
+	auth_middleware "carf-chorf.com/app/app/middlewares/auth"
 	"carf-chorf.com/app/pkg/print_routes"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -38,6 +41,19 @@ func ServerRoutes(router chi.Router) {
 	router.Get("/checkout", checkout.Index)
 	router.Post("/checkout", checkout.Create)
 	router.Get("/payment", payment.Show)
+	router.Get("/payment/success", payment.Success)
+	router.Post("/payment/create-order", payment.CreateOrder)
+	router.Post("/payment/capture-order", payment.CaptureOrder)
+
+	router.Get("/reports/view", reports.View)
+	router.Get("/reports/content", reports.Content)
+
+	router.With(auth_middleware.RequireAuth).Get("/dashboard", dashboard.Index)
+	router.With(auth_middleware.RequireAuth).Get("/dashboard/orders", dashboard.Orders)
+	router.With(auth_middleware.RequireAuth).Get("/dashboard/transactions", dashboard.Transactions)
+	router.With(auth_middleware.RequireAuth).Get("/dashboard/history", dashboard.LegacyHistory)
+	router.With(auth_middleware.RequireAuth).Post("/dashboard/report/lookup", dashboard.Lookup)
+	router.With(auth_middleware.RequireAuth).Post("/dashboard/report/purchase", dashboard.Purchase)
 
 	router.Get("/contact", contact.Show)
 	router.Post("/contact", contact.Submit)

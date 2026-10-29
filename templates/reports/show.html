@@ -1,0 +1,10 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Vehicle report{% endblock %}
+
+{% block main %}
+<main class="flex-1">
+  <iframe src="/reports/content?access_token={{ order.AccessToken }}" title="Vehicle report"
+    class="block w-full" style="min-height: calc(100vh - 8rem);" frameborder="0"></iframe>
+</main>
+{% endblock %}

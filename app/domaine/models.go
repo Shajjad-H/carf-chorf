@@ -59,5 +59,5 @@ type CacheRecord struct {
 
 // MigrationModels returns every model that should be auto-migrated.
 func MigrationModels() []any {
-	return []any{&User{}, &CacheRecord{}, &Transaction{}}
+	return []any{&User{}, &CacheRecord{}, &Transaction{}, &Order{}}
 }

@@ -1,0 +1,30 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Reports{% endblock %}
+
+{% block content %}
+<section class="relative isolate">
+  <div class="mx-auto max-w-3xl">
+    <a href="/dashboard" class="inline-flex items-center gap-1 text-sm font-medium text-slate-500 transition hover:text-slate-900">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m15 18-6-6 6-6" />
+      </svg>
+      Back to dashboard
+    </a>
+
+    <div class="mt-4">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">Your account</p>
+      <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Reports</h1>
+      <p class="mt-2 text-sm text-slate-500">All vehicle reports you've purchased.</p>
+    </div>
+
+    <div class="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div class="flex items-center justify-between gap-4 border-b border-slate-100 px-5 py-4">
+        <h2 class="text-base font-semibold text-slate-900">Report history</h2>
+        <span class="text-xs font-medium text-slate-400">{{ order_count }} report{% if order_count != 1 %}s{% endif %}</span>
+      </div>
+      {% include "components/dashboard/report_rows.html" %}
+    </div>
+  </div>
+</section>
+{% endblock %}

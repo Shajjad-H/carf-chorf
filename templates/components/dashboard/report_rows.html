@@ -1,0 +1,45 @@
+{% if orders %}
+<ul class="divide-y divide-slate-100">
+  {% for order in orders %}
+  <li class="group flex items-center gap-4 px-5 py-4 transition hover:bg-slate-50/70">
+    <span class="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-slate-50 text-slate-400 ring-1 ring-slate-100">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+        <path d="M14 2v6h6" />
+        <path d="M8 13h8M8 17h5" />
+      </svg>
+    </span>
+
+    <div class="min-w-0 flex-1">
+      <p class="truncate text-sm font-medium text-slate-900">
+        {% if order.CacheRecord.Vehicle %}{{ order.CacheRecord.Vehicle }}{% else %}Vehicle report{% endif %}
+      </p>
+      <p class="mt-0.5 truncate font-mono text-xs uppercase tracking-widest text-slate-500">VIN {{ order.Vin }}</p>
+    </div>
+
+    <span class="hidden flex-none text-xs text-slate-400 sm:block">{{ order.CreatedAt|date }}</span>
+
+    <a href="/reports/view?access_token={{ order.AccessToken }}"
+      class="inline-flex flex-none items-center gap-1 text-sm font-medium text-slate-500 transition group-hover:text-indigo-600">
+      View
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7 17 17 7M7 7h10v10" />
+      </svg>
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="px-5 py-10 text-center">
+  <span class="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-slate-50 text-slate-400 ring-1 ring-slate-100">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+      <path d="M14 2v6h6" />
+      <path d="M8 13h8M8 17h5" />
+    </svg>
+  </span>
+  <p class="mt-3 text-sm font-medium text-slate-900">No reports yet</p>
+  <p class="mt-1 text-xs text-slate-500">Buy credits and look up a vehicle to get started.</p>
+  <a href="/dashboard" class="mt-4 inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">Go to dashboard</a>
+</div>
+{% endif %}

@@ -2,8 +2,16 @@
 
 {% block title %}Payment{% endblock %}
 
+{% block head %}
+<meta name="csrf-token" content="{{ csrf_token }}" />
+{% if is_pending %}
+<script defer src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&components=card-fields,buttons,funding-eligibility&intent=capture&currency=USD"></script>
+{% endif %}
+{% endblock %}
+
 {% block content %}
-<section class="relative isolate">
+<section class="relative isolate"{% if is_pending %} x-data="paymentPage()" data-token="{{ token }}"
+  data-create-order-url="/payment/create-order" data-capture-order-url="/payment/capture-order"{% endif %}>
   <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 -top-24 -z-10 flex justify-center overflow-hidden blur-3xl">
     <div class="aspect-[1108/632] w-[69.25rem] flex-none bg-gradient-to-r from-indigo-200 via-sky-200 to-emerald-200 opacity-40"></div>
   </div>
@@ -34,10 +42,6 @@
           <span class="font-semibold text-slate-900">{{ amount }}</span>
         </div>
         <div class="flex items-center justify-between text-sm">
-          <span class="text-slate-500">Payment method</span>
-          <span class="font-semibold text-slate-900">{{ payment_method }}</span>
-        </div>
-        <div class="flex items-center justify-between text-sm">
           <span class="text-slate-500">Account email</span>
           <span class="font-medium text-slate-900">{{ email }}</span>
         </div>
@@ -54,31 +58,73 @@
         {% endif %}
 
         {% if is_pending %}
-        <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50/70 p-6 text-center">
-          <p class="text-sm font-semibold text-slate-900">PayPal checkout integration coming next</p>
-          <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600">
-            Your transaction is saved as pending. No credits have been added yet.
-          </p>
-          <button type="button" disabled
-            class="mt-4 inline-flex cursor-not-allowed items-center justify-center rounded-xl bg-slate-200 px-6 py-3 text-sm font-semibold text-slate-500">
-            Pay with PayPal
+        <div x-show="errors.length > 0" x-transition.opacity class="rounded-2xl border border-red-200 bg-red-50 p-4">
+          <ul class="space-y-1 text-sm font-medium text-red-700">
+            <template x-for="error in errors" :key="error">
+              <li x-text="error"></li>
+            </template>
+          </ul>
+        </div>
+
+        <div x-show="showCardFields" class="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 sm:p-6">
+          <div class="space-y-4">
+            <div>
+              <label class="mb-2 block text-sm font-medium text-slate-700">Cardholder Name</label>
+              <div id="card-name-field-container"></div>
+            </div>
+            <div>
+              <label class="mb-2 block text-sm font-medium text-slate-700">Card Number</label>
+              <div id="card-number-field-container"></div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="mb-2 block text-sm font-medium text-slate-700">Expiry Date</label>
+                <div id="card-expiry-field-container"></div>
+              </div>
+              <div>
+                <label class="mb-2 block text-sm font-medium text-slate-700">CVV</label>
+                <div id="card-cvv-field-container"></div>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" @click="submitCard" x-bind:disabled="processing || !sdkReady"
+            class="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60">
+            <span x-show="!processing">Pay {{ amount }}</span>
+            <span x-show="processing">Processing...</span>
           </button>
         </div>
-        {% else %}
+
+        <div x-show="showCardFields" class="relative py-2">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-slate-200"></div>
+          </div>
+          <div class="relative flex justify-center">
+            <span class="bg-white px-3 text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Or pay with</span>
+          </div>
+        </div>
+
+        <div id="paypal-button-container" class="space-y-3"></div>
+
+        <p x-cloak x-show="!sdkReady" class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+          Payment is temporarily unavailable. Please try again later.
+        </p>
+        {% endif %}
+
+        {% if not is_pending %}
         <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center">
           <p class="text-sm font-semibold text-emerald-900">Payment complete</p>
           <p class="mt-2 text-sm leading-6 text-emerald-800">Your credits have been added to your account.</p>
         </div>
         {% endif %}
       </div>
-
-      <div class="flex flex-col-reverse items-stretch gap-3 border-t border-slate-200/70 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
-        <a href="/pricing" class="text-center text-sm font-medium text-slate-500 transition hover:text-slate-700">View pricing</a>
-        <a href="/" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
-          Back to vehicle lookup
-        </a>
-      </div>
     </div>
   </div>
 </section>
+{% endblock %}
+
+{% block scripts %}
+{% if is_pending %}
+<script defer src="/public/js/payment.js"></script>
+{% endif %}
 {% endblock %}

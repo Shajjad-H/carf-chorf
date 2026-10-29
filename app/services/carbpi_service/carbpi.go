@@ -154,6 +154,29 @@ func (c *Client) getRecord(ctx context.Context, path string) (*Record, error) {
 	}, nil
 }
 
+// GetArchiveReport fetches an already purchased CARFAX report using the
+// default client.
+func GetArchiveReport(ctx context.Context, vin string) ([]byte, error) {
+	return client().GetArchiveReport(ctx, vin)
+}
+
+// GetArchiveReport fetches an already purchased CARFAX report.
+func (c *Client) GetArchiveReport(ctx context.Context, vin string) ([]byte, error) {
+	simple_logger.Debugf(kernel.IsDev(), "carbpi: fetching archived report for vin: %s", vin)
+	return c.get(ctx, "/report/carfax/"+url.PathEscape(vin)+"/archive")
+}
+
+// BuyReport purchases a CARFAX report using the default client.
+func BuyReport(ctx context.Context, vin string) ([]byte, error) {
+	return client().BuyReport(ctx, vin)
+}
+
+// BuyReport purchases a CARFAX report and returns its HTML.
+func (c *Client) BuyReport(ctx context.Context, vin string) ([]byte, error) {
+	simple_logger.Debugf(kernel.IsDev(), "carbpi: buying report for vin: %s", vin)
+	return c.get(ctx, "/report/carfax/"+url.PathEscape(vin))
+}
+
 // get performs an authenticated GET and converts non-200 responses into APIError.
 func (c *Client) get(ctx context.Context, path string) ([]byte, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.baseURL+path, nil)

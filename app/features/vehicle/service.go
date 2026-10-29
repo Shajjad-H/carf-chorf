@@ -8,6 +8,13 @@ import (
 	dto "carf-chorf.com/app/pkg/dto_validations"
 )
 
+// Resolve returns a cached record when the VIN or plate/state matches and
+// queries carbpi on a miss. It is shared by the public lookup and the dashboard
+// report purchase flow.
+func Resolve(ctx context.Context, req dto.LookupRequest) (*domaine.CacheRecord, error) {
+	return lookup(ctx, req)
+}
+
 // lookup returns a cached record when the VIN or plate/state matches. On a
 // miss it queries carbpi and stores the response. Records are keyed by VIN;
 // plate/state is an alternate lookup path into the same cache.

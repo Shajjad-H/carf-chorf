@@ -1,0 +1,47 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Transactions{% endblock %}
+
+{% block content %}
+<section class="relative isolate">
+  <div class="mx-auto max-w-3xl">
+    <a href="/dashboard" class="inline-flex items-center gap-1 text-sm font-medium text-slate-500 transition hover:text-slate-900">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m15 18-6-6 6-6" />
+      </svg>
+      Back to dashboard
+    </a>
+
+    <div class="mt-4">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">Your account</p>
+      <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Transactions</h1>
+      <p class="mt-2 text-sm text-slate-500">Completed credit purchases.</p>
+    </div>
+
+    <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Transactions</p>
+        <p class="mt-2 text-2xl font-semibold tracking-tight text-slate-900">{{ transaction_count }}</p>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Credits purchased</p>
+        <p class="mt-2 text-2xl font-semibold tracking-tight text-slate-900">{{ total_credits }}</p>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Total spent</p>
+        <p class="mt-2 text-2xl font-semibold tracking-tight text-slate-900">{{ total_spent|money }}</p>
+      </div>
+    </div>
+
+    <div class="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div class="flex items-center justify-between gap-4 border-b border-slate-100 px-5 py-4">
+        <h2 class="text-base font-semibold text-slate-900">Payment history</h2>
+        <span class="text-xs font-medium text-slate-400">Paid only</span>
+      </div>
+      <div class="px-5 pb-2">
+        {% include "components/dashboard/transaction_list.html" %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -5,7 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}CARFAX Reports{% endblock %}</title>
   <script src="/public/vendor/tailwindcss.js"></script>
-  <style>[x-cloak] { display: none !important; }</style>
+  <style>
+    [x-cloak] { display: none !important; }
+    .nav-drawer-enter-active, .nav-drawer-leave-active { transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1); }
+    .nav-drawer-enter-from, .nav-drawer-leave-to { transform: translateX(100%); }
+    .nav-drawer-enter-to, .nav-drawer-leave-from { transform: translateX(0); }
+  </style>
   {% block head %}{% endblock %}
 </head>
 <body class="h-full font-sans text-slate-800 antialiased">
@@ -15,9 +20,11 @@
     {% include "components/flashes/success.html" %}
     {% include "components/flashes/error.html" %}
 
+    {% block main %}
     <main class="mx-auto w-full max-w-5xl flex-1 px-4 py-8">
       {% block content %}{% endblock %}
     </main>
+    {% endblock %}
 
     {% block footer %}{% include "components/layout/footer.html" %}{% endblock %}
   </div>

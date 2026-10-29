@@ -1,0 +1,16 @@
+<section class="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+  <div class="flex items-center justify-between gap-4 border-b border-slate-100 px-5 py-4">
+    <div>
+      <h2 class="text-base font-semibold text-slate-900">Report history</h2>
+      <p class="mt-0.5 text-xs text-slate-500">Your purchased vehicle reports</p>
+    </div>
+    <a href="/dashboard/orders" class="inline-flex items-center gap-1 text-sm font-medium text-slate-500 transition hover:text-indigo-600">
+      View all
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14" />
+        <path d="m12 5 7 7-7 7" />
+      </svg>
+    </a>
+  </div>
+  {% include "components/dashboard/report_rows.html" %}
+</section>

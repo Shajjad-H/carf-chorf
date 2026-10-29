@@ -1,0 +1,34 @@
+{% extends "emails/layout.html" %}
+
+{% block title %}Your vehicle report is ready · Carf Chorf{% endblock %}
+{% block eyebrow %}Your report is ready{% endblock %}
+{% block heading %}Your vehicle report is ready{% endblock %}
+
+{% block content %}
+<p style="margin:0 0 24px;">{% if vehicle %}Your CARFAX report for <strong style="color:#0f172a;">{{ vehicle }}</strong> is ready to view.{% else %}Your CARFAX report is ready to view.{% endif %}</p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 26px;background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;">
+  <tr>
+    <td style="padding:16px 18px;">
+      <p style="margin:0 0 4px;color:#94a3b8;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;">VIN</p>
+      <p style="margin:0;color:#0f172a;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;font-size:15px;line-height:24px;font-weight:600;letter-spacing:0.08em;">{{ vin }}</p>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
+  <tr>
+    <td class="email-cta" align="center" bgcolor="#4f46e5" style="background-color:#4f46e5;border-radius:12px;">
+      <a href="{{ report_url }}" style="display:inline-block;padding:15px 30px;color:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:20px;font-weight:700;text-decoration:none;">View your report</a>
+    </td>
+  </tr>
+</table>
+
+<p style="margin:0 0 24px;color:#64748b;font-size:14px;line-height:22px;">If the button doesn’t work, copy and paste this link into your browser:<br><a href="{{ report_url }}" style="color:#4f46e5;word-break:break-all;">{{ report_url }}</a></p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f8fafc;border-left:3px solid #a5b4fc;border-radius:0 10px 10px 0;">
+  <tr>
+    <td style="padding:14px 16px;color:#64748b;font-size:14px;line-height:22px;">Keep this link private. Anyone with it can view your report.</td>
+  </tr>
+</table>
+{% endblock %}

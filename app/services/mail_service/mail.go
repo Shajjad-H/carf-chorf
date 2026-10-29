@@ -5,11 +5,66 @@ import (
 	"net"
 	"net/smtp"
 	"strings"
+	"time"
 
 	"carf-chorf.com/app/app/kernel"
+	"carf-chorf.com/app/pkg/renderer"
+	"github.com/flosch/pongo2/v7"
 )
 
+// SendOTP sends a login verification code.
 func SendOTP(to, code string) error {
+	ctx := emailContext(to, "Your verification code")
+	ctx["code"] = code
+	ctx["expires_minutes"] = 10
+
+	html, err := renderer.Render("emails/otp.html", ctx)
+	if err != nil {
+		return fmt.Errorf("mail_service: render otp html: %w", err)
+	}
+	text, err := renderer.Render("emails/otp.txt", ctx)
+	if err != nil {
+		return fmt.Errorf("mail_service: render otp text: %w", err)
+	}
+
+	return send(to, "Your verification code", text, html)
+}
+
+// SendReport sends the link to a purchased vehicle report.
+func SendReport(to, reportURL, vin, vehicle string) error {
+	ctx := emailContext(to, "Your vehicle report is ready to view.")
+	ctx["report_url"] = reportURL
+	ctx["vin"] = vin
+	ctx["vehicle"] = vehicle
+
+	html, err := renderer.Render("emails/report.html", ctx)
+	if err != nil {
+		return fmt.Errorf("mail_service: render report html: %w", err)
+	}
+	text, err := renderer.Render("emails/report.txt", ctx)
+	if err != nil {
+		return fmt.Errorf("mail_service: render report text: %w", err)
+	}
+
+	return send(to, "Your vehicle report is ready", text, html)
+}
+
+func emailContext(to, preheader string) pongo2.Context {
+	domain := strings.TrimRight(kernel.Server.Domain, "/")
+	return pongo2.Context{
+		"brand_name":  "Vehicle Report",
+		"domain":      domain,
+		"logo_url":    domain + "/public/logo-original-compressed.png",
+		"contact_url": domain + "/contact",
+		"pricing_url": domain + "/pricing",
+		"terms_url":   domain + "/terms",
+		"year":        time.Now().Year(),
+		"to":          to,
+		"preheader":   preheader,
+	}
+}
+
+func send(to, subject, text, html string) error {
 	cfg := kernel.Mail
 
 	from := cfg.From
@@ -17,21 +72,7 @@ func SendOTP(to, code string) error {
 		from = fmt.Sprintf("%s <%s>", cfg.FromName, cfg.From)
 	}
 
-	const subject = "Your verification code"
-	text := fmt.Sprintf("Your verification code is %s.\n\nIt expires in 10 minutes.", code)
-	html := fmt.Sprintf(`<!doctype html>
-<html>
-<body style="margin:0;padding:32px;background:#f1f5f9;font-family:Arial,Helvetica,sans-serif;color:#0f172a;">
-  <div style="max-width:480px;margin:0 auto;background:#ffffff;border-radius:16px;padding:32px;border:1px solid #e2e8f0;">
-    <h1 style="margin:0 0 8px;font-size:20px;">Your verification code</h1>
-    <p style="margin:0 0 24px;color:#475569;font-size:14px;">Enter this code to continue. It expires in 10 minutes.</p>
-    <div style="font-size:32px;font-weight:700;letter-spacing:8px;text-align:center;padding:16px;background:#eef2ff;border-radius:12px;color:#4338ca;">%s</div>
-    <p style="margin:24px 0 0;color:#94a3b8;font-size:12px;">If you didn't request this code, you can safely ignore this email.</p>
-  </div>
-</body>
-</html>`, code)
-
-	const boundary = "carf-chorf-otp"
+	const boundary = "carf-chorf-message"
 
 	var body strings.Builder
 	fmt.Fprintf(&body, "From: %s\r\n", from)
@@ -51,8 +92,7 @@ func SendOTP(to, code string) error {
 	auth := smtp.PlainAuth("", cfg.Username, cfg.Password, cfg.Host)
 
 	if err := smtp.SendMail(addr, auth, cfg.From, []string{to}, []byte(body.String())); err != nil {
-		return fmt.Errorf("mail_service: send otp: %w", err)
+		return fmt.Errorf("mail_service: send: %w", err)
 	}
-
 	return nil
 }

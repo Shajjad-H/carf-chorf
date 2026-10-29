@@ -1,0 +1,13 @@
+{{ brand_name }} — Your vehicle report is ready
+
+{% if vehicle %}Vehicle: {{ vehicle }}
+{% endif %}VIN: {{ vin }}
+
+View your report:
+{{ report_url }}
+
+Keep this link private. Anyone with it can view your report.
+
+Need help? {{ contact_url }}
+
+© {{ year }} {{ brand_name }}

@@ -1,0 +1,13 @@
+{{ brand_name }} — Verify your email
+
+Use this code to sign in to your account:
+
+{{ code }}
+
+The code expires in {{ expires_minutes }} minutes. Never share this code with anyone.
+
+If you didn't request this code, you can safely ignore this email.
+
+Need help? {{ contact_url }}
+
+© {{ year }} {{ brand_name }}

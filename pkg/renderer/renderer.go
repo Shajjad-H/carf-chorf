@@ -3,10 +3,13 @@ package renderer
 import (
 	"fmt"
 	"net/http"
+	"strings"
+	"time"
 
 	"carf-chorf.com/app/app/kernel"
 	auth_service "carf-chorf.com/app/app/services/auth"
 	flashes_service "carf-chorf.com/app/app/services/flashes"
+	"carf-chorf.com/app/pkg/money"
 	"carf-chorf.com/app/pkg/response"
 	"github.com/flosch/pongo2/v7"
 	"github.com/gorilla/csrf"
@@ -41,6 +44,27 @@ func registerFilters() {
 		}
 		return pongo2.AsValue(fmt.Sprintf(in.String(), param.Interface())), nil
 	})
+	templateSet.RegisterFilter("money", func(in, param *pongo2.Value) (*pongo2.Value, error) {
+		switch v := in.Interface().(type) {
+		case uint:
+			return pongo2.AsValue(money.FormatCents(v)), nil
+		case int:
+			return pongo2.AsValue(money.FormatCents(uint(v))), nil
+		default:
+			return in, nil
+		}
+	})
+	templateSet.RegisterFilter("date", func(in, param *pongo2.Value) (*pongo2.Value, error) {
+		t, ok := in.Interface().(time.Time)
+		if !ok {
+			return in, nil
+		}
+		layout := "Jan 2, 2006"
+		if param != nil && !param.IsNil() && param.String() != "" {
+			layout = param.String()
+		}
+		return pongo2.AsValue(t.Format(layout)), nil
+	})
 }
 
 func baseContext(w http.ResponseWriter, r *http.Request, extra pongo2.Context) pongo2.Context {
@@ -52,6 +76,9 @@ func baseContext(w http.ResponseWriter, r *http.Request, extra pongo2.Context) p
 		"csrf_token":         csrf.Token(r),
 		"authenticated":      authenticated,
 		"current_user_email": state.Email,
+		"user_initial":       userInitial(state.Email),
+		"current_path":       r.URL.Path,
+		"year":               time.Now().Year(),
 		"turnstile_site_key": kernel.Turnstile.SiteKey,
 	}
 
@@ -60,6 +87,19 @@ func baseContext(w http.ResponseWriter, r *http.Request, extra pongo2.Context) p
 	}
 
 	return ctx
+}
+
+// Render executes a template with the given context without an HTTP request.
+// It is used for templates that are not page responses, such as emails.
+func Render(name string, ctx pongo2.Context) (string, error) {
+	if templateSet == nil {
+		return "", fmt.Errorf("renderer: templates are not initialized")
+	}
+	tpl, err := templateSet.FromCache(name)
+	if err != nil {
+		return "", err
+	}
+	return tpl.Execute(ctx)
 }
 
 func Pongo(w http.ResponseWriter, r *http.Request, name string, status int, ctx pongo2.Context) {
@@ -84,6 +124,14 @@ func Pongo(w http.ResponseWriter, r *http.Request, name string, status int, ctx 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(status)
 	_, _ = w.Write(html)
+}
+
+func userInitial(email string) string {
+	email = strings.TrimSpace(email)
+	if email == "" {
+		return "?"
+	}
+	return strings.ToUpper(email[:1])
 }
 
 func pongoError(w http.ResponseWriter, status int, err error) {

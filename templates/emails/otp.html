@@ -1,0 +1,25 @@
+{% extends "emails/layout.html" %}
+
+{% block title %}Verify your email · Carf Chorf{% endblock %}
+{% block eyebrow %}Secure sign-in{% endblock %}
+{% block heading %}Verify your email{% endblock %}
+
+{% block content %}
+<p style="margin:0 0 24px;">Enter this code to sign in to your Carf Chorf account. It expires in {{ expires_minutes }} minutes.</p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
+  <tr>
+    <td align="center" style="background-color:#eef2ff;border:1px solid #c7d2fe;border-radius:16px;padding:22px 16px;">
+      <div class="email-code" style="font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;font-size:36px;line-height:44px;font-weight:700;letter-spacing:10px;color:#4338ca;text-align:center;padding-left:10px;">{{ code }}</div>
+    </td>
+  </tr>
+</table>
+
+<p style="margin:0 0 20px;color:#64748b;font-size:14px;line-height:22px;">For your security, never share this code with anyone.</p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f8fafc;border-left:3px solid #cbd5e1;border-radius:0 10px 10px 0;">
+  <tr>
+    <td style="padding:14px 16px;color:#64748b;font-size:14px;line-height:22px;">If you didn’t request this code, you can safely ignore this email. Your account will remain secure.</td>
+  </tr>
+</table>
+{% endblock %}

@@ -1,10 +1,52 @@
 <footer class="border-t border-slate-200 bg-white">
-  <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4 text-sm text-slate-500">
-    <span>Carf Chorf</span>
-    <div class="flex items-center gap-4">
-      <a href="/pricing" class="transition hover:text-slate-700">Pricing</a>
-      <a href="/terms" class="transition hover:text-slate-700">Terms</a>
-      <a href="/cgv" class="transition hover:text-slate-700">CGV</a>
+  <div class="mx-auto max-w-5xl px-4 py-10 sm:py-12">
+    <div class="grid gap-10 sm:grid-cols-[minmax(0,1.35fr)_minmax(0,2fr)] sm:gap-12">
+      <div class="max-w-xs">
+        <a href="/" class="inline-flex items-center gap-2">
+          <img src="/public/logo-original-compressed.png" alt="Carf Chorf" class="h-7 w-auto" />
+        </a>
+        <p class="mt-4 text-sm leading-6 text-slate-500">
+          Vehicle history reports, simplified. Check CARFAX records and purchase the reports you need, without a subscription.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-8 sm:grid-cols-3">
+        <div>
+          <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Product</p>
+          <ul class="mt-4 space-y-3 text-sm">
+            <li><a href="/" class="text-slate-600 transition hover:text-slate-900">Home</a></li>
+            <li><a href="/pricing" class="text-slate-600 transition hover:text-slate-900">Pricing</a></li>
+            <li><a href="/contact" class="text-slate-600 transition hover:text-slate-900">Contact</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Legal</p>
+          <ul class="mt-4 space-y-3 text-sm">
+            <li><a href="/terms" class="text-slate-600 transition hover:text-slate-900">Terms</a></li>
+            <li><a href="/cgv" class="text-slate-600 transition hover:text-slate-900">CGV</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Account</p>
+          <ul class="mt-4 space-y-3 text-sm">
+            {% if authenticated %}
+            <li><a href="/dashboard" class="text-slate-600 transition hover:text-slate-900">Dashboard</a></li>
+            <li><a href="/dashboard/orders" class="text-slate-600 transition hover:text-slate-900">My reports</a></li>
+            <li><a href="/dashboard/transactions" class="text-slate-600 transition hover:text-slate-900">Transactions</a></li>
+            {% else %}
+            <li><a href="/login" class="text-slate-600 transition hover:text-slate-900">Log in</a></li>
+            <li><a href="/getstarted" class="text-slate-600 transition hover:text-slate-900">Get started</a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-col gap-3 border-t border-slate-100 pt-5 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+      <p>© {{ year }} Carf Chorf. All rights reserved.</p>
+      <p>Vehicle data supplied by third-party providers.</p>
     </div>
   </div>
 </footer>

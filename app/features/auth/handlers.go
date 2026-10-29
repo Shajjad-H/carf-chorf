@@ -3,6 +3,7 @@ package auth
 import (
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"net/url"
 	"strings"
@@ -10,10 +11,12 @@ import (
 
 	auth_service "carf-chorf.com/app/app/services/auth"
 	flashes_service "carf-chorf.com/app/app/services/flashes"
+	"carf-chorf.com/app/app/services/turnstile_service"
 	"carf-chorf.com/app/app/services/user_service"
 	"carf-chorf.com/app/pkg/renderer"
 	"carf-chorf.com/app/pkg/simple_logger"
 	"github.com/flosch/pongo2/v7"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 const (
@@ -32,6 +35,12 @@ func LoginSubmit(w http.ResponseWriter, r *http.Request) {
 	email := normalizeEmail(r.PostFormValue("email"))
 	if err := validateEmail(email); err != nil {
 		renderEmailForm(w, r, loginTemplate, email, next, http.StatusUnprocessableEntity, err.Error())
+		return
+	}
+
+	if err := verifyTurnstile(r); err != nil {
+		simple_logger.Warnf("auth: turnstile verification failed: %v", err)
+		renderEmailForm(w, r, loginTemplate, email, next, http.StatusUnprocessableEntity, "Please complete the verification challenge and try again.")
 		return
 	}
 
@@ -64,6 +73,12 @@ func GetStartedSubmit(w http.ResponseWriter, r *http.Request) {
 	email := normalizeEmail(r.PostFormValue("email"))
 	if err := validateEmail(email); err != nil {
 		renderEmailForm(w, r, getStartedTemplate, email, next, http.StatusUnprocessableEntity, err.Error())
+		return
+	}
+
+	if err := verifyTurnstile(r); err != nil {
+		simple_logger.Warnf("auth: turnstile verification failed: %v", err)
+		renderEmailForm(w, r, getStartedTemplate, email, next, http.StatusUnprocessableEntity, "Please complete the verification challenge and try again.")
 		return
 	}
 
@@ -250,4 +265,18 @@ func maskEmail(email string) string {
 		return local[:1] + "***@" + parts[1]
 	}
 	return local[:2] + "***@" + parts[1]
+}
+
+func verifyTurnstile(r *http.Request) error {
+	return turnstile_service.Verify(r.Context(), r.PostFormValue("cf-turnstile-response"), clientIP(r))
+}
+
+func clientIP(r *http.Request) string {
+	if ip := middleware.GetClientIP(r.Context()); ip != "" {
+		return ip
+	}
+	if host, _, err := net.SplitHostPort(r.RemoteAddr); err == nil {
+		return host
+	}
+	return r.RemoteAddr
 }

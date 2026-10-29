@@ -3,6 +3,7 @@ package contact
 import (
 	"net/http"
 
+	auth_service "carf-chorf.com/app/app/services/auth"
 	flashes_service "carf-chorf.com/app/app/services/flashes"
 	"carf-chorf.com/app/pkg/renderer"
 	"carf-chorf.com/app/pkg/simple_logger"
@@ -12,7 +13,11 @@ import (
 const templateName = "contact/index.html"
 
 func Show(w http.ResponseWriter, r *http.Request) {
-	renderForm(w, r, http.StatusOK, ContactRequest{}, map[string]string{}, nil)
+	req := ContactRequest{}
+	if state, ok := auth_service.Current(r); ok {
+		req.Email = state.Email
+	}
+	renderForm(w, r, http.StatusOK, req, map[string]string{}, nil)
 }
 
 func Submit(w http.ResponseWriter, r *http.Request) {

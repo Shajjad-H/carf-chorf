@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Admin{% endblock %} · Carf Chorf</title>
+  <script src="/public/vendor/tailwindcss.js"></script>
+  <style>[x-cloak] { display: none !important; }</style>
+</head>
+<body class="h-full text-slate-800 antialiased">
+  <div class="min-h-screen bg-slate-100">
+    <aside class="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col bg-slate-950 px-4 py-5 lg:flex">
+      <a href="/" class="flex items-center gap-3 rounded-xl px-2 py-1">
+        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-white p-1">
+          <img src="/public/logo-original-compressed.png" alt="Carf Chorf" class="h-full w-full object-contain" />
+        </span>
+        <span>
+          <span class="block text-sm font-semibold text-white">Carf Chorf</span>
+          <span class="block text-[11px] font-medium uppercase tracking-[0.16em] text-slate-500">Admin</span>
+        </span>
+      </a>
+
+      <nav class="mt-8 space-y-1" aria-label="Admin navigation">
+        <a href="/" class="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition {% if current_path == '/' %}bg-white/10 text-white{% else %}text-slate-400 hover:bg-white/5 hover:text-slate-200{% endif %}">
+          Overview
+        </a>
+        <a href="/transactions" class="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition {% if current_path == '/transactions' %}bg-white/10 text-white{% else %}text-slate-400 hover:bg-white/5 hover:text-slate-200{% endif %}">
+          Transactions
+        </a>
+        <a href="/orders" class="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition {% if current_path == '/orders' %}bg-white/10 text-white{% else %}text-slate-400 hover:bg-white/5 hover:text-slate-200{% endif %}">
+          Orders
+        </a>
+        <a href="/daily-transactions" class="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition {% if current_path == '/daily-transactions' %}bg-white/10 text-white{% else %}text-slate-400 hover:bg-white/5 hover:text-slate-200{% endif %}">
+          Daily transactions
+        </a>
+        <a href="/users" class="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition {% if current_path == '/users' %}bg-white/10 text-white{% else %}text-slate-400 hover:bg-white/5 hover:text-slate-200{% endif %}">
+          Users
+        </a>
+      </nav>
+
+      <div class="mt-auto border-t border-white/10 pt-4 text-xs text-slate-500">
+        Private dashboard
+      </div>
+    </aside>
+
+    <div class="lg:pl-64">
+      <header class="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur">
+        <div class="flex h-16 items-center gap-4 px-4 sm:px-6">
+          <a href="/" class="flex items-center gap-2 lg:hidden">
+            <img src="/public/logo-original-compressed.png" alt="Carf Chorf" class="h-7 w-auto" />
+            <span class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Admin</span>
+          </a>
+          <div class="ml-auto flex items-center gap-3">
+            <a href="/" class="text-sm font-medium text-slate-500 transition hover:text-slate-900">Overview</a>
+            <form method="POST" action="/logout">
+              {% include "components/forms/csrf.html" %}
+              <button type="submit" class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600">
+                Logout
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <nav class="flex gap-1 overflow-x-auto px-4 pb-3 text-sm lg:hidden" aria-label="Admin navigation">
+          <a href="/" class="whitespace-nowrap rounded-lg px-3 py-1.5 font-medium {% if current_path == '/' %}bg-slate-100 text-slate-900{% else %}text-slate-500{% endif %}">Overview</a>
+          <a href="/transactions" class="whitespace-nowrap rounded-lg px-3 py-1.5 font-medium {% if current_path == '/transactions' %}bg-slate-100 text-slate-900{% else %}text-slate-500{% endif %}">Transactions</a>
+          <a href="/orders" class="whitespace-nowrap rounded-lg px-3 py-1.5 font-medium {% if current_path == '/orders' %}bg-slate-100 text-slate-900{% else %}text-slate-500{% endif %}">Orders</a>
+          <a href="/daily-transactions" class="whitespace-nowrap rounded-lg px-3 py-1.5 font-medium {% if current_path == '/daily-transactions' %}bg-slate-100 text-slate-900{% else %}text-slate-500{% endif %}">Daily</a>
+          <a href="/users" class="whitespace-nowrap rounded-lg px-3 py-1.5 font-medium {% if current_path == '/users' %}bg-slate-100 text-slate-900{% else %}text-slate-500{% endif %}">Users</a>
+        </nav>
+      </header>
+
+      <main class="px-4 py-6 sm:px-6 sm:py-8">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+  <script defer src="/public/vendor/alpinejs.min.js"></script>
+  <script defer src="/public/js/admin-filters.js"></script>
+</body>
+</html>

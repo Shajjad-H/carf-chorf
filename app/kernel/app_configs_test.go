@@ -127,3 +127,37 @@ func TestDiscordConfigValidate(t *testing.T) {
 		})
 	}
 }
+
+func TestDashboardConfigValidate(t *testing.T) {
+	valid := dashboardConfig{
+		Address:  "localhost:8080",
+		AdminKey: "12345678901234567890",
+	}
+	if err := valid.Validate(); err != nil {
+		t.Fatalf("Validate() error = %v", err)
+	}
+
+	longer := valid
+	longer.AdminKey = "1234567890123456789012345"
+	if err := longer.Validate(); err != nil {
+		t.Fatalf("longer admin key rejected: %v", err)
+	}
+
+	tests := []struct {
+		name string
+		cfg  dashboardConfig
+	}{
+		{name: "missing address", cfg: dashboardConfig{AdminKey: valid.AdminKey}},
+		{name: "missing key", cfg: dashboardConfig{Address: valid.Address}},
+		{name: "too short", cfg: dashboardConfig{Address: valid.Address, AdminKey: "1234567890123456789"}},
+		{name: "non numeric", cfg: dashboardConfig{Address: valid.Address, AdminKey: "1234567890123456789a"}},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			if err := tc.cfg.Validate(); err == nil {
+				t.Fatal("Validate() unexpectedly succeeded")
+			}
+		})
+	}
+}

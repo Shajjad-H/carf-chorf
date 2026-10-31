@@ -49,6 +49,25 @@ func SendReport(to, reportURL, vin, vehicle string) error {
 	return send(to, "Your vehicle report is ready", text, html)
 }
 
+// SendCreditReminder reminds a user about unused report credits.
+func SendCreditReminder(to string, credits uint) error {
+	domain := strings.TrimRight(kernel.Server.Domain, "/")
+	ctx := emailContext(to, "You still have unused report credits.")
+	ctx["credits"] = credits
+	ctx["dashboard_url"] = domain + "/dashboard"
+
+	html, err := renderer.Render("emails/credit_reminder.html", ctx)
+	if err != nil {
+		return fmt.Errorf("mail_service: render credit reminder html: %w", err)
+	}
+	text, err := renderer.Render("emails/credit_reminder.txt", ctx)
+	if err != nil {
+		return fmt.Errorf("mail_service: render credit reminder text: %w", err)
+	}
+
+	return send(to, "You have unused report credits", text, html)
+}
+
 func emailContext(to, preheader string) pongo2.Context {
 	domain := strings.TrimRight(kernel.Server.Domain, "/")
 	return pongo2.Context{

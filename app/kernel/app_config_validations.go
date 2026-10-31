@@ -3,6 +3,7 @@ package kernel
 import (
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 
 	validation "github.com/go-ozzo/ozzo-validation"
@@ -155,4 +156,16 @@ func (p *pricesConfig) Validate() error {
 		return errors.New("a 1-credit package is required")
 	}
 	return nil
+}
+
+var dashboardKeyRegex = regexp.MustCompile(`^[0-9]{20,}$`)
+
+func (d *dashboardConfig) Validate() error {
+	return validation.ValidateStruct(d,
+		validation.Field(&d.Address, validation.Required.Error("DASHBOARD_ADDRESS is required")),
+		validation.Field(&d.AdminKey,
+			validation.Required.Error("DASHBOARD_ADMIN_KEY is required"),
+			validation.Match(dashboardKeyRegex).Error("DASHBOARD_ADMIN_KEY must contain at least 20 digits"),
+		),
+	)
 }

@@ -1,0 +1,10 @@
+{{ brand_name }} — You still have unused report credits
+
+You have {{ credits }} unused credit{% if credits != 1 %}s{% endif %} in your account.
+
+Use your credits:
+{{ dashboard_url }}
+
+Use a credit to look up a vehicle and get its CARFAX report from your dashboard.
+
+© {{ year }} {{ brand_name }}

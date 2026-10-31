@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin access · Carf Chorf</title>
+  <script src="/public/vendor/tailwindcss.js"></script>
+</head>
+<body class="flex min-h-full items-center justify-center bg-slate-950 px-4 py-10 text-slate-800 antialiased">
+  <div class="w-full max-w-sm">
+    <div class="text-center">
+      <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white p-1.5">
+        <img src="/public/logo-original-compressed.png" alt="Carf Chorf" class="h-full w-full object-contain" />
+      </span>
+      <p class="mt-5 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Carf Chorf</p>
+      <h1 class="mt-1 text-2xl font-bold tracking-tight text-white">Admin access</h1>
+      <p class="mt-2 text-sm text-slate-400">Enter the private admin key to continue.</p>
+    </div>
+
+    <div class="mt-8 rounded-2xl border border-white/10 bg-white p-6 shadow-2xl">
+      {% if error %}
+      <p class="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">{{ error }}</p>
+      {% endif %}
+
+      <form method="POST" action="/login" class="space-y-5">
+        {% include "components/forms/csrf.html" %}
+        <div>
+          <label for="admin_key" class="block text-sm font-medium text-slate-700">Admin key</label>
+          <input id="admin_key" name="admin_key" type="password" inputmode="numeric" autocomplete="off" required
+            minlength="20" pattern="[0-9]{20,}" spellcheck="false"
+            placeholder="20+ digit key"
+            class="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10" />
+          <p class="mt-2 text-xs text-slate-400">Five failed attempts trigger a five-minute cooldown.</p>
+        </div>
+
+        <button type="submit" class="inline-flex w-full items-center justify-center rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700">
+          Continue
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

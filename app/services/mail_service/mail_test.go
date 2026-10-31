@@ -62,4 +62,24 @@ func TestEmailTemplates(t *testing.T) {
 	if !strings.Contains(reportText, "1HGCM82633A004352") || !strings.Contains(reportText, "https://example.test/reports/view?access_token=abc") {
 		t.Fatal("report text is missing expected content")
 	}
+
+	creditCtx := emailContext("user@example.com", "You still have unused report credits.")
+	creditCtx["credits"] = 3
+	creditCtx["dashboard_url"] = "https://example.test/dashboard"
+
+	creditHTML, err := renderer.Render("emails/credit_reminder.html", creditCtx)
+	if err != nil {
+		t.Fatalf("render credit reminder html: %v", err)
+	}
+	if !strings.Contains(creditHTML, "3 unused credits") || !strings.Contains(creditHTML, "https://example.test/dashboard") {
+		t.Fatal("credit reminder html is missing expected content")
+	}
+
+	creditText, err := renderer.Render("emails/credit_reminder.txt", creditCtx)
+	if err != nil {
+		t.Fatalf("render credit reminder text: %v", err)
+	}
+	if !strings.Contains(creditText, "3 unused credits") || !strings.Contains(creditText, "https://example.test/dashboard") {
+		t.Fatal("credit reminder text is missing expected content")
+	}
 }

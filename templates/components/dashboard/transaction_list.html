@@ -19,8 +19,8 @@
 
     <div class="flex flex-none items-center gap-3">
       <span class="text-sm font-semibold text-slate-900">{{ transaction.Amount|money }}</span>
-      <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {% if transaction.Status == 'paid' %}bg-emerald-50 text-emerald-700{% else %}bg-amber-50 text-amber-700{% endif %}">
-        {{ transaction.Status }}
+      <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {% if transaction.Status|string == 'paid' %}bg-emerald-50 text-emerald-700{% else %}bg-amber-50 text-amber-700{% endif %}">
+        {% if transaction.Status|string == 'paid' %}Paid{% else %}{% if transaction.Status|string == 'pending' %}Pending{% else %}{{ transaction.Status }}{% endif %}{% endif %}
       </span>
     </div>
   </li>

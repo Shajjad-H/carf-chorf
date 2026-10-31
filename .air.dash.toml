@@ -1,11 +1,11 @@
 root = "."
 testdata_dir = "testdata"
-tmp_dir = "tmp"
+tmp_dir = "tmp/dashboard"
 
 [build]
   args_bin = []
-  bin = "./tmp/main"
-  cmd = "go build -o ./tmp/main cmd/dashboard/main.go"
+  bin = "./tmp/dashboard/main"
+  cmd = "go build -o ./tmp/dashboard/main cmd/dashboard/main.go"
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor", "testdata", "var"]
   exclude_file = []
@@ -17,7 +17,7 @@ tmp_dir = "tmp"
   include_ext = ["go", "tpl", "tmpl", "html", "env", "yml", "yaml"]
   include_file = []
   kill_delay = "0s"
-  log = "build-errors.log"
+  log = "tmp/dashboard/build-errors.log"
   poll = false
   poll_interval = 0
   post_cmd = []

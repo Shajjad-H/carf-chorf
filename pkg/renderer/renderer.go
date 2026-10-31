@@ -44,10 +44,18 @@ func registerFilters() {
 		}
 		return pongo2.AsValue(fmt.Sprintf(in.String(), param.Interface())), nil
 	})
+	templateSet.RegisterFilter("string", func(in, param *pongo2.Value) (*pongo2.Value, error) {
+		if in.IsNil() {
+			return pongo2.AsValue(""), nil
+		}
+		return pongo2.AsValue(in.String()), nil
+	})
 	templateSet.RegisterFilter("money", func(in, param *pongo2.Value) (*pongo2.Value, error) {
 		switch v := in.Interface().(type) {
 		case uint:
 			return pongo2.AsValue(money.FormatCents(v)), nil
+		case uint64:
+			return pongo2.AsValue(money.FormatCents(uint(v))), nil
 		case int:
 			return pongo2.AsValue(money.FormatCents(uint(v))), nil
 		default:

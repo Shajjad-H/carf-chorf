@@ -12,6 +12,7 @@ var (
 	Prices         pricesConfig
 	PayPal         paypalConfig
 	ReportStorage  reportStorageConfig
+	Dashboard      dashboardConfig
 )
 
 type DatabaseDriver string
@@ -36,6 +37,15 @@ func Init() {
 	// config_loader.Register("StorageConfig", &Storage)
 	// config_loader.Register("DashboardConfig", &Dashboard)
 
+	config_loader.LoadAndValidate(true)
+}
+
+// InitDashboard loads only the configuration required by the admin dashboard.
+func InitDashboard() {
+	config_loader.Register("ServerConfig", &Server)
+	config_loader.Register("DatabaseConfig", &Database)
+	config_loader.Register("MailConfig", &Mail)
+	config_loader.Register("DashboardConfig", &Dashboard)
 	config_loader.LoadAndValidate(true)
 }
 
@@ -114,6 +124,11 @@ type (
 
 	reportStorageConfig struct {
 		Path string `env:"REPORTS_PATH"`
+	}
+
+	dashboardConfig struct {
+		Address  string `env:"DASHBOARD_ADDRESS"`
+		AdminKey string `env:"DASHBOARD_ADMIN_KEY"`
 	}
 )
 

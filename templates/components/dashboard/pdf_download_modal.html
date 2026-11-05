@@ -1,0 +1,96 @@
+<div x-data="pdfDownloader()" @download-report-pdf.window="start($event.detail)"
+  x-show="open" x-cloak
+  x-effect="document.body.classList.toggle('overflow-hidden', open)"
+  class="fixed inset-0 z-[80] flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-ink-900/45" @click="!busy && close()"></div>
+
+  <div class="relative w-full max-w-sm rounded-3xl border border-line bg-white p-6 text-center shadow-lift">
+    <div x-show="!done && !error">
+      <span class="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-brand-50 text-brand-600">
+        <iconify-icon icon="ph:spinner" class="block h-5 w-5 animate-spin"></iconify-icon>
+      </span>
+      <h3 class="mt-4 text-lg font-semibold text-ink-900">Preparing your PDF</h3>
+      <p class="mt-2 text-sm leading-6 text-ink-600">This can take a few seconds for long reports.</p>
+    </div>
+
+    <div x-show="done" x-cloak>
+      <span class="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-emerald-50 text-emerald-600">
+        <iconify-icon icon="ph:check-bold" class="block h-5 w-5"></iconify-icon>
+      </span>
+      <h3 class="mt-4 text-lg font-semibold text-ink-900">Download started</h3>
+      <p class="mt-2 text-sm leading-6 text-ink-600">Your PDF is being saved.</p>
+    </div>
+
+    <div x-show="error" x-cloak>
+      <span class="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-red-50 text-red-600">
+        <iconify-icon icon="ph:warning-circle" class="block h-5 w-5"></iconify-icon>
+      </span>
+      <h3 class="mt-4 text-lg font-semibold text-ink-900">Download failed</h3>
+      <p class="mt-2 text-sm leading-6 text-ink-600" x-text="error"></p>
+      <button type="button" @click="close()" class="btn-secondary mt-4">Close</button>
+    </div>
+  </div>
+
+  <iframe x-ref="frame" title="PDF report" class="fixed -left-[10000px] top-0 h-[2000px] w-[1200px] border-0" style="pointer-events:none;"></iframe>
+</div>
+
+<script>
+  function pdfDownloader() {
+    return {
+      open: false,
+      busy: false,
+      done: false,
+      error: '',
+      start(detail) {
+        var token = detail && detail.token;
+        if (!token) {
+          return;
+        }
+        this.open = true;
+        this.busy = true;
+        this.done = false;
+        this.error = '';
+        var frame = this.$refs.frame;
+        var self = this;
+        frame.src = 'about:blank';
+        setTimeout(function () {
+          frame.src = '/reports/content?access_token=' + encodeURIComponent(token);
+        }, 50);
+        var started = Date.now();
+        function poll() {
+          if (!self.open) {
+            return;
+          }
+          var win = frame.contentWindow;
+          if (win && typeof win.downloadReportPDF === 'function') {
+            win.downloadReportPDF().then(function () {
+              self.busy = false;
+              self.done = true;
+              setTimeout(function () {
+                self.close();
+              }, 700);
+            }).catch(function (err) {
+              console.error('PDF generation failed', err);
+              self.busy = false;
+              self.error = 'The PDF could not be generated. Please try again.';
+            });
+            return;
+          }
+          if (Date.now() - started > 30000) {
+            self.busy = false;
+            self.error = 'The report is taking too long to load. Please try again.';
+            return;
+          }
+          setTimeout(poll, 300);
+        }
+        setTimeout(poll, 300);
+      },
+      close() {
+        this.open = false;
+        this.busy = false;
+        this.done = false;
+        this.error = '';
+      },
+    };
+  }
+</script>

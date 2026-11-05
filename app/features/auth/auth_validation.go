@@ -39,7 +39,21 @@ func safeNext(next string) string {
 	}
 
 	u, err := url.Parse(next)
-	if err != nil || u.Scheme != "" || u.Host != "" || strings.ContainsRune(u.Path, '\\') {
+	if err != nil || u.Scheme != "" || u.Host != "" {
+		return "/dashboard"
+	}
+
+	// Decode percent-encoded slashes/backslashes as well so values such as
+	// /%2f%2fevil.example or /%255cevil.example cannot become open redirects.
+	path := u.Path
+	for i := 0; i < 2; i++ {
+		decoded, err := url.PathUnescape(path)
+		if err != nil || decoded == path {
+			break
+		}
+		path = decoded
+	}
+	if strings.HasPrefix(path, "//") || strings.ContainsRune(path, '\\') {
 		return "/dashboard"
 	}
 

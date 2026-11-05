@@ -1,45 +1,56 @@
+{# Liste des rapports achetés. Le parent fournit `q` dans un x-data : data-search sert au filtre. #}
 {% if orders %}
-<ul class="divide-y divide-slate-100">
+<ul class="divide-y divide-line">
   {% for order in orders %}
-  <li class="group flex items-center gap-4 px-5 py-4 transition hover:bg-slate-50/70">
-    <span class="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-slate-50 text-slate-400 ring-1 ring-slate-100">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
-        <path d="M14 2v6h6" />
-        <path d="M8 13h8M8 17h5" />
-      </svg>
-    </span>
+  <li x-data="{ copied: false }" data-search="{% if order.CacheRecord.Vehicle %}{{ order.CacheRecord.Vehicle|lower }}{% endif %} {{ order.Vin|lower }}"
+    x-show="!q || $el.dataset.search.includes(q.toLowerCase().trim())"
+    class="group px-4 py-4 transition hover:bg-brand-50/30 sm:flex sm:items-center sm:gap-4 sm:px-5">
 
-    <div class="min-w-0 flex-1">
-      <p class="truncate text-sm font-medium text-slate-900">
-        {% if order.CacheRecord.Vehicle %}{{ order.CacheRecord.Vehicle }}{% else %}Vehicle report{% endif %}
-      </p>
-      <p class="mt-0.5 truncate font-mono text-xs uppercase tracking-widest text-slate-500">VIN {{ order.Vin }}</p>
+    {# Véhicule #}
+    <div class="flex min-w-0 flex-1 items-center gap-3.5">
+      <span class="grid h-12 w-12 flex-none place-items-center rounded-2xl bg-gradient-to-br from-brand-50 to-white text-brand-600 ring-1 ring-inset ring-brand-100">
+        <iconify-icon icon="ph:car-profile-fill" class="h-6 w-6"></iconify-icon>
+      </span>
+      <div class="min-w-0 flex-1">
+        <p class="truncate text-[15px] font-semibold leading-tight text-ink-900">{% if order.CacheRecord.Vehicle %}{{ order.CacheRecord.Vehicle }}{% else %}Vehicle report{% endif %}</p>
+        <div class="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+          <button type="button" @click.stop="navigator.clipboard && navigator.clipboard.writeText('{{ order.Vin }}'); copied = true; setTimeout(() => copied = false, 1500)"
+            class="inline-flex h-6 items-center gap-1.5 rounded-md bg-soft px-2 font-mono text-[13px] uppercase tracking-wider text-ink-600 transition hover:bg-brand-50 hover:text-brand-700" title="Copy VIN">
+            <span>{{ order.Vin }}</span>
+            <iconify-icon x-show="!copied" icon="ph:copy" class="h-3.5 w-3.5"></iconify-icon>
+            <iconify-icon x-show="copied" x-cloak icon="ph:check-bold" class="h-3.5 w-3.5 text-emerald-600"></iconify-icon>
+          </button>
+          <span class="inline-flex h-6 items-center text-xs text-ink-500">{{ order.CreatedAt|date }}</span>
+        </div>
+      </div>
     </div>
 
-    <span class="hidden flex-none text-xs text-slate-400 sm:block">{{ order.CreatedAt|date }}</span>
-
-    <a href="/reports/view?access_token={{ order.AccessToken }}"
-      class="inline-flex flex-none items-center gap-1 text-sm font-medium text-slate-500 transition group-hover:text-indigo-600">
-      View
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M7 17 17 7M7 7h10v10" />
-      </svg>
-    </a>
+    {# Actions : « View report » en principal, PDF en secondaire. Mobile : sur toute la largeur. #}
+    <div class="mt-3.5 grid grid-cols-2 gap-2 border-t border-line pt-3.5 sm:mt-0 sm:flex sm:flex-none sm:items-center sm:gap-2 sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0">
+      <button type="button" title="Download the PDF"
+        @click="$dispatch('download-report-pdf', { token: '{{ order.AccessToken }}', vehicle: '{% if order.CacheRecord.Vehicle %}{{ order.CacheRecord.Vehicle }}{% endif %}' })"
+        class="inline-flex h-11 min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-line bg-white px-3 text-[13px] font-semibold text-ink-700 transition hover:border-ink-300 hover:text-ink-900 sm:gap-2 sm:px-4 sm:text-sm">
+        <iconify-icon icon="ph:download-simple-bold" class="h-4 w-4"></iconify-icon>
+        <span>Download PDF</span>
+      </button>
+      <a href="/reports/view?access_token={{ order.AccessToken }}"
+        class="inline-flex h-11 min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-brand-500 px-3 text-[13px] font-semibold text-white shadow-[0_10px_22px_-12px_rgba(21,93,252,0.9)] transition hover:bg-brand-600 sm:gap-2 sm:px-5 sm:text-sm">
+        <iconify-icon icon="ph:eye-bold" class="h-4 w-4"></iconify-icon>
+        <span>View report</span>
+      </a>
+    </div>
   </li>
   {% endfor %}
 </ul>
 {% else %}
-<div class="px-5 py-10 text-center">
-  <span class="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-slate-50 text-slate-400 ring-1 ring-slate-100">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
-      <path d="M14 2v6h6" />
-      <path d="M8 13h8M8 17h5" />
-    </svg>
+<div class="px-5 py-12 text-center">
+  <span class="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-brand-50 text-brand-500">
+    <iconify-icon icon="ph:files" class="h-6 w-6"></iconify-icon>
   </span>
-  <p class="mt-3 text-sm font-medium text-slate-900">No reports yet</p>
-  <p class="mt-1 text-xs text-slate-500">Buy credits and look up a vehicle to get started.</p>
-  <a href="/dashboard" class="mt-4 inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">Go to dashboard</a>
+  <p class="mt-4 text-base font-semibold text-ink-900">No reports yet</p>
+  <p class="mx-auto mt-1 max-w-xs text-sm leading-6 text-ink-500">Reports you get with your credits are saved here, so you can open them again anytime.</p>
+  <a href="/dashboard#new-report" class="btn-primary mt-5 px-5 py-2.5 text-sm">
+    <iconify-icon icon="ph:magnifying-glass-bold" class="h-4 w-4"></iconify-icon>Get my first report
+  </a>
 </div>
 {% endif %}

@@ -59,7 +59,7 @@ func TestPricesConfigFile(t *testing.T) {
 		t.Fatalf("packages length = %d, want 3", len(cfg.Packages))
 	}
 
-	wantAmounts := map[uint]uint{1: 1900, 2: 3400, 4: 5900}
+	wantAmounts := map[uint]uint{1: 4999, 3: 9990, 5: 13499}
 	for _, pkg := range cfg.Packages {
 		if amount, ok := wantAmounts[pkg.Credits]; !ok || pkg.AmountCents != amount {
 			t.Fatalf("unexpected package: %+v", pkg)

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"carf-chorf.com/app/app/kernel"
+	"carf-chorf.com/app/pkg/money"
 	"carf-chorf.com/app/pkg/renderer"
 	"github.com/flosch/pongo2/v7"
 )
@@ -68,12 +69,34 @@ func SendCreditReminder(to string, credits uint) error {
 	return send(to, "You have unused report credits", text, html)
 }
 
+// SendPaymentConfirmation sends the receipt for a credit purchase.
+func SendPaymentConfirmation(to string, credits, amountCents uint, transactionRef string, purchasedAt time.Time) error {
+	domain := strings.TrimRight(kernel.Server.Domain, "/")
+	ctx := emailContext(to, "Your payment is confirmed and your credits are ready.")
+	ctx["credits"] = credits
+	ctx["amount"] = money.FormatCents(amountCents)
+	ctx["transaction_ref"] = transactionRef
+	ctx["purchased_at"] = purchasedAt.Format("01/02/2006 3:04 PM")
+	ctx["login_url"] = domain + "/login?next=%2Fdashboard"
+
+	html, err := renderer.Render("emails/payment_confirmation.html", ctx)
+	if err != nil {
+		return fmt.Errorf("mail_service: render payment confirmation html: %w", err)
+	}
+	text, err := renderer.Render("emails/payment_confirmation.txt", ctx)
+	if err != nil {
+		return fmt.Errorf("mail_service: render payment confirmation text: %w", err)
+	}
+
+	return send(to, "Payment confirmed — Your credits are ready", text, html)
+}
+
 func emailContext(to, preheader string) pongo2.Context {
 	domain := strings.TrimRight(kernel.Server.Domain, "/")
 	return pongo2.Context{
 		"brand_name":  "Vehicle Report",
 		"domain":      domain,
-		"logo_url":    domain + "/public/logo-original-compressed.png",
+		"logo_url":    domain + "/public/logo-transparent.png",
 		"contact_url": domain + "/contact",
 		"pricing_url": domain + "/pricing",
 		"terms_url":   domain + "/terms",

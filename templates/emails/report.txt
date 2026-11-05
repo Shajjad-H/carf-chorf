@@ -1,13 +1,17 @@
-{{ brand_name }} — Your vehicle report is ready
+Your report is ready
 
-{% if vehicle %}Vehicle: {{ vehicle }}
+It's saved in your account, open it anytime.
+
+{% if vehicle %}{{ vehicle }}
 {% endif %}VIN: {{ vin }}
 
-View your report:
+View my report:
 {{ report_url }}
 
-Keep this link private. Anyone with it can view your report.
+Includes: accidents & damage, owners & title, mileage & service.
 
-Need help? {{ contact_url }}
+Keep this link private: anyone with it can open your report.
 
-© {{ year }} {{ brand_name }}
+Questions? {{ contact_url }}
+
+© {{ year }} VHR

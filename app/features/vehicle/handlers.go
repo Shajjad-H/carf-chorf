@@ -11,6 +11,7 @@ import (
 	"carf-chorf.com/app/app/services/carbpi_service"
 	"carf-chorf.com/app/app/services/turnstile_service"
 	dto "carf-chorf.com/app/pkg/dto_validations"
+	"carf-chorf.com/app/pkg/formparse"
 	"carf-chorf.com/app/pkg/renderer"
 	"carf-chorf.com/app/pkg/simple_logger"
 	"github.com/flosch/pongo2/v7"
@@ -28,7 +29,7 @@ func FormContext() pongo2.Context {
 // Lookup validates the lookup form, verifies Turnstile, resolves or refreshes
 // the cached vehicle record, and redirects to its tokenized checkout page.
 func Lookup(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
+	if err := formparse.Parse(r); err != nil {
 		http.Error(w, "invalid form submission", http.StatusBadRequest)
 		return
 	}

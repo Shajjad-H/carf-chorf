@@ -1,0 +1,11 @@
+tiers:
+  - min_reports: 10
+    per_report_cents: 1999
+  - min_reports: 25
+    per_report_cents: 1499
+  - min_reports: 50
+    per_report_cents: 1299
+  - min_reports: 100
+    per_report_cents: 999
+  - min_reports: 250
+    per_report_cents: 499

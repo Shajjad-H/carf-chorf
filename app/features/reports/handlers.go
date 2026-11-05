@@ -2,6 +2,7 @@
 package reports
 
 import (
+	"bytes"
 	"net/http"
 	"strings"
 
@@ -48,8 +49,39 @@ func Content(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Header().Set("Cache-Control", "private, no-store")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.Header().Set("Referrer-Policy", "no-referrer")
 	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write(html)
+	_, _ = w.Write(injectReportRuntime(html))
+}
+
+const reportRuntimeGuard = `<script>
+(function () {
+  var fetchImpl = window.fetch;
+  window.fetch = function (input, init) {
+    var url = typeof input === "string" ? input : (input && input.url) || "";
+    if (url.indexOf("/fur/") !== -1 && /\/v1\.json(?:\?|$)/.test(url)) {
+      return Promise.reject(new Error("report manifest disabled"));
+    }
+    return fetchImpl.apply(this, arguments);
+  };
+  try {
+    var getItem = Storage.prototype.getItem;
+    Storage.prototype.getItem = function (key) {
+      if (typeof key === "string" && (key.indexOf("VHR") !== -1 || key.indexOf("fur") !== -1)) {
+        return null;
+      }
+      return getItem.call(this, key);
+    };
+  } catch (e) {}
+})();
+</script><style>.report-header-print-button{display:none!important}</style><script src="/public/js/report-download.js"></script>`
+
+func injectReportRuntime(html []byte) []byte {
+	const marker = "</head>"
+	if !bytes.Contains(html, []byte(marker)) {
+		return html
+	}
+	return bytes.Replace(html, []byte(marker), append([]byte(reportRuntimeGuard), []byte(marker)...), 1)
 }
 
 func findOrder(w http.ResponseWriter, r *http.Request) (*domaine.Order, bool) {

@@ -46,6 +46,20 @@
         this.vin = this.$el.dataset.vin || '';
         this.plate = this.$el.dataset.plate || '';
         this.recentVins = loadHistory();
+
+        window.addEventListener('pageshow', (event) => {
+          if (!event.persisted) {
+            return;
+          }
+          this.submitting = false;
+          if (window.turnstile) {
+            try {
+              window.turnstile.reset();
+            } catch (error) {
+              // The widget may not be ready yet; the next submit will show the normal state.
+            }
+          }
+        });
       },
 
       get filteredVins() {

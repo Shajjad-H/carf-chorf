@@ -1,0 +1,116 @@
+{# Fenêtre « Buy credits » : ouverte via $dispatch('open-buy'). #}
+<div x-data="buyModal()" x-show="open" x-cloak @open-buy.window="open = true" @keydown.escape.window="open = false"
+  x-effect="document.body.classList.toggle('overflow-hidden', open)"
+  class="fixed inset-0 z-[60] flex items-end justify-center font-sans sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="buy-title">
+  <div x-show="open" x-transition.opacity class="absolute inset-0 bg-ink-900/50 backdrop-blur-[2px]" @click="open = false"></div>
+
+  <div x-show="open"
+    x-transition:enter="transition duration-300 ease-out" x-transition:enter-start="translate-y-8 opacity-0 sm:translate-y-2" x-transition:enter-end="translate-y-0 opacity-100"
+    class="relative max-h-[94dvh] w-full overflow-y-auto rounded-t-[1.75rem] bg-white shadow-lift sm:max-w-[28rem] sm:rounded-[1.75rem]">
+
+    {# Titre simple sur fond bleu #}
+    <div class="relative isolate flex items-center justify-between gap-3 overflow-hidden px-5 py-4 text-white sm:px-6">
+      <span aria-hidden="true" class="absolute inset-0 -z-10 bg-[linear-gradient(135deg,#0A2A8F_0%,#0F3FCB_45%,#155DFC_80%,#2F6BFF_100%)]"></span>
+      <div>
+        <h2 id="buy-title" class="text-lg font-bold leading-tight tracking-tight">Buy report credits</h2>
+        <p class="text-xs text-white/75">1 credit = 1 full CARFAX report · no subscription</p>
+      </div>
+      <button type="button" @click="open = false" aria-label="Close"
+        class="grid h-9 w-9 flex-none place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20">
+        <iconify-icon icon="ph:x-bold" class="block h-4 w-4"></iconify-icon>
+      </button>
+    </div>
+
+    <div class="px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
+      {# Packs normaux : 1, 3, 5 (rangés par nombre de crédits) #}
+      <fieldset>
+        <legend class="sr-only">Choose a pack</legend>
+        <div class="flex flex-col gap-2">
+          {% for p in packages %}
+          <label data-pack data-credits="{{ p.Credits }}" data-price="{{ p.Price }}" style="order: {{ p.Credits }}" @click="sel = {{ p.Credits }}"
+            :class="sel === {{ p.Credits }} ? 'border-brand-500 bg-brand-50/60 ring-4 ring-brand-500/10' : 'border-line hover:border-brand-200'"
+            class="relative flex cursor-pointer items-center gap-3 rounded-2xl border-2 px-4 py-3 transition">
+            <input type="radio" name="buy-pack" value="{{ p.Credits }}" class="sr-only" :checked="sel === {{ p.Credits }}" />
+            <span :class="sel === {{ p.Credits }} ? 'border-brand-500 bg-brand-500' : 'border-ink-300 bg-white'" class="grid h-5 w-5 flex-none place-items-center rounded-full border-2 transition">
+              <span x-show="sel === {{ p.Credits }}" class="h-2 w-2 rounded-full bg-white"></span>
+            </span>
+            <span class="min-w-0 flex-1">
+              <span class="flex flex-wrap items-center gap-2">
+                <span class="text-[15px] font-bold text-ink-900">{{ p.Credits }} report{% if p.Credits != 1 %}s{% endif %}</span>
+                {% if p.Credits == 3 %}<span class="rounded-full bg-brand-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">Recommended</span>{% endif %}
+                {% if p.Credits == 5 %}<span class="rounded-full bg-ink-900 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-300">Best value</span>{% endif %}
+              </span>
+            </span>
+            <span class="flex-none text-right">
+              {% if p.Credits > 1 %}
+              <span class="flex items-baseline justify-end gap-1">
+                <span class="text-xl font-bold text-brand-600 sm:text-2xl">{{ p.PerCredit }}</span>
+                <span class="text-[11px] font-medium text-ink-500">/ report</span>
+              </span>
+              <span class="mt-1 flex flex-wrap items-center justify-end gap-x-2 gap-y-1">
+                <span class="text-[11px] font-bold text-ink-900">{{ p.Price }} total</span>
+                {% if p.Savings %}<span class="inline-block rounded-md bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-800 ring-1 ring-amber-200">{{ p.Savings }} · {{ p.SavingsAmount }}</span>{% endif %}
+              </span>
+              {% else %}
+              <span class="block text-xl font-bold text-ink-900 sm:text-2xl">{{ p.Price }}</span>
+              <span class="mt-1 block text-[11px] font-medium text-ink-500">one-time</span>
+              {% endif %}
+            </span>
+          </label>
+          {% endfor %}
+        </div>
+      </fieldset>
+
+      <a :href="'/checkout?credits=' + sel" href="/checkout?credits=3"
+        class="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-6 py-3.5 text-[15px] font-semibold text-white shadow-[0_14px_30px_-12px_rgba(21,93,252,0.85)] ring-1 ring-inset ring-white/15 transition hover:-translate-y-0.5">
+        <span>Continue · <span class="font-bold" x-text="price">$99.90</span></span>
+        <iconify-icon icon="ph:arrow-right-bold" class="block h-4 w-4"></iconify-icon>
+      </a>
+
+      {# Aperçu pro : donner envie d'aller voir #}
+      <div class="mt-6 rounded-2xl border border-dashed border-brand-200 bg-brand-50/50 p-5">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <p class="flex items-center gap-1.5 text-sm font-semibold text-ink-900">
+              <iconify-icon icon="ph:briefcase-fill" class="block h-4 w-4 text-brand-500"></iconify-icon>Need 10 or more?
+            </p>
+            <p class="mt-0.5 text-xs text-ink-600">Pro pricing goes down to <strong class="text-brand-700">$4.99</strong> per report.</p>
+          </div>
+          <span class="flex-none rounded-full bg-amber-300 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-ink-900">Up to −90%</span>
+        </div>
+        <div class="mt-3 grid grid-cols-2 gap-1.5 text-center sm:grid-cols-5">
+          <div class="rounded-xl bg-white px-1 py-2 ring-1 ring-inset ring-line"><p class="text-[10px] font-semibold text-ink-500">10–24</p><p class="text-[15px] font-bold text-ink-900">$19.99</p><p class="text-[10px] leading-4 font-medium text-ink-400">from $199.90</p></div>
+          <div class="relative rounded-xl bg-white px-1 py-2 ring-2 ring-inset ring-brand-500"><span class="absolute -top-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-brand-500 px-1.5 py-px text-[8px] font-semibold uppercase tracking-wider text-white">Popular</span><p class="text-[10px] font-semibold text-ink-500">25–49</p><p class="text-[15px] font-bold text-brand-700">$14.99</p><p class="text-[10px] leading-4 font-medium text-ink-400">from $374.75</p></div>
+          <div class="rounded-xl bg-white px-1 py-2 ring-1 ring-inset ring-line"><p class="text-[10px] font-semibold text-ink-500">50–99</p><p class="text-[15px] font-bold text-ink-900">$12.99</p><p class="text-[10px] leading-4 font-medium text-ink-400">from $649.50</p></div>
+          <div class="rounded-xl bg-white px-1 py-2 ring-1 ring-inset ring-line"><p class="text-[10px] font-semibold text-ink-500">100–249</p><p class="text-[15px] font-bold text-ink-900">$9.99</p><p class="text-[10px] leading-4 font-medium text-ink-400">from $999.00</p></div>
+          <div class="rounded-xl bg-white px-1 py-2 ring-1 ring-inset ring-line"><p class="text-[10px] font-semibold text-ink-500">250–500</p><p class="text-[15px] font-bold text-ink-900">$4.99</p><p class="text-[10px] leading-4 font-medium text-ink-400">from $1247.50</p></div>
+        </div>
+        <p class="mt-3 flex items-start gap-1.5 text-[11px] leading-4 text-ink-500">
+          <iconify-icon icon="ph:info" class="mt-px block h-3.5 w-3.5 flex-none text-brand-500"></iconify-icon>
+          Any quantity from 10 to 500 reports. The price per report updates automatically.
+        </p>
+        <a href="/pro?credits=25"
+          class="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-ink-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-ink-700">
+          See pro pricing
+          <iconify-icon icon="ph:arrow-right-bold" class="block h-4 w-4"></iconify-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Fenêtre d'achat : pack 3 présélectionné ; le prix affiché vient de packages (data-price).
+  function buyModal() {
+    return {
+      open: false,
+      sel: 3,
+      prices: {},
+      init() {
+        this.$root.querySelectorAll('[data-pack]').forEach((el) => { this.prices[el.dataset.credits] = el.dataset.price; });
+        if (!this.prices[this.sel]) this.sel = Number(Object.keys(this.prices)[0]) || 1;
+      },
+      get price() { return this.prices[this.sel] || ''; },
+    };
+  }
+</script>

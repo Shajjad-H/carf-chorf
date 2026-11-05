@@ -1,30 +1,61 @@
 {% extends "layouts/base.html" %}
 
-{% block title %}Reports{% endblock %}
+{% block title %}My reports{% endblock %}
 
 {% block content %}
-<section class="relative isolate">
-  <div class="mx-auto max-w-3xl">
-    <a href="/dashboard" class="inline-flex items-center gap-1 text-sm font-medium text-slate-500 transition hover:text-slate-900">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="m15 18-6-6 6-6" />
-      </svg>
-      Back to dashboard
-    </a>
+<section class="mx-auto max-w-5xl" x-data="reportSearch()">
+{% include "components/account/header.html" %}
 
-    <div class="mt-4">
-      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">Your account</p>
-      <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Reports</h1>
-      <p class="mt-2 text-sm text-slate-500">All vehicle reports you've purchased.</p>
+  <p class="mt-5 text-sm text-ink-500">Every report you bought, newest first. Open them as often as you like.</p>
+
+  <div class="card mt-4 overflow-hidden">
+    <div class="flex flex-col gap-3 border-b border-line px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+      <p class="text-sm font-semibold text-ink-900">{{ order_count }} report{% if order_count != 1 %}s{% endif %}</p>
+      {% if orders %}
+      <label class="relative block sm:w-72">
+        <iconify-icon icon="ph:magnifying-glass" class="pointer-events-none absolute left-3.5 top-1/2 block h-4 w-4 -translate-y-1/2 text-ink-400"></iconify-icon>
+        <input type="search" x-model="q" placeholder="Search a car or a VIN" autocomplete="off"
+          class="field py-2.5 pl-10 text-sm" />
+      </label>
+      {% endif %}
     </div>
 
-    <div class="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div class="flex items-center justify-between gap-4 border-b border-slate-100 px-5 py-4">
-        <h2 class="text-base font-semibold text-slate-900">Report history</h2>
-        <span class="text-xs font-medium text-slate-400">{{ order_count }} report{% if order_count != 1 %}s{% endif %}</span>
-      </div>
-      {% include "components/dashboard/report_rows.html" %}
+    {% include "components/dashboard/report_rows.html" %}
+
+    <div x-show="q && !hasMatch()" x-cloak class="px-5 py-10 text-center">
+      <p class="text-sm font-semibold text-ink-900">No report matches “<span x-text="q"></span>”</p>
+      <button type="button" @click="q = ''" class="mt-2 text-sm font-semibold text-brand-700 hover:text-brand-600">Clear search</button>
     </div>
   </div>
+
+  <div class="mt-5 grid gap-3 sm:grid-cols-2">
+    <a href="/dashboard#new-report" class="card flex items-center gap-4 p-4 transition hover:border-brand-200">
+      <span class="grid h-10 w-10 flex-none place-items-center rounded-xl bg-brand-50 text-brand-600"><iconify-icon icon="ph:magnifying-glass-bold" class="block h-5 w-5"></iconify-icon></span>
+      <span class="min-w-0 flex-1"><span class="block text-sm font-semibold text-ink-900">Get a new report</span><span class="block text-xs text-ink-500">Use a credit on another car</span></span>
+      <iconify-icon icon="ph:arrow-right" class="block h-4 w-4 text-ink-400"></iconify-icon>
+    </a>
+    <a href="/contact" class="card flex items-center gap-4 p-4 transition hover:border-brand-200">
+      <span class="grid h-10 w-10 flex-none place-items-center rounded-xl bg-soft text-ink-600"><iconify-icon icon="ph:lifebuoy-bold" class="block h-5 w-5"></iconify-icon></span>
+      <span class="min-w-0 flex-1"><span class="block text-sm font-semibold text-ink-900">A report is missing?</span><span class="block text-xs text-ink-500">Contact us, we reply within one business day</span></span>
+      <iconify-icon icon="ph:arrow-right" class="block h-4 w-4 text-ink-400"></iconify-icon>
+    </a>
+  </div>
+
+  {% include "components/dashboard/pdf_download_modal.html" %}
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Filtre local de la liste (aucun appel serveur)
+  function reportSearch() {
+    return {
+      q: '',
+      hasMatch() {
+        const q = this.q.toLowerCase().trim();
+        return [...this.$root.querySelectorAll('[data-search]')].some((el) => el.dataset.search.includes(q));
+      },
+    };
+  }
+</script>
 {% endblock %}

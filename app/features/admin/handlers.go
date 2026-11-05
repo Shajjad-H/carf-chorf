@@ -4,6 +4,7 @@ package admin
 import (
 	"crypto/sha256"
 	"crypto/subtle"
+	"net"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -55,10 +56,11 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 }
 
 // LoginSubmit validates the admin key with a global failure limiter.
-func LoginSubmit(limiter *admin_auth.FailureLimiter) http.HandlerFunc {
+func LoginSubmit(limiter *admin_auth.KeyedFailureLimiter) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if limiter.Blocked() {
-			retry := int(limiter.RetryAfter().Seconds())
+		key := adminClientIP(r)
+		if limiter.Blocked(key) {
+			retry := int(limiter.RetryAfter(key).Seconds())
 			if retry < 1 {
 				retry = 1
 			}
@@ -75,14 +77,14 @@ func LoginSubmit(limiter *admin_auth.FailureLimiter) http.HandlerFunc {
 		}
 
 		if !adminKeyEqual(r.PostFormValue("admin_key"), kernel.Dashboard.AdminKey) {
-			limiter.Fail()
+			limiter.Fail(key)
 			renderAdmin(w, r, "admin/login.html", http.StatusUnauthorized, pongo2.Context{
 				"error": "Invalid admin key.",
 			})
 			return
 		}
 
-		limiter.Reset()
+		limiter.Reset(key)
 		if err := admin_auth.SetAuthenticated(w, r); err != nil {
 			simple_logger.Errorf("admin: set session: %v", err)
 			renderAdmin(w, r, "admin/login.html", http.StatusInternalServerError, pongo2.Context{
@@ -315,6 +317,13 @@ func renderAdmin(w http.ResponseWriter, r *http.Request, name string, status int
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(status)
 	_, _ = w.Write([]byte(html))
+}
+
+func adminClientIP(r *http.Request) string {
+	if host, _, err := net.SplitHostPort(r.RemoteAddr); err == nil {
+		return host
+	}
+	return r.RemoteAddr
 }
 
 func adminKeyEqual(got, want string) bool {

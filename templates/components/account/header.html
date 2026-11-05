@@ -1,0 +1,47 @@
+{# En-tête commun de l'espace client : qui est connecté + solde de crédits (sur le dashboard), puis les onglets. #}
+<header class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+  <div class="flex min-w-0 items-center gap-3 sm:gap-4">
+    <span class="grid h-11 w-11 flex-none place-items-center rounded-2xl bg-ink-900 text-base font-semibold text-white sm:h-12 sm:w-12 sm:text-lg">{{ user_initial }}</span>
+    <div class="min-w-0">
+      <h1 class="text-xl font-bold tracking-tight text-ink-900 sm:text-2xl">My dashboard</h1>
+      <p class="truncate text-xs text-ink-500 sm:text-sm">{{ current_user_email }}</p>
+    </div>
+  </div>
+
+  {% if current_path == '/dashboard' %}
+  {# Solde de crédits : l'info clé, mise en avant avec l'achat à côté #}
+  <div class="relative isolate flex items-center gap-3.5 overflow-hidden rounded-2xl py-3 pl-3.5 pr-3 text-white shadow-[0_18px_36px_-20px_rgba(15,63,203,0.9)] sm:gap-4 lg:min-w-[24rem]">
+    <span aria-hidden="true" class="absolute inset-0 -z-10 bg-[linear-gradient(135deg,#0A2A8F_0%,#0F3FCB_45%,#155DFC_100%)]"></span>
+    <span aria-hidden="true" class="absolute inset-0 -z-10 bg-[radial-gradient(60%_90%_at_100%_0%,rgba(141,180,255,0.35),transparent_70%)]"></span>
+    <span class="grid h-11 w-11 flex-none place-items-center rounded-xl bg-white/15 ring-1 ring-inset ring-white/20">
+      <iconify-icon icon="ph:coins-bold" class="block h-5 w-5 {% if credits > 0 %}text-amber-300{% else %}text-white/70{% endif %}"></iconify-icon>
+    </span>
+    <div class="min-w-0 flex-1">
+      <p class="flex items-baseline gap-1.5">
+        <span class="text-[1.9rem] font-bold leading-none tabular-nums">{{ credits }}</span>
+        <span class="text-sm font-medium text-white/85">credit{% if credits != 1 %}s{% endif %} left</span>
+      </p>
+      <p class="mt-1 truncate text-xs text-white/65">{% if credits > 0 %}Enough for {{ credits }} full report{% if credits != 1 %}s{% endif %}{% else %}1 credit = 1 full report{% endif %}</p>
+    </div>
+    <a href="/checkout" @click.prevent="$dispatch('open-buy')"
+      class="inline-flex flex-none items-center gap-1.5 rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-brand-700 shadow-sm transition hover:bg-brand-50">
+      <iconify-icon icon="ph:plus-bold" class="block h-3.5 w-3.5"></iconify-icon>Buy
+    </a>
+  </div>
+  {% endif %}
+</header>
+
+<nav class="mt-5 grid grid-cols-3 gap-1 rounded-2xl bg-white p-1 shadow-soft sm:inline-flex" style="border:1px solid rgba(91,102,120,0.35);" aria-label="Dashboard">
+  <a href="/dashboard" {% if current_path == '/dashboard' %}aria-current="page"{% endif %}
+    class="flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold transition sm:justify-start {% if current_path == '/dashboard' %}bg-brand-50 text-brand-700{% else %}text-ink-500 hover:bg-soft hover:text-ink-900{% endif %}">
+    <iconify-icon icon="ph:squares-four-bold" class="hidden h-4 w-4 sm:block {% if current_path == '/dashboard' %}text-brand-500{% endif %}"></iconify-icon>Dashboard
+  </a>
+  <a href="/dashboard/orders" {% if current_path == '/dashboard/orders' %}aria-current="page"{% endif %}
+    class="flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold transition sm:justify-start {% if current_path == '/dashboard/orders' %}bg-brand-50 text-brand-700{% else %}text-ink-500 hover:bg-soft hover:text-ink-900{% endif %}">
+    <iconify-icon icon="ph:files-bold" class="hidden h-4 w-4 sm:block {% if current_path == '/dashboard/orders' %}text-brand-500{% endif %}"></iconify-icon>My reports
+  </a>
+  <a href="/dashboard/transactions" {% if current_path == '/dashboard/transactions' %}aria-current="page"{% endif %}
+    class="flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold transition sm:justify-start {% if current_path == '/dashboard/transactions' %}bg-brand-50 text-brand-700{% else %}text-ink-500 hover:bg-soft hover:text-ink-900{% endif %}">
+    <iconify-icon icon="ph:receipt-bold" class="hidden h-4 w-4 sm:block {% if current_path == '/dashboard/transactions' %}text-brand-500{% endif %}"></iconify-icon>Payments
+  </a>
+</nav>

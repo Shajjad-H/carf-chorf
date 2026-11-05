@@ -27,11 +27,17 @@ const (
 
 func LoginPage(w http.ResponseWriter, r *http.Request) {
 	next := safeNext(r.URL.Query().Get("next"))
+	if redirectIfAuthenticated(w, r, next) {
+		return
+	}
 	renderEmailForm(w, r, loginTemplate, "", next, http.StatusOK, "")
 }
 
 func LoginSubmit(w http.ResponseWriter, r *http.Request) {
 	next := safeNext(r.PostFormValue("next"))
+	if redirectIfAuthenticated(w, r, next) {
+		return
+	}
 	email := normalizeEmail(r.PostFormValue("email"))
 	if err := validateEmail(email); err != nil {
 		renderEmailForm(w, r, loginTemplate, email, next, http.StatusUnprocessableEntity, err.Error())
@@ -44,17 +50,15 @@ func LoginSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := user_service.FindByEmail(email)
-	if err != nil {
-		simple_logger.Errorf("auth: find user: %v", err)
+	if _, err := user_service.FindOrCreateByEmail(email); err != nil {
+		simple_logger.Errorf("auth: find or create user: %v", err)
 		renderEmailForm(w, r, loginTemplate, email, next, http.StatusInternalServerError, "Something went wrong. Please try again.")
 		return
 	}
 
 	_ = auth_service.ClearChallenge(w, r)
 
-	send := user != nil && user.IsActive
-	if err := beginChallenge(w, r, IntentLogin, email, next, send); err != nil {
+	if err := beginChallenge(w, r, IntentLogin, email, next, true); err != nil {
 		simple_logger.Errorf("auth: begin login challenge: %v", err)
 		renderEmailForm(w, r, loginTemplate, email, next, http.StatusInternalServerError, "We could not send the code. Please try again.")
 		return
@@ -65,11 +69,17 @@ func LoginSubmit(w http.ResponseWriter, r *http.Request) {
 
 func GetStartedPage(w http.ResponseWriter, r *http.Request) {
 	next := safeNext(r.URL.Query().Get("next"))
+	if redirectIfAuthenticated(w, r, next) {
+		return
+	}
 	renderEmailForm(w, r, getStartedTemplate, "", next, http.StatusOK, "")
 }
 
 func GetStartedSubmit(w http.ResponseWriter, r *http.Request) {
 	next := safeNext(r.PostFormValue("next"))
+	if redirectIfAuthenticated(w, r, next) {
+		return
+	}
 	email := normalizeEmail(r.PostFormValue("email"))
 	if err := validateEmail(email); err != nil {
 		renderEmailForm(w, r, getStartedTemplate, email, next, http.StatusUnprocessableEntity, err.Error())
@@ -123,7 +133,7 @@ func ResendOTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	flashes_service.AddFlash(w, r, "success", "If an account exists with that email, a new code has been sent.")
+	flashes_service.AddFlash(w, r, "success", "A new code has been sent.")
 	http.Redirect(w, r, "/otp", http.StatusSeeOther)
 }
 
@@ -171,14 +181,8 @@ func Verify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if user == nil {
-		if challenge.Intent != IntentRegister {
-			_ = auth_service.ClearChallenge(w, r)
-			flashes_service.AddFlash(w, r, "error", "We could not verify that code. Please try again.")
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
-			return
-		}
-
+	created := user == nil
+	if created {
 		user, err = user_service.Create(challenge.Email)
 		if err != nil {
 			simple_logger.Errorf("auth: create user: %v", err)
@@ -204,7 +208,7 @@ func Verify(w http.ResponseWriter, r *http.Request) {
 	}
 
 	message := "Welcome back!"
-	if challenge.Intent == IntentRegister {
+	if challenge.Intent == IntentRegister || created {
 		message = "Welcome! Your account is ready."
 	}
 	flashes_service.AddFlash(w, r, "success", message)
@@ -218,6 +222,17 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 
 	flashes_service.AddFlash(w, r, "success", "You have been logged out.")
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func redirectIfAuthenticated(w http.ResponseWriter, r *http.Request, next string) bool {
+	if !auth_service.IsAuthenticated(r) {
+		return false
+	}
+	if next == "/login" || next == "/getstarted" || next == "/otp" {
+		next = "/dashboard"
+	}
+	http.Redirect(w, r, next, http.StatusSeeOther)
+	return true
 }
 
 func renderEmailForm(w http.ResponseWriter, r *http.Request, template, email, next string, status int, errMsg string) {

@@ -1,34 +1,61 @@
 {% extends "emails/layout.html" %}
 
-{% block title %}Your vehicle report is ready · Carf Chorf{% endblock %}
-{% block eyebrow %}Your report is ready{% endblock %}
-{% block heading %}Your vehicle report is ready{% endblock %}
+{% block title %}Your vehicle report is ready{% endblock %}
+{% block eyebrow %}Report ready{% endblock %}
+{% block heading %}Your report is ready{% endblock %}
 
 {% block content %}
-<p style="margin:0 0 24px;">{% if vehicle %}Your CARFAX report for <strong style="color:#0f172a;">{{ vehicle }}</strong> is ready to view.{% else %}Your CARFAX report is ready to view.{% endif %}</p>
+<p style="margin:0 0 22px;">It’s saved in your account, open it anytime.</p>
 
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 26px;background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;">
+<!-- Fiche véhicule -->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0B1220" style="margin:0 0 24px;background-color:#0B1220;border-radius:18px;">
   <tr>
-    <td style="padding:16px 18px;">
-      <p style="margin:0 0 4px;color:#94a3b8;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;">VIN</p>
-      <p style="margin:0;color:#0f172a;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;font-size:15px;line-height:24px;font-weight:600;letter-spacing:0.08em;">{{ vin }}</p>
+    <td style="padding:20px 22px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td valign="middle">
+            <p style="margin:0;color:#8EA3C7;font-size:11px;line-height:16px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;">CARFAX report</p>
+          </td>
+          <td valign="middle" align="right">
+            <span style="display:inline-block;background-color:#0E3B2A;color:#4ADE80;border-radius:999px;padding:4px 10px;font-size:11px;line-height:14px;font-weight:700;white-space:nowrap;">&#9679; Ready</span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="padding-top:6px;">
+            <p class="vehicle-name" style="margin:0;color:#FFFFFF;font-size:16px;line-height:22px;font-weight:700;">{% if vehicle %}{{ vehicle }}{% else %}Your vehicle{% endif %}</p>
+          </td>
+        </tr>
+      </table>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;">
+        <tr>
+          <td style="border-top:1px solid #1E2A40;padding-top:14px;">
+            <span style="color:#8EA3C7;font-size:11px;line-height:16px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;">VIN&nbsp;&nbsp;</span>
+            <span style="color:#E2E8F0;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;font-size:14px;line-height:20px;font-weight:600;letter-spacing:0.06em;white-space:nowrap;">{{ vin }}</span>
+          </td>
+        </tr>
+      </table>
     </td>
   </tr>
 </table>
 
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
+<!-- Bouton -->
+<table role="presentation" class="email-cta" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
   <tr>
-    <td class="email-cta" align="center" bgcolor="#4f46e5" style="background-color:#4f46e5;border-radius:12px;">
-      <a href="{{ report_url }}" style="display:inline-block;padding:15px 30px;color:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:20px;font-weight:700;text-decoration:none;">View your report</a>
+    <td align="center" bgcolor="#155DFC" style="background-color:#155DFC;border-radius:14px;box-shadow:0 10px 24px -10px rgba(21,93,252,0.7);">
+      <a href="{{ report_url }}" style="display:inline-block;padding:15px 30px;color:#FFFFFF;font-size:15px;line-height:20px;font-weight:700;text-decoration:none;">View my report &rarr;</a>
     </td>
   </tr>
 </table>
 
-<p style="margin:0 0 24px;color:#64748b;font-size:14px;line-height:22px;">If the button doesn’t work, copy and paste this link into your browser:<br><a href="{{ report_url }}" style="color:#4f46e5;word-break:break-all;">{{ report_url }}</a></p>
-
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f8fafc;border-left:3px solid #a5b4fc;border-radius:0 10px 10px 0;">
+<!-- Contenu du rapport -->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
-    <td style="padding:14px 16px;color:#64748b;font-size:14px;line-height:22px;">Keep this link private. Anyone with it can view your report.</td>
+    <td class="email-stack" style="padding:0 0 8px;color:#334155;font-size:14px;line-height:20px;"><span style="color:#079455;font-weight:800;">&#10003;</span>&nbsp; Accidents &amp; damage</td>
+    <td class="email-stack" style="padding:0 0 8px;color:#334155;font-size:14px;line-height:20px;"><span style="color:#079455;font-weight:800;">&#10003;</span>&nbsp; Owners &amp; title</td>
+    <td class="email-stack" style="padding:0 0 8px;color:#334155;font-size:14px;line-height:20px;"><span style="color:#079455;font-weight:800;">&#10003;</span>&nbsp; Mileage &amp; service</td>
   </tr>
 </table>
+
 {% endblock %}
+
+{% block stub %}<strong style="color:#0B1220;">Keep this link private:</strong> anyone with it can open your report.{% endblock %}

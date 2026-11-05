@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"carf-chorf.com/app/app/domaine"
+	"carf-chorf.com/app/app/features/checkout"
 	"carf-chorf.com/app/app/features/vehicle"
 	auth_service "carf-chorf.com/app/app/services/auth"
 	"carf-chorf.com/app/app/services/carbpi_service"
@@ -13,6 +14,7 @@ import (
 	"carf-chorf.com/app/app/services/transaction_service"
 	"carf-chorf.com/app/app/services/user_service"
 	dto "carf-chorf.com/app/pkg/dto_validations"
+	"carf-chorf.com/app/pkg/formparse"
 	"carf-chorf.com/app/pkg/renderer"
 	"carf-chorf.com/app/pkg/response"
 	"carf-chorf.com/app/pkg/simple_logger"
@@ -47,10 +49,11 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	}
 
 	renderer.Pongo(w, r, indexTemplate, http.StatusOK, pongo2.Context{
-		"credits": user.Credits,
-		"email":   user.Email,
-		"states":  vehicle.States(),
-		"orders":  orders,
+		"credits":  user.Credits,
+		"email":    user.Email,
+		"states":   vehicle.States(),
+		"orders":   orders,
+		"packages": checkout.PackageViews(),
 	})
 }
 
@@ -122,7 +125,7 @@ func Lookup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := r.ParseForm(); err != nil {
+	if err := formparse.Parse(r); err != nil {
 		response.Error(w, http.StatusBadRequest, "Invalid form submission.")
 		return
 	}
@@ -165,7 +168,7 @@ func Purchase(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := r.ParseForm(); err != nil {
+	if err := formparse.Parse(r); err != nil {
 		response.Error(w, http.StatusBadRequest, "Invalid form submission.")
 		return
 	}

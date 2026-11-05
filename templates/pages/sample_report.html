@@ -1,0 +1,159 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Sample vehicle report{% endblock %}
+
+{% block content %}
+<section class="mx-auto max-w-6xl" x-data="sampleReport()">
+
+  {# En-tête #}
+  <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+    <div class="max-w-2xl">
+      <p class="eyebrow">Sample report</p>
+      <h1 class="mt-3 text-[2rem] font-bold leading-tight tracking-tight text-ink-900 sm:text-4xl">See exactly what you get.</h1>
+      <p class="mt-3 text-base leading-7 text-ink-600">A real vehicle history report, anonymized: the VIN, make and model, title numbers, businesses and cities are hidden. Scroll inside the report to explore it.</p>
+    </div>
+    <div class="flex flex-col gap-2.5 sm:flex-row lg:flex-none">
+      <a href="/#lookup" class="btn-primary">
+        Check my VIN
+        <iconify-icon icon="ph:arrow-right" class="block h-4 w-4"></iconify-icon>
+      </a>
+      <a href="/pricing" class="btn-secondary">See pricing</a>
+    </div>
+  </div>
+
+  <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start">
+
+    {# Fenêtre du rapport : on scrolle dans l'iframe, pas dans la page #}
+    <div class="min-w-0 overflow-hidden rounded-[1.75rem] border border-line bg-white shadow-lift">
+      <div class="flex items-center gap-3 border-b border-line bg-soft/70 px-4 py-3">
+        <span class="hidden gap-1.5 sm:flex" aria-hidden="true">
+          <span class="h-2.5 w-2.5 rounded-full bg-ink-300/70"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-ink-300/70"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-ink-300/70"></span>
+        </span>
+        <span class="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-line bg-white px-3 py-1.5 text-xs text-ink-500">
+          <iconify-icon icon="ph:lock-simple" class="block h-3.5 w-3.5 flex-none text-emerald-600"></iconify-icon>
+          <span class="truncate">Vehicle history report, 2007 Example Vehicle</span>
+          <span class="ml-auto flex-none rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-800">Anonymized</span>
+        </span>
+        <a href="/public/sample-report.html" target="_blank" rel="noopener" class="grid h-8 w-8 flex-none place-items-center rounded-full text-ink-500 transition hover:bg-white hover:text-ink-900" aria-label="Open the sample report in a new tab" title="Open full screen">
+          <iconify-icon icon="ph:arrows-out-simple-bold" class="block h-4 w-4"></iconify-icon>
+        </a>
+      </div>
+
+      {# Raccourcis vers les sections du rapport #}
+      <nav class="flex gap-2 overflow-x-auto border-b border-line px-4 py-2.5 text-sm" aria-label="Report sections">
+        <button type="button" @click="go('summary-section')" class="flex-none rounded-full px-3 py-1.5 font-medium text-ink-600 transition hover:bg-brand-50 hover:text-brand-700">Summary</button>
+        <button type="button" @click="go('accident-damage-section')" class="flex-none rounded-full px-3 py-1.5 font-medium text-ink-600 transition hover:bg-brand-50 hover:text-brand-700">Accidents</button>
+        <button type="button" @click="go('title-history-section')" class="flex-none rounded-full px-3 py-1.5 font-medium text-ink-600 transition hover:bg-brand-50 hover:text-brand-700">Title</button>
+        <button type="button" @click="go('ownership-history-section', 'detailed-history-section')" class="flex-none rounded-full px-3 py-1.5 font-medium text-ink-600 transition hover:bg-brand-50 hover:text-brand-700">Owners</button>
+        <button type="button" @click="go('history-based-value-section')" class="flex-none rounded-full px-3 py-1.5 font-medium text-ink-600 transition hover:bg-brand-50 hover:text-brand-700">Value</button>
+        <button type="button" @click="go('detailed-history-section')" class="flex-none rounded-full px-3 py-1.5 font-medium text-ink-600 transition hover:bg-brand-50 hover:text-brand-700">Full history</button>
+      </nav>
+
+      <div class="relative">
+        <iframe x-ref="report" src="/public/sample-report.html" title="Sample vehicle history report"
+          class="block h-[70svh] min-h-[480px] w-full bg-white lg:h-[78vh]"></iframe>
+        {# Indication de défilement, disparaît au premier scroll dans le rapport #}
+        <div x-show="!scrolled" x-transition.opacity
+          class="pointer-events-none absolute inset-x-0 bottom-4 flex justify-center">
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-ink-900/85 px-3.5 py-2 text-xs font-medium text-white shadow-lift backdrop-blur">
+            <iconify-icon icon="ph:mouse-scroll" class="block h-4 w-4"></iconify-icon>
+            Scroll inside the report
+          </span>
+        </div>
+      </div>
+    </div>
+
+    {# Ce que montre l'exemple #}
+    <aside class="space-y-4 lg:sticky lg:top-28">
+      <div class="rounded-[1.75rem] border border-line bg-white p-5">
+        <p class="text-sm font-semibold text-ink-900">What this sample shows</p>
+        <ul class="mt-3 divide-y divide-line text-sm">
+          <li>
+            <button type="button" @click="go('accident-damage-section')" class="flex w-full items-center gap-3 py-3 text-left">
+              <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-amber-50 text-amber-600"><iconify-icon icon="ph:warning" class="block h-4 w-4"></iconify-icon></span>
+              <span class="flex-1 text-ink-700">Accident reported</span>
+              <iconify-icon icon="ph:caret-right" class="block h-4 w-4 text-ink-300"></iconify-icon>
+            </button>
+          </li>
+          <li>
+            <button type="button" @click="go('ownership-history-section', 'detailed-history-section')" class="flex w-full items-center gap-3 py-3 text-left">
+              <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-brand-50 text-brand-600"><iconify-icon icon="ph:users" class="block h-4 w-4"></iconify-icon></span>
+              <span class="flex-1 text-ink-700">3 previous owners</span>
+              <iconify-icon icon="ph:caret-right" class="block h-4 w-4 text-ink-300"></iconify-icon>
+            </button>
+          </li>
+          <li>
+            <button type="button" @click="go('detailed-history-section')" class="flex w-full items-center gap-3 py-3 text-left">
+              <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-brand-50 text-brand-600"><iconify-icon icon="ph:wrench" class="block h-4 w-4"></iconify-icon></span>
+              <span class="flex-1 text-ink-700">52 service records</span>
+              <iconify-icon icon="ph:caret-right" class="block h-4 w-4 text-ink-300"></iconify-icon>
+            </button>
+          </li>
+          <li>
+            <button type="button" @click="go('history-based-value-section')" class="flex w-full items-center gap-3 py-3 text-left">
+              <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-emerald-50 text-emerald-600"><iconify-icon icon="ph:currency-dollar" class="block h-4 w-4"></iconify-icon></span>
+              <span class="flex-1 text-ink-700">Estimated value</span>
+              <iconify-icon icon="ph:caret-right" class="block h-4 w-4 text-ink-300"></iconify-icon>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <div class="relative isolate overflow-hidden rounded-[1.75rem] bg-[linear-gradient(135deg,#0B1220_0%,#0A3AA8_55%,#155DFC_100%)] p-5 text-white shadow-lift">
+        <span aria-hidden="true" class="pointer-events-none absolute -right-16 -top-16 -z-10 h-40 w-40 rounded-full bg-white/10 blur-2xl"></span>
+        <span aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.04)_0_1px,transparent_1px_8px)]"></span>
+        <div class="flex items-center justify-between gap-3">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/60">Next step</p>
+          {% for p in packages %}{% if p.Credits == 5 %}
+          <span class="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-semibold text-white/90 ring-1 ring-white/15">From {{ p.PerCredit }}</span>
+          {% endif %}{% endfor %}
+        </div>
+        <p class="mt-3 text-xl font-bold leading-snug tracking-tight">Get this report for the car you're checking.</p>
+        <p class="mt-2 text-sm leading-6 text-white/70">Start with a free VIN check. No account needed.</p>
+        <a href="/#lookup" class="mt-5 flex items-center justify-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-semibold text-brand-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-brand-50">
+          <iconify-icon icon="ph:magnifying-glass-bold" class="block h-4 w-4"></iconify-icon>
+          Check my VIN
+        </a>
+      </div>
+
+      <p class="px-1 text-xs leading-5 text-ink-500">Each report depends on the records available for the vehicle. This sample is shown for illustration only.</p>
+    </aside>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Fait défiler l'iframe (même domaine) vers une section du rapport, sous son en-tête fixe.
+  function sampleReport() {
+    return {
+      scrolled: false,
+      init() {
+        const frame = this.$refs.report;
+        frame.addEventListener('load', () => {
+          try {
+            frame.contentWindow.addEventListener('scroll', () => { this.scrolled = true; }, { passive: true, once: true });
+          } catch (e) { this.scrolled = true; }
+        });
+      },
+      // fallback : section de repli si la section visée est masquée (ex. tableau des propriétaires sur mobile)
+      go(id, fallback) {
+        const frame = this.$refs.report;
+        this.scrolled = true;
+        try {
+          const win = frame.contentWindow;
+          let el = win.document.getElementById(id);
+          if ((!el || !el.offsetParent) && fallback) el = win.document.getElementById(fallback);
+          if (!el) { frame.src = '/public/sample-report.html#' + id; return; }
+          const top = el.getBoundingClientRect().top + win.scrollY - 76;
+          win.scrollTo({ top: top, behavior: 'smooth' });
+        } catch (e) {
+          frame.src = '/public/sample-report.html#' + id;
+        }
+      },
+    };
+  }
+</script>
+{% endblock %}

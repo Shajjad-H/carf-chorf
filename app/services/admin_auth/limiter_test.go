@@ -35,3 +35,24 @@ func TestFailureLimiter(t *testing.T) {
 		t.Fatal("limiter should be clear after Reset")
 	}
 }
+
+func TestKeyedFailureLimiterIsolatesKeys(t *testing.T) {
+	now := time.Date(2026, 1, 1, 12, 0, 0, 0, time.UTC)
+	limiter := NewKeyedFailureLimiter(5, 5*time.Minute)
+	limiter.now = func() time.Time { return now }
+
+	for i := 0; i < 5; i++ {
+		limiter.Fail("ip-a")
+	}
+	if !limiter.Blocked("ip-a") {
+		t.Fatal("ip-a should be blocked")
+	}
+	if limiter.Blocked("ip-b") {
+		t.Fatal("ip-b should not be blocked by ip-a failures")
+	}
+
+	limiter.Reset("ip-a")
+	if limiter.Blocked("ip-a") {
+		t.Fatal("ip-a should be clear after Reset")
+	}
+}

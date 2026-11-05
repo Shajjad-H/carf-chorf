@@ -11,7 +11,7 @@ import (
 // CreatePurchase validates the selected package, links/creates the buyer, and
 // creates a pending transaction ready for the payment page.
 func CreatePurchase(current *auth_service.State, req PurchaseRequest) (*domaine.Transaction, error) {
-	pkg, ok := Find(req.Credits)
+	amount, ok := PurchaseAmountCents(req.Credits)
 	if !ok {
 		return nil, ErrInvalidPackage
 	}
@@ -34,7 +34,7 @@ func CreatePurchase(current *auth_service.State, req PurchaseRequest) (*domaine.
 		return nil, err
 	}
 
-	return transaction_service.Create(user.ID, cacheRecordID, pkg.Credits, pkg.AmountCents)
+	return transaction_service.Create(user.ID, cacheRecordID, req.Credits, amount)
 }
 
 // resolveCacheRecordID returns the optional vehicle record. Guest checkout

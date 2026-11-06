@@ -169,3 +169,25 @@ func (d *dashboardConfig) Validate() error {
 		),
 	)
 }
+
+func (p *proPricingConfig) Validate() error {
+	if len(p.Tiers) == 0 {
+		return errors.New("at least one pro pricing tier is required")
+	}
+
+	var previous uint
+	for i, tier := range p.Tiers {
+		if tier.MinReports == 0 {
+			return fmt.Errorf("tiers[%d].min_reports must be greater than zero", i)
+		}
+		if tier.PerReportCents == 0 {
+			return fmt.Errorf("tiers[%d].per_report_cents must be greater than zero", i)
+		}
+		if i > 0 && tier.MinReports <= previous {
+			return fmt.Errorf("tiers[%d].min_reports must be strictly increasing", i)
+		}
+		previous = tier.MinReports
+	}
+
+	return nil
+}

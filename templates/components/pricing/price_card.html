@@ -1,0 +1,89 @@
+{# Card compacte — home. Mobile : une ligne cliquable. md+ : carte verticale avec CTA. #}
+{% if p.Credits == 5 %}
+{# ===== Pack 5 : « Black pack » (version compacte, home) ===== #}
+<a href="{% if authenticated %}/checkout?credits={{ p.Credits }}{% else %}/#lookup{% endif %}" aria-label="Choose {{ p.Name }} for {{ p.Price }}"
+  class="group relative isolate grid grid-cols-[minmax(0,1fr)_auto_20px] items-center gap-x-4 overflow-hidden rounded-2xl bg-ink-800 px-5 py-5 text-white shadow-[0_22px_44px_-24px_rgba(11,18,32,0.85)] ring-1 ring-white/15 transition duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/50 md:flex md:flex-col md:items-stretch md:gap-0 md:p-6 md:hover:-translate-y-1">
+  <span aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(120%_80%_at_100%_0%,rgba(255,255,255,0.14),transparent_55%)]"></span>
+  <span aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.03)_0_1px,transparent_1px_7px)]"></span>
+  <span aria-hidden="true" class="pointer-events-none absolute -inset-y-12 left-0 -z-10 w-1/3 -translate-x-full rotate-12 bg-gradient-to-r from-transparent via-white/15 to-transparent transition duration-700 ease-out group-hover:translate-x-[420%] motion-reduce:hidden"></span>
+
+  <div class="min-w-0">
+    <p class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[15px] font-semibold md:text-base">
+      {{ p.Name }}
+      <span class="rounded-full bg-gradient-to-r from-amber-200 to-amber-400 px-2 py-0.5 text-[11px] font-bold text-ink-900">Best value</span>
+    </p>
+    <p class="mt-2.5 flex flex-wrap items-center gap-1.5 text-[13px] text-white/60 tabular-nums md:hidden">
+      {{ p.Price }} total
+      {% if p.Savings %}<span class="rounded-md bg-red-500 px-1.5 py-0.5 text-xs font-semibold text-white">{{ p.Savings }} · <span class="font-bold">{{ p.SavingsAmount }}</span></span>{% endif %}
+    </p>
+  </div>
+
+  <div class="text-right md:mt-4 md:flex md:items-baseline md:gap-1.5 md:text-left">
+    <p class="text-2xl font-extrabold leading-none tracking-tight tabular-nums md:text-[40px]">{{ p.PerCredit }}</p>
+    <p class="mt-1 text-xs text-white/55 md:mt-0 md:text-sm">/ report</p>
+  </div>
+
+  <iconify-icon icon="ph:caret-right-bold" aria-hidden="true" class="block h-5 w-5 text-amber-300 md:hidden"></iconify-icon>
+
+  <p class="hidden md:mt-2.5 md:flex md:flex-wrap md:items-center md:gap-2 md:text-sm md:text-white/60 md:tabular-nums">
+    <span class="font-semibold text-white">{{ p.Price }} total</span>
+    {% if p.Savings %}<span class="rounded-md bg-red-500 px-2 py-0.5 text-xs font-semibold text-white">{{ p.Savings }} · <span class="font-bold">{{ p.SavingsAmount }}</span></span>{% endif %}
+  </p>
+
+  <span class="hidden md:mt-5 md:flex md:items-center md:justify-center md:rounded-full md:bg-white md:px-5 md:py-3 md:text-sm md:font-semibold md:text-ink-900 md:transition md:group-hover:bg-amber-200">
+    Get {{ p.Credits }} reports
+  </span>
+
+  <p class="hidden md:mt-3 md:flex md:items-center md:justify-center md:gap-1.5 md:text-xs md:text-amber-200">
+    <iconify-icon icon="ph:crown-simple-fill" class="block h-3.5 w-3.5"></iconify-icon>
+    Lowest price per report · Valid 4 months
+  </p>
+</a>
+{% else %}
+{# Card compacte — home. Mobile : une ligne cliquable. md+ : carte verticale avec CTA. #}
+<a href="{% if authenticated %}/checkout?credits={{ p.Credits }}{% else %}/#lookup{% endif %}" aria-label="Choose {{ p.Name }} for {{ p.Price }}"
+  class="group relative grid grid-cols-[minmax(0,1fr)_auto_20px] items-center gap-x-4 rounded-2xl px-5 py-5 transition duration-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/25 md:flex md:flex-col md:items-stretch md:gap-0 md:p-6 {% if p.Credits == 3 %}border-2 border-brand-500 bg-brand-50 pt-6 shadow-[0_22px_44px_-26px_rgba(21,93,252,0.55)] md:pt-8{% elif p.Credits == 1 %}border border-brand-300 bg-white shadow-soft ring-1 ring-brand-100 hover:border-brand-400{% else %}border border-line bg-white shadow-soft hover:border-brand-200{% endif %}">
+
+  {% if p.Credits == 3 %}
+  <span class="absolute -top-3 left-4 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-brand-500 px-3 py-1 text-xs font-semibold text-white shadow-[0_8px_18px_-8px_rgba(21,93,252,0.8)] md:left-6">
+    <iconify-icon icon="ph:star-fill" class="block h-3 w-3"></iconify-icon>
+    {% if p.Badge %}{{ p.Badge }}{% else %}Recommended pack{% endif %}
+  </span>
+  {% endif %}
+
+  <div class="min-w-0">
+    <p class="flex flex-wrap items-center gap-2 text-[15px] font-semibold text-ink-900 md:text-base">
+      {{ p.Name }}
+      {% if p.Credits == 5 %}<span class="rounded-full bg-brand-500 px-2 py-0.5 text-[11px] font-semibold text-white">Best value</span>{% endif %}
+    </p>
+    {# Ligne d'infos, mobile uniquement #}
+    <p class="mt-2 flex flex-wrap items-center gap-1.5 text-[13px] text-ink-500 tabular-nums md:hidden">
+      {% if p.Credits > 1 %}{{ p.Price }} total{% else %}Single report{% endif %}
+      {% if p.Savings %}<span class="rounded-md px-1.5 py-0.5 text-xs font-semibold {% if p.Credits == 5 %}bg-red-500 text-white{% else %}bg-amber-100 text-orange-800{% endif %}">{{ p.Savings }} · <span class="font-bold">{{ p.SavingsAmount }}</span></span>{% endif %}
+    </p>
+  </div>
+
+  <div class="text-right md:mt-4 md:flex md:items-baseline md:gap-1.5 md:text-left">
+    <p class="text-2xl font-extrabold leading-none tracking-tight tabular-nums md:text-[40px] {% if p.Credits == 3 %}text-brand-600{% else %}text-ink-900{% endif %}">{{ p.PerCredit }}</p>
+    <p class="mt-1 text-xs text-ink-500 md:mt-0 md:text-sm">{% if p.Credits > 1 %}/ report{% else %}one-time{% endif %}</p>
+  </div>
+
+  <iconify-icon icon="ph:caret-right-bold" aria-hidden="true" class="block h-5 w-5 text-brand-500 md:hidden"></iconify-icon>
+
+  {# Infos + CTA, desktop uniquement #}
+  <p class="hidden md:mt-2.5 md:flex md:flex-wrap md:items-center md:gap-2 md:text-sm md:text-ink-500 md:tabular-nums">
+    {% if p.Credits > 1 %}<span class="font-semibold text-ink-900">{{ p.Price }} total</span>{% else %}<span class="font-semibold text-ink-900">Single report</span>{% endif %}
+    {% if p.Savings %}<span class="rounded-md px-2 py-0.5 text-xs font-semibold {% if p.Credits == 5 %}bg-red-500 text-white{% else %}bg-amber-100 text-orange-800 ring-1 ring-amber-300{% endif %}">{{ p.Savings }} · <span class="font-bold">{{ p.SavingsAmount }}</span></span>{% endif %}
+  </p>
+
+  <span class="hidden md:mt-5 md:flex md:items-center md:justify-center md:rounded-full md:px-5 md:py-3 md:text-sm md:font-semibold md:transition {% if p.Credits == 3 %}md:bg-brand-500 md:text-white md:shadow-[0_12px_28px_-10px_rgba(21,93,252,0.65)] md:group-hover:bg-brand-600{% elif p.Credits == 1 %}md:border md:border-brand-200 md:bg-brand-50 md:text-brand-700 md:group-hover:border-brand-400 md:group-hover:bg-brand-100{% else %}md:border md:border-ink-900 md:bg-ink-900 md:text-white md:group-hover:bg-ink-800{% endif %}">
+    Get {{ p.Credits }} report{% if p.Credits > 1 %}s{% endif %}
+  </span>
+
+  <p class="hidden md:mt-3 md:flex md:items-center md:justify-center md:gap-1.5 md:text-xs md:text-ink-500">
+    <iconify-icon icon="ph:calendar-check" class="block h-3.5 w-3.5"></iconify-icon>
+    Valid 4 months
+  </p>
+</a>
+
+{% endif %}

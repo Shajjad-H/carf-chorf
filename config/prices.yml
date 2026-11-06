@@ -1,15 +1,14 @@
 packages:
+  - credits: 3
+    amount_cents: 9990
+    name: "3 Carfax Reports"
+    description: "Best for comparing."
+    badge: "Recommended pack"
   - credits: 1
-    amount_cents: 1900
+    amount_cents: 4999
     name: "1 Carfax Report"
-    description: "One CARFAX report credit."
-  - credits: 2
-    amount_cents: 3400
-    name: "2 Carfax Reports"
-    description: "Two credits at a lower per-report price."
-    badge: "Popular"
-  - credits: 4
-    amount_cents: 5900
-    name: "4 Carfax Reports"
-    description: "Four credits, our best per-report value."
-    badge: "Best value"
+    description: "Know everything."
+  - credits: 5
+    amount_cents: 13499
+    name: "5 Carfax Reports"
+    description: "Compare before you choose."

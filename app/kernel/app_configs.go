@@ -10,6 +10,7 @@ var (
 	Mail           mailConfig
 	Turnstile      turnstileConfig
 	Prices         pricesConfig
+	ProPricing     proPricingConfig
 	PayPal         paypalConfig
 	ReportStorage  reportStorageConfig
 	Dashboard      dashboardConfig
@@ -32,6 +33,7 @@ func Init() {
 	config_loader.Register("MailConfig", &Mail)
 	config_loader.Register("TurnstileConfig", &Turnstile)
 	config_loader.RegisterYAML("PricesConfig", "config/prices.yml", &Prices)
+	config_loader.RegisterYAML("ProPricingConfig", "config/pro_pricing.yml", &ProPricing)
 	config_loader.Register("PayPalConfig", &PayPal)
 	config_loader.Register("ReportStorageConfig", &ReportStorage)
 	// config_loader.Register("StorageConfig", &Storage)
@@ -61,8 +63,9 @@ type (
 		// build absolute asset URLs for contexts that can't resolve relative
 		// paths — namely the logo in transactional emails, since mail clients
 		// load images straight from the public internet, not from this server.
-		Domain        string `env:"APP_DOMAIN"`
-		SessionSecret string `env:"SESSION_SECRET"`
+		Domain         string `env:"APP_DOMAIN"`
+		SessionSecret  string `env:"SESSION_SECRET"`
+		TrustedProxies string `env:"TRUSTED_PROXIES"`
 	}
 
 	databaseConfig struct {
@@ -114,6 +117,16 @@ type (
 		Name        string `yaml:"name"`
 		Description string `yaml:"description"`
 		Badge       string `yaml:"badge"`
+	}
+
+	proPricingConfig struct {
+		Tiers []ProPriceTier `yaml:"tiers"`
+	}
+
+	// ProPriceTier is a volume band from config/pro_pricing.yml.
+	ProPriceTier struct {
+		MinReports     uint `yaml:"min_reports"`
+		PerReportCents uint `yaml:"per_report_cents"`
 	}
 
 	paypalConfig struct {

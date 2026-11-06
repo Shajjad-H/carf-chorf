@@ -1,68 +1,224 @@
 {% extends "layouts/base.html" %}
 
-{% block title %}Terms of Sale (CGV){% endblock %}
+{% block title %}Terms of Sale{% endblock %}
+
+{% block head %}
+{# Surligne les champs [[...]] restant à compléter. Supprimer ce bloc une fois tout rempli. #}
+<style>.fill-me{background:#FEF3C7;color:#78350F;border-radius:4px;padding:0 4px;font-weight:600}</style>
+{% endblock %}
 
 {% block content %}
-<section class="relative isolate">
-  <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 -top-24 -z-10 flex justify-center overflow-hidden blur-3xl">
-    <div class="aspect-[1108/632] w-[69.25rem] flex-none bg-gradient-to-r from-indigo-200 via-sky-200 to-emerald-200 opacity-40"></div>
+<section class="mx-auto max-w-6xl">
+  {# Navigation entre les documents légaux #}
+  <nav class="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0" aria-label="Legal documents">
+    <div class="inline-flex gap-1 rounded-full border border-line bg-white p-1 text-sm font-medium shadow-sm">
+      <a href="/terms" {% if current_path == '/terms' %}aria-current="page"{% endif %} class="flex-none rounded-full px-4 py-2 transition {% if current_path == '/terms' %}bg-ink-900 text-white{% else %}text-ink-600 hover:bg-soft hover:text-ink-900{% endif %}">Terms</a>
+      <a href="/cgv" {% if current_path == '/cgv' %}aria-current="page"{% endif %} class="flex-none rounded-full px-4 py-2 transition {% if current_path == '/cgv' %}bg-ink-900 text-white{% else %}text-ink-600 hover:bg-soft hover:text-ink-900{% endif %}">Terms of Sale</a>
+      <a href="/privacy" {% if current_path == '/privacy' %}aria-current="page"{% endif %} class="flex-none rounded-full px-4 py-2 transition {% if current_path == '/privacy' %}bg-ink-900 text-white{% else %}text-ink-600 hover:bg-soft hover:text-ink-900{% endif %}">Privacy</a>
+      <a href="/legal-notice" {% if current_path == '/legal-notice' %}aria-current="page"{% endif %} class="flex-none rounded-full px-4 py-2 transition {% if current_path == '/legal-notice' %}bg-ink-900 text-white{% else %}text-ink-600 hover:bg-soft hover:text-ink-900{% endif %}">Legal notice</a>
+    </div>
+  </nav>
+
+  <div class="mt-8 max-w-2xl">
+    <h1 class="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">Terms of Sale</h1>
+    <p class="mt-3 text-base leading-7 text-ink-600">How orders, digital delivery, withdrawal, refunds and credits work.</p>
+    <p class="mt-2 text-sm text-ink-400">Last updated: November 5, 2026</p>
   </div>
 
-  <div class="mx-auto max-w-3xl">
-    <div class="text-center">
-      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">Legal</p>
-      <h1 class="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Terms of Sale (CGV)</h1>
-      <p class="mt-3 text-sm leading-6 text-slate-600">Last updated: October 25, 2026</p>
-    </div>
+  <div class="mt-8 rounded-[1.75rem] bg-brand-50 p-5 sm:p-7">
+    <p class="text-sm font-semibold text-brand-800">The key points</p>
+    <ul class="mt-4 grid gap-4 text-sm leading-6 text-ink-700 md:grid-cols-2 md:gap-x-8">
+        <li class="flex gap-3">
+          <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-white text-brand-600 shadow-sm"><iconify-icon icon="ph:magnifying-glass" class="block h-4 w-4"></iconify-icon></span>
+          <span>You see the vehicle and the number of records available before you pay. <a href="#products" class="whitespace-nowrap font-semibold text-brand-700 hover:text-brand-600">Read&nbsp;more</a></span>
+        </li>
+        <li class="flex gap-3">
+          <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-white text-brand-600 shadow-sm"><iconify-icon icon="ph:lightning" class="block h-4 w-4"></iconify-icon></span>
+          <span>Reports are delivered immediately. Once a report is generated, you lose your right of withdrawal where the law permits. <a href="#withdrawal" class="whitespace-nowrap font-semibold text-brand-700 hover:text-brand-600">Read&nbsp;more</a></span>
+        </li>
+        <li class="flex gap-3">
+          <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-white text-brand-600 shadow-sm"><iconify-icon icon="ph:receipt" class="block h-4 w-4"></iconify-icon></span>
+          <span>Once a report is generated, the sale is final in principle. If you changed your mind, bought the wrong pack, mistyped your VIN or have an issue with the report content, contact us: we review these requests case by case. <a href="#refunds" class="whitespace-nowrap font-semibold text-brand-700 hover:text-brand-600">Read&nbsp;more</a></span>
+        </li>
+        <li class="flex gap-3">
+          <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-white text-brand-600 shadow-sm"><iconify-icon icon="ph:wrench" class="block h-4 w-4"></iconify-icon></span>
+          <span>If a technical error on our side prevents delivery, we re-run the report, restore the credit or refund you. <a href="#our-errors" class="whitespace-nowrap font-semibold text-brand-700 hover:text-brand-600">Read&nbsp;more</a></span>
+        </li>
+        <li class="flex gap-3">
+          <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-white text-brand-600 shadow-sm"><iconify-icon icon="ph:coins" class="block h-4 w-4"></iconify-icon></span>
+          <span>One credit unlocks one report. Credits are valid 4 months, personal and have no cash value. <a href="#credits" class="whitespace-nowrap font-semibold text-brand-700 hover:text-brand-600">Read&nbsp;more</a></span>
+        </li>
+        <li class="flex gap-3">
+          <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-white text-brand-600 shadow-sm"><iconify-icon icon="ph:credit-card" class="block h-4 w-4"></iconify-icon></span>
+          <span>Contact us before any payment dispute. Unjustified chargebacks lead to suspension and recovery of costs. <a href="#chargebacks" class="whitespace-nowrap font-semibold text-brand-700 hover:text-brand-600">Read&nbsp;more</a></span>
+        </li>
+    </ul>
+    <p class="mt-5 text-xs text-ink-500">This summary is for convenience. The full text below applies.</p>
+  </div>
 
-    <div class="mt-8 rounded-[2rem] bg-gradient-to-br from-indigo-500/20 via-sky-400/10 to-emerald-400/20 p-px shadow-xl shadow-indigo-500/10">
-      <article class="space-y-8 rounded-[calc(2rem-1px)] bg-white/95 p-6 sm:p-10">
-        <!-- Replace this placeholder legal copy with counsel-approved terms before launch. -->
-        <section>
-          <h2 class="text-lg font-semibold text-slate-900">1. Scope</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">
-            These Terms of Sale govern the purchase of prepaid CARFAX report credits through this website.
-          </p>
-        </section>
+  <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-10">
+    <aside class="lg:sticky lg:top-28">
+      <details class="group rounded-2xl border border-line bg-white lg:hidden">
+        <summary class="flex cursor-pointer list-none items-center justify-between px-4 py-3.5 text-sm font-semibold text-ink-900">
+          On this page
+          <iconify-icon icon="ph:caret-down" class="block h-4 w-4 text-ink-400 transition group-open:rotate-180"></iconify-icon>
+        </summary>
+        <nav aria-label="On this page" class="border-t border-line px-2 py-2">
+          <ul class="grid gap-0.5 text-sm">
+            <li><a href="#scope" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">1</span>Scope and seller</a></li>
+            <li><a href="#products" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">2</span>What you buy</a></li>
+            <li><a href="#prices" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">3</span>Prices</a></li>
+            <li><a href="#ordering" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">4</span>How an order works</a></li>
+            <li><a href="#payment" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">5</span>Payment</a></li>
+            <li><a href="#delivery" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">6</span>Delivery and confirmation</a></li>
+            <li><a href="#withdrawal" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">7</span>No right of withdrawal</a></li>
+            <li><a href="#refunds" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">8</span>After a report is generated: contact us</a></li>
+            <li><a href="#our-errors" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">9</span>When the error is ours</a></li>
+            <li><a href="#credits" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">10</span>Credits</a></li>
+            <li><a href="#responsibilities" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">11</span>Your responsibilities</a></li>
+            <li><a href="#limits" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">12</span>What a report is, and is not</a></li>
+            <li><a href="#chargebacks" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">13</span>Payment disputes and chargebacks</a></li>
+            <li><a href="#liability" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">14</span>Liability</a></li>
+            <li><a href="#support" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">15</span>Customer service</a></li>
+          </ul>
+        </nav>
+      </details>
+      <nav class="hidden lg:block" aria-label="On this page">
+        <p class="px-3 text-sm font-semibold text-ink-900">On this page</p>
+        <ul class="mt-3 space-y-0.5 border-l border-line text-sm">
+          <li><a href="#scope" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">1</span>Scope and seller</a></li>
+          <li><a href="#products" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">2</span>What you buy</a></li>
+          <li><a href="#prices" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">3</span>Prices</a></li>
+          <li><a href="#ordering" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">4</span>How an order works</a></li>
+          <li><a href="#payment" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">5</span>Payment</a></li>
+          <li><a href="#delivery" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">6</span>Delivery and confirmation</a></li>
+          <li><a href="#withdrawal" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">7</span>No right of withdrawal</a></li>
+          <li><a href="#refunds" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">8</span>After a report is generated: contact us</a></li>
+          <li><a href="#our-errors" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">9</span>When the error is ours</a></li>
+          <li><a href="#credits" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">10</span>Credits</a></li>
+          <li><a href="#responsibilities" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">11</span>Your responsibilities</a></li>
+          <li><a href="#limits" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">12</span>What a report is, and is not</a></li>
+          <li><a href="#chargebacks" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">13</span>Payment disputes and chargebacks</a></li>
+          <li><a href="#liability" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">14</span>Liability</a></li>
+          <li><a href="#support" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">15</span>Customer service</a></li>
+        </ul>
+      </nav>
+      <p class="mt-6 hidden px-3 text-xs leading-5 text-ink-500 lg:block">Questions? <a href="/contact" class="font-semibold text-brand-700 hover:text-brand-600">Contact us</a></p>
+    </aside>
 
-        <section>
-          <h2 class="text-lg font-semibold text-slate-900">2. Orders</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">
-            An order is created when you select a credit package and continue to payment. The transaction remains pending until payment is confirmed.
-          </p>
-        </section>
-
-        <section>
-          <h2 class="text-lg font-semibold text-slate-900">3. Prices and payment</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">
-            Prices are shown in US dollars. Payment is processed by PayPal. The amount charged is the amount shown at checkout.
-          </p>
-        </section>
-
-        <section>
-          <h2 class="text-lg font-semibold text-slate-900">4. Delivery of credits</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">
-            Credits are added to the account associated with the order after payment is confirmed. Guest purchases are linked to the email entered at checkout.
-          </p>
-        </section>
-
-        <section>
-          <h2 class="text-lg font-semibold text-slate-900">5. Refunds</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">
-            Refund requests are reviewed individually. Used credits are generally non-refundable.
-          </p>
-        </section>
-
-        <section>
-          <h2 class="text-lg font-semibold text-slate-900">6. Contact</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">
-            Questions about an order can be sent through our
-            <a href="/contact" class="font-semibold text-indigo-600 transition hover:text-indigo-500">contact page</a>.
-          </p>
-        </section>
-
+    <article class="card min-w-0 space-y-8 p-5 sm:p-8">
+      <section id="scope" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">1</span>
+          <span>Scope and seller</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>These Terms of Sale apply to every purchase made on <span class="fill-me">[[SITE_DOMAIN]]</span> from <span class="fill-me">[[COMPANY_NAME]]</span>, <span class="fill-me">[[LEGAL_FORM]]</span> with a share capital of <span class="fill-me">[[SHARE_CAPITAL]]</span>, registered office <span class="fill-me">[[REGISTERED_ADDRESS]]</span>, registered with the <span class="fill-me">[[RCS_CITY_AND_NUMBER]]</span>, VAT number <span class="fill-me">[[VAT_NUMBER]]</span> (the “Seller”).</p><p>They complement our <a href="/terms" class="font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-600">Terms of Service</a>. You must accept them to place an order. The version in force on the day of your order applies to that order, you can save or print it at any time.</p></div>
+      </section>
+      <section id="products" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">2</span>
+          <span>What you buy</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>The vehicle lookup is free. It shows basic vehicle information and the number of records available for the vehicle. Check this information before you buy.</p><p>You can then buy prepaid credits, alone or in packs, at the prices shown on the pricing page. One credit unlocks one vehicle history report for one vehicle.</p><p>A report contains the records available from our third-party data providers at the time it is generated. Depending on the vehicle, it may include accidents and damage, mileage readings, ownership, title information, and service records. Not every section is available for every vehicle.</p></div>
+      </section>
+      <section id="prices" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">3</span>
+          <span>Prices</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>Prices are shown in US dollars (USD) and confirmed in the order summary before payment. Any applicable sales tax is shown in the order summary before payment. The price shown when you place your order is the price you pay. We may change prices at any time for future orders.</p><p>We charge no additional fees.</p></div>
+      </section>
+      <section id="ordering" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">4</span>
+          <span>How an order works</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><ol class="list-decimal space-y-1.5 pl-5"><li>You check a vehicle by VIN, or by license plate and state.</li><li>You choose a credit pack.</li><li>You enter your email address, or you are signed in.</li><li>You review the order summary and total, and can correct your choices.</li><li>You tick the box accepting these Terms and Terms of Sale.</li><li>You pay through our third-party payment service.</li></ol><p>The contract is concluded when your payment is confirmed. We send you a confirmation by email.</p><p>We may refuse or cancel an order in case of suspected fraud, a payment problem or a legal restriction. If we cancel an order before delivery, we refund it in full.</p></div>
+      </section>
+      <section id="payment" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">5</span>
+          <span>Payment</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>Payment is made in full when you order through our third-party payment service. We do not receive or store your full card details.</p><p>If a payment fails, is cancelled or is reversed, the order is not delivered, or access to it is suspended.</p></div>
+      </section>
+      <section id="delivery" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">6</span>
+          <span>Delivery and confirmation</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>Delivery is digital and immediate once payment is confirmed: your credits are added to your account and, when your order is linked to a vehicle, its report is generated straight away. You can open your reports from your account and from the link we email you.</p><p>We send you an order confirmation email with the link to access your report later. Your reports remain available in your account for as long as your account is active. If we need to delete them, for example if we stop the Service or close an inactive account, we will email you at least 30 days in advance so you can download them. This does not apply to accounts closed under the "Acceptable use and suspension" section of our Terms of Service.</p><p>Keep your report link private: anyone with it may be able to view the report. If you do not receive your confirmation within 24 hours, check your spam folder, then contact us.</p></div>
+      </section>
+      <section id="withdrawal" class="scroll-mt-28 rounded-2xl border border-amber-200 bg-amber-50/70 p-5 sm:p-6">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-amber-200 text-amber-900">7</span>
+          <span>No right of withdrawal<span class="ml-2 inline-flex translate-y-[-1px] items-center rounded-full bg-amber-200 px-2 py-0.5 align-middle text-[11px] font-semibold text-amber-900">Important</span></span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-700 sm:pl-10">
+          <p>Reports and credits are digital content delivered immediately. By placing an order, you request immediate delivery. Orders cannot be cancelled once paid, except as provided in sections 8 and 9 and in our Terms of Service.</p>
+        </div>
+      </section>
+      <section id="refunds" class="scroll-mt-28 rounded-2xl border border-amber-200 bg-amber-50/70 p-5 sm:p-6">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-amber-200 text-amber-900">8</span>
+          <span>After a report is generated: contact us<span class="ml-2 inline-flex translate-y-[-1px] items-center rounded-full bg-amber-200 px-2 py-0.5 align-middle text-[11px] font-semibold text-amber-900">Important</span></span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-700 sm:pl-10">
+          <p>Once a report has been generated, the sale is final in principle and is not automatically refundable.</p>
+          <p>If you changed your mind, bought the wrong pack, mistyped the VIN, license plate or state, or have a concern about the report content, contact us within 30 days with your order details. We review these requests case by case and may, at our discretion, offer a courtesy solution such as a credit, a corrected or re-run report, or a refund. This is not an automatic right and does not guarantee a refund.</p>
+          <p>Contact us before opening a payment dispute.</p>
+        </div>
+      </section>
+      <section id="our-errors" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">9</span>
+          <span>When the error is ours</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>We make it right when:</p><ul class="list-disc space-y-1.5 pl-5"><li>a technical failure on our side prevents a report from being generated or delivered</li><li>we deliver a report for a different vehicle from the one you entered</li><li>you were charged twice for the same order.</li></ul><p>Depending on the case, we deliver or re-run the report, restore the credit, or refund the amount concerned within 14 days, using your original payment method. Contact us within 30 days with your order email, the VIN or plate, and a description of the problem.</p><p>This does not affect any rights you have under mandatory consumer law.</p></div>
+      </section>
+      <section id="credits" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">10</span>
+          <span>Credits</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><ul class="list-disc space-y-1.5 pl-5"><li>Credits are prepaid units added to your account once payment is confirmed. One credit unlocks one report.</li><li>A credit is used when a report is generated, even if you never open the report.</li><li><strong>Credits are valid for 4 months from the date of purchase.</strong> Credits not used within that period expire automatically, with no refund or extension. Any reminder email we send is a courtesy, not receiving it does not extend validity.</li><li>Credits are personal and non-transferable. They have no cash value and cannot be resold, exchanged or refunded, except as provided in sections 8 and 9.</li><li>Your balance is shown in your account.</li></ul></div>
+      </section>
+      <section id="responsibilities" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">11</span>
+          <span>Your responsibilities</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><ul class="list-disc space-y-1.5 pl-5"><li>Check the VIN, license plate and state before paying, as well as the vehicle information and record count shown by the free lookup.</li><li>Use an email address you control and keep access to it.</li><li>Keep your report links private and use reports only as allowed by our <a href="/terms" class="font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-600">Terms of Service</a>.</li></ul></div>
+      </section>
+      <section id="limits" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">12</span>
+          <span>What a report is, and is not</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>A report is a snapshot of the records available from our data providers when it is generated, it is not updated afterwards. It is an information tool, not an inspection, appraisal or warranty. Our <a href="/terms" class="font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-600">Terms of Service</a> (section “Vehicle data and no warranty”) apply in full.</p></div>
+      </section>
+      <section id="chargebacks" class="scroll-mt-28 rounded-2xl border border-amber-200 bg-amber-50/70 p-5 sm:p-6">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-amber-200 text-amber-900">13</span>
+          <span>Payment disputes and chargebacks<span class="ml-2 inline-flex translate-y-[-1px] items-center rounded-full bg-amber-200 px-2 py-0.5 align-middle text-[11px] font-semibold text-amber-900">Important</span></span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-700 sm:pl-10"><p>Contact us before opening a payment dispute. For an order delivered as described, we will contest any chargeback and send the payment provider the evidence of your order, including the order details and the delivery and access logs. We may suspend your account while the dispute is open and recover the amounts and costs owed, as set out in our <a href="/terms" class="font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-600">Terms of Service</a>.</p></div>
+      </section>
+      <section id="liability" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">14</span>
+          <span>Liability</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>To the maximum extent permitted by law, our total liability for an order is limited to the price you paid for it. The exclusions and limits in our <a href="/terms" class="font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-600">Terms of Service</a> apply, except where mandatory consumer law prevents them.</p></div>
+      </section>
+      <section id="support" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">15</span>
+          <span>Customer service</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>Contact us through our <a href="/contact" class="font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-600">contact page</a> or at <span class="fill-me">[[CONTACT_EMAIL]]</span>. We reply within <span class="fill-me">[[RESPONSE_TIME — e.g. 2 business days]]</span>. To help us, include your order email, the VIN or plate and a description of your request.</p></div>
+      </section>
       </article>
-    </div>
   </div>
 </section>
 {% endblock %}

@@ -1,9 +1,15 @@
 {% if flashes %}
-<div class="mx-auto mt-4 w-full max-w-5xl px-4">
-  <div role="alert" class="rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-800">
-    {% for message in flashes %}
-    <p>{{ message }}</p>
-    {% endfor %}
+<div class="mx-auto w-full max-w-6xl px-4 pt-4 sm:px-6">
+  <div x-data="{ show: true }" x-show="show" x-transition.opacity role="alert" class="alert-success">
+    <iconify-icon icon="ph:check" class="mt-0.5 h-4 w-4 flex-none text-emerald-600"></iconify-icon>
+    <div class="min-w-0 flex-1">
+      {% for message in flashes %}
+      <p>{{ message }}</p>
+      {% endfor %}
+    </div>
+    <button type="button" @click="show = false" aria-label="Dismiss" class="flex-none rounded-md p-1 text-emerald-600/70 transition hover:bg-emerald-100 hover:text-emerald-800">
+      <iconify-icon icon="ph:x" class="h-4 w-4"></iconify-icon>
+    </button>
   </div>
 </div>
 {% endif %}

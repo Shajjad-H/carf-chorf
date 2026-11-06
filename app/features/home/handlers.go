@@ -3,6 +3,7 @@ package home
 import (
 	"net/http"
 
+	"carf-chorf.com/app/app/features/checkout"
 	"carf-chorf.com/app/app/features/vehicle"
 	auth_service "carf-chorf.com/app/app/services/auth"
 	"carf-chorf.com/app/pkg/renderer"
@@ -15,5 +16,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 		return
 	}
-	renderer.Pongo(w, r, "home/index.html", http.StatusOK, vehicle.FormContext())
+	ctx := vehicle.FormContext()
+	ctx["packages"] = checkout.PackageViews()
+	renderer.Pongo(w, r, "home/index.html", http.StatusOK, ctx)
 }

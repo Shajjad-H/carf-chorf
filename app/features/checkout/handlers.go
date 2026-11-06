@@ -26,7 +26,23 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	requestedCredits := parseCredits(r.URL.Query().Get("credits"))
+	rawCredits := strings.TrimSpace(r.URL.Query().Get("credits"))
+	requestedCredits := parseCreditCount(rawCredits)
+	if rawCredits != "" && requestedCredits == 0 {
+		redirectWithFlash(w, r, "/pricing", "Choose a valid package.")
+		return
+	}
+	if requestedCredits != 0 {
+		if _, ok := PurchaseAmountCents(requestedCredits); !ok {
+			if requestedCredits < ProMinCredits {
+				redirectWithFlash(w, r, "/pricing", "Pro pricing starts at 10 reports. Choose a regular pack.")
+			} else {
+				redirectWithFlash(w, r, "/contact", "For more than 500 reports, contact us for a custom quote.")
+			}
+			return
+		}
+	}
+
 	user, authenticated, err := loadCheckoutUser(r)
 	if err != nil {
 		if authenticated {
@@ -51,16 +67,12 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	req := parsePurchaseRequest(r)
-	if _, ok := Find(req.Credits); !ok {
-		redirectWithFlash(w, r, buildCheckoutURL(req.Token, 0), "Please select a valid package.")
+	if _, ok := PurchaseAmountCents(req.Credits); !ok {
+		redirectWithFlash(w, r, buildCheckoutURL(req.Token, 0), invalidCreditsMessage(req.Credits))
 		return
 	}
 
 	state, authenticated := auth_service.Current(r)
-	if !authenticated && req.Credits != 1 {
-		redirectToLogin(w, r, req, "Please log in to purchase 2 or 4 credits.")
-		return
-	}
 
 	var current *auth_service.State
 	if authenticated {

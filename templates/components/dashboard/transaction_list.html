@@ -1,34 +1,56 @@
+{# Historique des paiements. Le bouton Details ouvre la fenêtre de détail existante. #}
 {% if transactions %}
-<ul class="mt-4 divide-y divide-slate-100">
+<ul class="divide-y divide-line">
   {% for transaction in transactions %}
-  <li class="flex items-center gap-4 py-4">
-    <span class="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-slate-50 text-slate-400 ring-1 ring-slate-100">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="2" y="5" width="20" height="14" rx="2" />
-        <path d="M2 10h20" />
-      </svg>
-    </span>
-
-    <div class="min-w-0 flex-1">
-      <p class="text-sm font-medium text-slate-900">{{ transaction.Credits }} credit{% if transaction.Credits != 1 %}s{% endif %}</p>
-      {% if transaction.CacheRecord %}
-      <p class="mt-0.5 truncate font-mono text-xs uppercase tracking-widest text-slate-500">VIN {{ transaction.CacheRecord.Vin }}</p>
-      {% endif %}
-      <p class="mt-0.5 text-xs text-slate-400">{{ transaction.CreatedAt|date }}</p>
+  <li x-data="{ copied: false }" class="px-4 py-4 sm:flex sm:items-center sm:gap-4 sm:px-5">
+    <div class="flex min-w-0 flex-1 items-center gap-3.5">
+      <span class="grid h-12 w-12 flex-none place-items-center rounded-2xl bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-100">
+        <iconify-icon icon="ph:coins-fill" class="h-6 w-6"></iconify-icon>
+      </span>
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center justify-between gap-3">
+          <p class="text-[15px] font-semibold leading-tight text-ink-900">{{ transaction.Credits }} credit{% if transaction.Credits != 1 %}s{% endif %}</p>
+          <p class="text-[15px] font-bold tabular-nums text-ink-900 sm:hidden">{{ transaction.Amount|money }}</p>
+        </div>
+        <div class="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+          <span class="inline-flex h-6 items-center gap-1.5 text-xs text-ink-500">
+            <iconify-icon icon="ph:calendar-blank" class="h-3.5 w-3.5 text-ink-400"></iconify-icon>
+            <span>{{ transaction.CreatedAt|date }}</span>
+          </span>
+          <button type="button" @click="navigator.clipboard && navigator.clipboard.writeText('{{ transaction.Token }}'); copied = true; setTimeout(() => copied = false, 1500)"
+            class="inline-flex h-6 max-w-[11rem] items-center gap-1.5 rounded-md bg-soft px-2 font-mono text-[11px] text-ink-500 transition hover:bg-brand-50 hover:text-brand-700" title="{{ transaction.Token }}">
+            <span class="truncate">Ref. {{ transaction.Token }}</span>
+            <iconify-icon x-show="!copied" icon="ph:copy" class="h-3.5 w-3.5"></iconify-icon>
+            <iconify-icon x-show="copied" x-cloak icon="ph:check-bold" class="h-3.5 w-3.5 text-emerald-600"></iconify-icon>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="flex flex-none items-center gap-3">
-      <span class="text-sm font-semibold text-slate-900">{{ transaction.Amount|money }}</span>
-      <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {% if transaction.Status|string == 'paid' %}bg-emerald-50 text-emerald-700{% else %}bg-amber-50 text-amber-700{% endif %}">
+    <div class="mt-3.5 flex items-center gap-3 sm:mt-0 sm:flex-none">
+      <span class="inline-flex h-6 items-center gap-1 rounded-full px-2.5 text-xs font-bold {% if transaction.Status|string == 'paid' %}bg-emerald-50 text-emerald-700{% else %}bg-amber-50 text-amber-700{% endif %}">
+        <span class="h-1.5 w-1.5 rounded-full {% if transaction.Status|string == 'paid' %}bg-emerald-500{% else %}bg-amber-500{% endif %}"></span>
         {% if transaction.Status|string == 'paid' %}Paid{% else %}{% if transaction.Status|string == 'pending' %}Pending{% else %}{{ transaction.Status }}{% endif %}{% endif %}
       </span>
+      <span class="hidden w-20 text-right text-[15px] font-bold tabular-nums text-ink-900 sm:block">{{ transaction.Amount|money }}</span>
+      <button type="button" @click="openDetails($el)"
+        data-token="{{ transaction.Token }}"
+        data-date='{{ transaction.CreatedAt|date:"01/02/2006 3:04 PM" }}'
+        data-credits="{{ transaction.Credits }}"
+        data-amount="{{ transaction.Amount|money }}"
+        data-status="{% if transaction.Status|string == 'paid' %}Paid{% else %}Pending{% endif %}"
+        data-vin="{% if transaction.CacheRecord %}{{ transaction.CacheRecord.Vin }}{% endif %}"
+        class="ml-auto inline-flex h-10 items-center justify-center gap-2 rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-4 text-sm font-semibold text-white shadow-[0_10px_22px_-12px_rgba(21,93,252,0.8)] ring-1 ring-inset ring-white/20 transition hover:-translate-y-0.5 hover:from-brand-400 hover:to-brand-600 sm:ml-0">
+        <iconify-icon icon="ph:info-bold" class="h-4 w-4"></iconify-icon>
+        <span>Check details</span>
+      </button>
     </div>
   </li>
   {% endfor %}
 </ul>
 {% else %}
-<div class="py-8 text-center">
-  <p class="text-sm font-medium text-slate-900">No completed transactions yet</p>
-  <p class="mt-1 text-xs text-slate-500">Your paid credit purchases will appear here.</p>
+<div class="py-10 text-center">
+  <p class="text-sm font-semibold text-ink-900">No completed payments yet</p>
+  <p class="mt-1 text-xs text-ink-500">Your credit purchases will appear here.</p>
 </div>
 {% endif %}

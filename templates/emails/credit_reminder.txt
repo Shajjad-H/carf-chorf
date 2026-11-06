@@ -1,10 +1,17 @@
-{{ brand_name }} — You still have unused report credits
+Your credits are waiting
 
-You have {{ credits }} unused credit{% if credits != 1 %}s{% endif %} in your account.
+Already paid. Use them on your next car.
 
-Use your credits:
+You have {{ credits }} credit{% if credits != 1 %}s{% endif %}: {{ credits }} full CARFAX report{% if credits != 1 %}s{% endif %} to use.
+
+Check a vehicle:
 {{ dashboard_url }}
 
-Use a credit to look up a vehicle and get its CARFAX report from your dashboard.
+How it works:
+1. Enter a VIN or US plate.
+2. Use 1 credit, nothing to pay.
+3. Get the full report instantly.
 
-© {{ year }} {{ brand_name }}
+Not buying a car anymore? Your credits stay in your account.
+
+© {{ year }} VHR

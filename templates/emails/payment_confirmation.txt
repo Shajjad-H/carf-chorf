@@ -1,0 +1,17 @@
+Payment confirmed — Your credits are ready
+
+Thanks, your payment was received.
+
+Credits added: {{ credits }} credit{% if credits != 1 %}s{% endif %}
+Amount paid: {{ amount }}
+Date: {{ purchased_at }}
+Order reference: {{ transaction_ref }}
+
+Log in to use my credits:
+{{ login_url }}
+
+Use {{ to }} to log in. We send you a one-time code, no password.
+
+Keep this receipt for your records.
+
+© {{ year }} VHR

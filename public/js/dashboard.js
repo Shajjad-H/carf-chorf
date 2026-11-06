@@ -58,7 +58,7 @@
         this.submitting = true;
         this.error = '';
 
-        const formData = new FormData();
+        const formData = new URLSearchParams();
         if (this.tab === 'vin') {
           formData.set('vin', this.vin);
         } else {
@@ -86,7 +86,7 @@
         this.purchasing = true;
         this.error = '';
 
-        const formData = new FormData();
+        const formData = new URLSearchParams();
         formData.set('token', this.confirm.token);
 
         try {

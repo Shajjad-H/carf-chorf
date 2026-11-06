@@ -1,0 +1,115 @@
+{# Fenêtre d'état du téléchargement PDF. À inclure une fois par page. #}
+{# Événements : pdf:start { vehicle }, pdf:done, pdf:error { message }. #}
+<div x-data="pdfStatus()" x-show="open" x-cloak
+  @pdf:start.window="start($event.detail)" @pdf:done.window="done()" @pdf:error.window="fail($event.detail)"
+  @keydown.escape.window="state !== 'working' && (open = false)"
+  class="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="pdf-title" aria-live="polite">
+  <div x-show="open" x-transition.opacity class="absolute inset-0 bg-ink-900/50 backdrop-blur-[2px]" @click="state !== 'working' && (open = false)"></div>
+
+  <div x-show="open"
+    x-transition:enter="transition duration-300 ease-out" x-transition:enter-start="translate-y-8 opacity-0 sm:translate-y-2 sm:scale-95" x-transition:enter-end="translate-y-0 opacity-100 sm:scale-100"
+    class="relative w-full overflow-hidden rounded-t-[1.75rem] bg-white shadow-lift sm:max-w-sm sm:rounded-[1.75rem]">
+
+    {# ---------- Illustration : une page qui se remplit ---------- #}
+    <div class="relative isolate flex justify-center overflow-hidden px-6 pb-6 pt-8"
+      :class="state === 'error' ? 'bg-red-50' : state === 'done' ? 'bg-emerald-50' : 'bg-brand-50'">
+      <span aria-hidden="true" class="absolute inset-0 -z-10 bg-[radial-gradient(60%_80%_at_50%_100%,rgba(255,255,255,0.9),transparent_70%)]"></span>
+
+      <div class="relative">
+        {# Page #}
+        <div class="relative h-[7.5rem] w-24 overflow-hidden rounded-xl bg-white shadow-[0_18px_36px_-16px_rgba(11,18,32,0.35)] ring-1 ring-line">
+          <span class="absolute right-0 top-0 h-5 w-5 rounded-bl-lg bg-soft ring-1 ring-line"></span>
+          <div class="space-y-1.5 px-3 pt-6">
+            <span class="block h-1.5 w-10 rounded-full bg-brand-500"></span>
+            <span class="block h-1 w-16 rounded-full bg-line"></span>
+            <span class="block h-1 w-14 rounded-full bg-line"></span>
+            <span class="mt-2.5 block h-4 w-full rounded bg-soft"></span>
+            <span class="block h-1 w-16 rounded-full bg-line"></span>
+            <span class="block h-1 w-12 rounded-full bg-line"></span>
+            <span class="block h-1 w-[3.75rem] rounded-full bg-line"></span>
+          </div>
+          {# Ligne de balayage pendant la préparation #}
+          <span x-show="state === 'working'" aria-hidden="true"
+            class="absolute inset-x-0 top-0 h-8 animate-[pdfscan_1.6s_ease-in-out_infinite] bg-gradient-to-b from-transparent via-brand-400/25 to-transparent"></span>
+        </div>
+        {# Étiquette PDF #}
+        <span class="absolute -bottom-2 -left-3 rounded-md bg-red-500 px-1.5 py-0.5 text-[10px] font-extrabold tracking-wider text-white shadow-sm">PDF</span>
+        {# Pastille d'état #}
+        <span class="absolute -bottom-3 -right-3 grid h-10 w-10 place-items-center rounded-full text-white shadow-lg ring-4 ring-white"
+          :class="state === 'error' ? 'bg-red-500' : state === 'done' ? 'bg-emerald-500' : 'bg-brand-500'">
+          <iconify-icon x-show="state === 'working'" icon="ph:spinner-gap-bold" class="block h-5 w-5 animate-spin"></iconify-icon>
+          <iconify-icon x-show="state === 'done'" x-cloak icon="ph:check-bold" class="block h-5 w-5"></iconify-icon>
+          <iconify-icon x-show="state === 'error'" x-cloak icon="ph:x-bold" class="block h-5 w-5"></iconify-icon>
+        </span>
+      </div>
+    </div>
+
+    {# ---------- Texte ---------- #}
+    <div class="px-6 pb-6 pt-5 text-center">
+      <p x-show="vehicle" class="truncate text-xs font-semibold uppercase tracking-[0.12em] text-ink-400" x-text="vehicle"></p>
+
+      <div x-show="state === 'working'" x-cloak>
+        <h3 id="pdf-title" class="mt-1 text-lg font-semibold text-ink-900">Preparing your PDF</h3>
+        <p class="mt-1.5 text-sm leading-6 text-ink-600" x-text="slow ? 'Long report, almost there. Keep this tab open.' : 'Every page of your report goes in. It only takes a few seconds.'"></p>
+        <div class="mx-auto mt-5 h-1.5 w-full max-w-[14rem] overflow-hidden rounded-full bg-soft">
+          <span class="block h-full w-1/3 animate-[pdfbar_1.2s_ease-in-out_infinite] rounded-full bg-gradient-to-r from-brand-400 to-brand-600"></span>
+        </div>
+      </div>
+
+      <div x-show="state === 'done'" x-cloak>
+        <h3 class="mt-1 text-lg font-semibold text-ink-900">Your PDF is ready</h3>
+        <p class="mt-1.5 text-sm leading-6 text-ink-600">Check your downloads folder. The report also stays in <span class="font-semibold text-ink-900">My reports</span>.</p>
+        <button type="button" @click="open = false" class="mt-5 w-full rounded-full bg-ink-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-ink-700">Done</button>
+      </div>
+
+      <div x-show="state === 'error'" x-cloak>
+        <h3 class="mt-1 text-lg font-semibold text-ink-900">The PDF couldn't be created</h3>
+        <p class="mt-1.5 text-sm leading-6 text-ink-600" x-text="message || 'Please try again. You can still open the report online.'"></p>
+        <div class="mt-5 grid grid-cols-2 gap-2.5">
+          <button type="button" @click="open = false" class="rounded-full border border-line px-4 py-3 text-sm font-semibold text-ink-700 transition hover:bg-soft">Close</button>
+          <button type="button" @click="open = false; $dispatch('pdf:retry')" class="rounded-full bg-brand-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-600">Try again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes pdfscan { 0% { transform: translateY(-2rem); } 100% { transform: translateY(7.5rem); } }
+  @keyframes pdfbar { 0% { transform: translateX(-100%); } 100% { transform: translateX(300%); } }
+  @media (prefers-reduced-motion: reduce) { [class*="animate-[pdf"] { animation: none !important; } }
+</style>
+
+<script>
+  function pdfStatus() {
+    return {
+      open: false,
+      state: 'working', // working | done | error
+      vehicle: '',
+      message: '',
+      slow: false,
+      timer: null,
+      start(d) {
+        d = d || {};
+        this.vehicle = d.vehicle || '';
+        this.message = '';
+        this.state = 'working';
+        this.slow = false;
+        this.open = true;
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => { this.slow = true; }, 6000);
+      },
+      // Le téléchargement est lancé : on confirme puis on ferme tout seul
+      done() {
+        clearTimeout(this.timer);
+        this.state = 'done';
+        this.timer = setTimeout(() => { this.open = false; }, 2500);
+      },
+      fail(d) {
+        clearTimeout(this.timer);
+        this.message = (d && d.message) || '';
+        this.state = 'error';
+      },
+    };
+  }
+</script>

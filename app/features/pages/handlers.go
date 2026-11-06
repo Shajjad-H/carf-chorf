@@ -25,3 +25,20 @@ func Terms(w http.ResponseWriter, r *http.Request) {
 func CGV(w http.ResponseWriter, r *http.Request) {
 	renderer.Pongo(w, r, "pages/cgv.html", http.StatusOK, nil)
 }
+
+// SampleReport renders an illustrative report preview.
+func SampleReport(w http.ResponseWriter, r *http.Request) {
+	renderer.Pongo(w, r, "pages/sample_report.html", http.StatusOK, pongo2.Context{
+		"packages": checkout.PackageViews(),
+	})
+}
+
+// Privacy renders the privacy policy.
+func Privacy(w http.ResponseWriter, r *http.Request) {
+	renderer.Pongo(w, r, "pages/privacy.html", http.StatusOK, nil)
+}
+
+// LegalNotice renders the legal notice.
+func LegalNotice(w http.ResponseWriter, r *http.Request) {
+	renderer.Pongo(w, r, "pages/legal_notice.html", http.StatusOK, nil)
+}

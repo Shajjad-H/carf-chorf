@@ -9,7 +9,6 @@ import (
 )
 
 var (
-	ErrGuestCredits    = errors.New("login required for multi-credit packages")
 	ErrVehicleRequired = errors.New("a vehicle is required for guest checkout")
 	ErrVehicleNotFound = errors.New("vehicle record not found")
 	ErrInvalidEmail    = errors.New("enter a valid email address")
@@ -35,12 +34,9 @@ func (p *PurchaseRequest) normalize() {
 	p.Token = strings.TrimSpace(p.Token)
 }
 
-// validateGuest enforces the guest checkout rules: only one credit, tied to
-// a vehicle, with an accepted email confirmation and terms.
+// validateGuest enforces guest checkout rules: a vehicle, a confirmed email
+// and accepted terms. Guests can buy any configured package.
 func (p *PurchaseRequest) validateGuest() error {
-	if p.Credits != 1 {
-		return ErrGuestCredits
-	}
 	if p.Token == "" {
 		return ErrVehicleRequired
 	}

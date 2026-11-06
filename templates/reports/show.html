@@ -1,10 +1,143 @@
 {% extends "layouts/base.html" %}
 
-{% block title %}Vehicle report{% endblock %}
+{% block title %}{% if order.CacheRecord.Vehicle %}{{ order.CacheRecord.Vehicle }}{% else %}Vehicle report{% endif %}{% endblock %}
 
 {% block main %}
-<main class="flex-1">
-  <iframe src="/reports/content?access_token={{ order.AccessToken }}" title="Vehicle report"
-    class="block w-full" style="min-height: calc(100vh - 8rem);" frameborder="0"></iframe>
+<main class="flex flex-1 flex-col" x-data="{ copied: false }">
+  {# Barre du rapport : reste visible pendant le défilement #}
+  <div class="sticky top-[4.25rem] z-30 border-b border-line bg-white/90 backdrop-blur-md md:top-[4.75rem] lg:top-[4.875rem]">
+    <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-3 gap-y-2.5 px-3 py-2.5 sm:flex-nowrap sm:gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:px-6 sm:py-3">
+
+      {# Retour #}
+      <a href="{% if authenticated %}/dashboard/orders{% else %}/{% endif %}"
+        aria-label="{% if authenticated %}Back to My reports{% else %}Back to home{% endif %}"
+        class="inline-flex h-10 w-10 flex-none items-center justify-center gap-2 rounded-full bg-brand-50 text-sm font-semibold text-brand-700 ring-1 ring-inset ring-brand-100 transition hover:bg-brand-100 hover:text-brand-800 sm:w-auto sm:px-4 lg:justify-self-start">
+        <iconify-icon icon="ph:arrow-left-bold" class="h-4 w-4"></iconify-icon>
+        <span class="hidden sm:inline">{% if authenticated %}My reports{% else %}Home{% endif %}</span>
+      </a>
+
+      {# Véhicule #}
+      <div class="flex min-w-0 flex-1 items-center gap-3 lg:max-w-[30rem] lg:justify-center lg:justify-self-center">
+        <span class="hidden h-10 w-10 flex-none items-center justify-center rounded-xl bg-brand-50 text-brand-600 ring-1 ring-inset ring-brand-100 md:inline-flex">
+          <iconify-icon icon="ph:car-profile-fill" class="h-5 w-5"></iconify-icon>
+        </span>
+        <div class="min-w-0 flex-1 text-center sm:text-left lg:text-center">
+          <p class="truncate text-sm font-semibold leading-tight text-ink-900 sm:text-[15px]">{% if order.CacheRecord.Vehicle %}{{ order.CacheRecord.Vehicle }}{% else %}Vehicle report{% endif %}</p>
+          <button type="button" @click="navigator.clipboard && navigator.clipboard.writeText('{{ order.Vin }}'); copied = true; setTimeout(() => copied = false, 1500)"
+            class="mt-0.5 inline-flex max-w-full items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-ink-500 transition hover:text-brand-700" title="Copy VIN">
+            <span class="truncate">VIN {{ order.Vin }}</span>
+            <iconify-icon x-show="!copied" icon="ph:copy" class="hidden h-3.5 w-3.5 sm:inline-flex"></iconify-icon>
+            <iconify-icon x-show="copied" x-cloak icon="ph:check-bold" class="h-3.5 w-3.5 text-emerald-600"></iconify-icon>
+          </button>
+        </div>
+      </div>
+
+      {# Actions #}
+      <div class="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-none sm:items-center lg:justify-self-end">
+        <button type="button" title="Print my report" aria-label="Print my report"
+          @click="try { $refs.report.contentWindow.focus(); $refs.report.contentWindow.print(); } catch (e) { window.print(); }"
+          class="inline-flex h-10 w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-brand-500 px-3 text-[13px] font-semibold text-white shadow-[0_8px_18px_-10px_rgba(21,93,252,0.9)] transition hover:bg-brand-600 sm:w-auto sm:px-4 sm:text-sm">
+          <iconify-icon icon="ph:printer-bold" class="h-4 w-4"></iconify-icon>
+          <span>Print my report</span>
+        </button>
+        <button type="button"
+          @click="$dispatch('report:download', { token: '{{ order.AccessToken }}', vehicle: '{% if order.CacheRecord.Vehicle %}{{ order.CacheRecord.Vehicle }}{% endif %}' })"
+          class="inline-flex h-10 w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-ink-900 px-3 text-[13px] font-semibold text-white transition hover:bg-ink-700 sm:w-auto sm:px-5 sm:text-sm">
+          <iconify-icon icon="ph:download-simple-bold" class="h-4 w-4"></iconify-icon>
+          <span>Download PDF</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <iframe x-ref="report" id="report-frame" src="/reports/content?access_token={{ order.AccessToken }}" title="Vehicle history report"
+    class="block w-full flex-1 bg-white" style="min-height: calc(100vh - 7rem);" frameborder="0"></iframe>
+
+  {% include "components/reports/pdf_status.html" %}
 </main>
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+(function () {
+  var frame = document.getElementById('report-frame');
+  if (!frame) {
+    return;
+  }
+
+  var busy = false;
+  var lastDetail = null;
+
+  function pollForPdf(onReady, onTimeout) {
+    var started = Date.now();
+    (function check() {
+      var win = frame.contentWindow;
+      if (win && typeof win.downloadReportPDF === 'function') {
+        onReady(win);
+        return;
+      }
+      if (Date.now() - started > 20000) {
+        onTimeout();
+        return;
+      }
+      setTimeout(check, 200);
+    })();
+  }
+
+  function fallbackPrint() {
+    try {
+      frame.contentWindow.focus();
+      frame.contentWindow.print();
+    } catch (e) {
+      window.print();
+    }
+  }
+
+  function start(detail) {
+    if (busy) {
+      return;
+    }
+    detail = detail || {};
+    lastDetail = detail;
+    busy = true;
+    window.dispatchEvent(new CustomEvent('pdf:start', { detail: { vehicle: detail.vehicle || '' } }));
+
+    pollForPdf(function (win) {
+      var result;
+      try {
+        result = win.downloadReportPDF();
+      } catch (error) {
+        result = Promise.reject(error);
+      }
+      Promise.resolve(result).then(function () {
+        window.dispatchEvent(new CustomEvent('pdf:done'));
+      }).catch(function (error) {
+        console.error('PDF generation failed', error);
+        window.dispatchEvent(new CustomEvent('pdf:error', {
+          detail: { message: 'The PDF could not be created. Please try again.' }
+        }));
+      }).then(function () {
+        busy = false;
+      });
+    }, function () {
+      busy = false;
+      fallbackPrint();
+      window.dispatchEvent(new CustomEvent('pdf:error', {
+        detail: { message: 'The PDF could not be prepared. A print dialog has been opened instead.' }
+      }));
+    });
+  }
+
+  window.addEventListener('report:download', function (event) {
+    start(event.detail);
+  });
+
+  window.addEventListener('pdf:retry', function () {
+    if (lastDetail) {
+      start(lastDetail);
+    }
+  });
+})();
+</script>
 {% endblock %}

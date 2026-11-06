@@ -1,6 +1,11 @@
 package static
 
-import "net/http"
+import (
+	"net/http"
+	"strings"
+
+	"carf-chorf.com/app/app/kernel"
+)
 
 func Handler(root string) http.Handler {
 	dir := http.Dir(root)
@@ -19,7 +24,15 @@ func Handler(root string) http.Handler {
 			return
 		}
 
-		w.Header().Set("Cache-Control", "public, max-age=86400")
+		if strings.HasSuffix(info.Name(), ".webmanifest") {
+			w.Header().Set("Content-Type", "application/manifest+json")
+		}
+
+		if kernel.IsDev() {
+			w.Header().Set("Cache-Control", "no-store")
+		} else {
+			w.Header().Set("Cache-Control", "public, max-age=86400")
+		}
 		http.ServeContent(w, r, info.Name(), info.ModTime(), f)
 	})
 }

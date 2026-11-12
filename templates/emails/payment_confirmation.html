@@ -1,0 +1,51 @@
+{% extends "emails/layout.html" %}
+
+{% block title %}Payment confirmed{% endblock %}
+{% block eyebrow %}Purchase confirmed{% endblock %}
+{% block heading %}Your credits are ready{% endblock %}
+
+{% block content %}
+<p style="margin:0 0 22px;">Thanks, your payment was received. Your credits are now available in your account.</p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0B1220" style="margin:0 0 24px;background-color:#0B1220;border-radius:18px;">
+  <tr>
+    <td style="padding:20px 22px;">
+      <p style="margin:0;color:#8EA3C7;font-size:11px;line-height:16px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;">Credits added</p>
+      <p style="margin:6px 0 0;color:#FFFFFF;font-size:26px;line-height:32px;font-weight:700;">+{{ credits }} credit{% if credits != 1 %}s{% endif %}</p>
+
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;">
+        <tr>
+          <td style="border-top:1px solid #1E2A40;padding-top:14px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td style="padding:0 0 8px;color:#8EA3C7;font-size:13px;line-height:20px;">Amount paid</td>
+                <td align="right" style="padding:0 0 8px;color:#E2E8F0;font-size:13px;line-height:20px;font-weight:600;">{{ amount }}</td>
+              </tr>
+              <tr>
+                <td style="padding:0 0 8px;color:#8EA3C7;font-size:13px;line-height:20px;">Date</td>
+                <td align="right" style="padding:0 0 8px;color:#E2E8F0;font-size:13px;line-height:20px;font-weight:600;">{{ purchased_at }}</td>
+              </tr>
+              <tr>
+                <td valign="top" style="padding:0;color:#8EA3C7;font-size:13px;line-height:20px;">Order reference</td>
+                <td align="right" style="padding:0;color:#E2E8F0;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;font-size:11px;line-height:18px;font-weight:600;word-break:break-all;">{{ transaction_ref }}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" class="email-cta" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px;">
+  <tr>
+    <td align="center" bgcolor="#155DFC" style="background-color:#155DFC;border-radius:14px;box-shadow:0 10px 24px -10px rgba(21,93,252,0.7);">
+      <a href="{{ login_url }}" style="display:inline-block;padding:15px 30px;color:#FFFFFF;font-size:15px;line-height:20px;font-weight:700;text-decoration:none;">Log in to use my credits &rarr;</a>
+    </td>
+  </tr>
+</table>
+
+<p style="margin:0;color:#64748B;font-size:14px;line-height:22px;">Use <strong style="color:#0B1220;">{{ to }}</strong> to log in. We send a one-time code, no password.</p>
+{% endblock %}
+
+{% block stub %}<strong style="color:#0B1220;">Keep this receipt</strong> for your records. Questions? <a href="{{ contact_url }}" style="color:#155DFC;font-weight:600;text-decoration:none;">Contact us</a>.{% endblock %}

@@ -7,7 +7,7 @@ import (
 
 func TestValidateGuest(t *testing.T) {
 	valid := PurchaseRequest{
-		Credits:       1,
+		Credits:       3,
 		Email:         "User@Example.com",
 		ConfirmEmail:  "user@example.com",
 		Token:         "token",
@@ -24,28 +24,27 @@ func TestValidateGuest(t *testing.T) {
 		want error
 	}{
 		{
-			name: "multi credit",
-			req:  PurchaseRequest{Credits: 2, Email: "user@example.com", ConfirmEmail: "user@example.com", Token: "token", TermsAccepted: true},
-			want: ErrGuestCredits,
+			name: "multi credit allowed",
+			req:  PurchaseRequest{Credits: 5, Email: "user@example.com", ConfirmEmail: "user@example.com", Token: "token", TermsAccepted: true},
 		},
 		{
 			name: "missing vehicle",
-			req:  PurchaseRequest{Credits: 1, Email: "user@example.com", ConfirmEmail: "user@example.com", TermsAccepted: true},
+			req:  PurchaseRequest{Credits: 3, Email: "user@example.com", ConfirmEmail: "user@example.com", TermsAccepted: true},
 			want: ErrVehicleRequired,
 		},
 		{
 			name: "invalid email",
-			req:  PurchaseRequest{Credits: 1, Email: "nope", ConfirmEmail: "nope", Token: "token", TermsAccepted: true},
+			req:  PurchaseRequest{Credits: 3, Email: "nope", ConfirmEmail: "nope", Token: "token", TermsAccepted: true},
 			want: ErrInvalidEmail,
 		},
 		{
 			name: "email mismatch",
-			req:  PurchaseRequest{Credits: 1, Email: "user@example.com", ConfirmEmail: "other@example.com", Token: "token", TermsAccepted: true},
+			req:  PurchaseRequest{Credits: 3, Email: "user@example.com", ConfirmEmail: "other@example.com", Token: "token", TermsAccepted: true},
 			want: ErrEmailMismatch,
 		},
 		{
 			name: "terms not accepted",
-			req:  PurchaseRequest{Credits: 1, Email: "user@example.com", ConfirmEmail: "user@example.com", Token: "token"},
+			req:  PurchaseRequest{Credits: 3, Email: "user@example.com", ConfirmEmail: "user@example.com", Token: "token"},
 			want: ErrTermsRequired,
 		},
 	}
@@ -61,12 +60,12 @@ func TestValidateGuest(t *testing.T) {
 }
 
 func TestValidateAuthenticated(t *testing.T) {
-	valid := PurchaseRequest{Credits: 4, TermsAccepted: true}
+	valid := PurchaseRequest{Credits: 5, TermsAccepted: true}
 	if err := valid.validateAuthenticated(); err != nil {
 		t.Fatalf("valid authenticated purchase rejected: %v", err)
 	}
 
-	if err := (&PurchaseRequest{Credits: 2}).validateAuthenticated(); !errors.Is(err, ErrTermsRequired) {
+	if err := (&PurchaseRequest{Credits: 3}).validateAuthenticated(); !errors.Is(err, ErrTermsRequired) {
 		t.Fatalf("terms error = %v", err)
 	}
 }

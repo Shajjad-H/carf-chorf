@@ -1,0 +1,89 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Legal Notice{% endblock %}
+
+{% block head %}
+{# Surligne les champs [[...]] restant à compléter. Supprimer ce bloc une fois tout rempli. #}
+<style>.fill-me{background:#FEF3C7;color:#78350F;border-radius:4px;padding:0 4px;font-weight:600}</style>
+{% endblock %}
+
+{% block content %}
+<section class="mx-auto max-w-6xl">
+  {# Navigation entre les documents légaux #}
+  <nav class="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0" aria-label="Legal documents">
+    <div class="inline-flex gap-1 rounded-full border border-line bg-white p-1 text-sm font-medium shadow-sm">
+      <a href="/terms" {% if current_path == '/terms' %}aria-current="page"{% endif %} class="flex-none rounded-full px-4 py-2 transition {% if current_path == '/terms' %}bg-ink-900 text-white{% else %}text-ink-600 hover:bg-soft hover:text-ink-900{% endif %}">Terms</a>
+      <a href="/cgv" {% if current_path == '/cgv' %}aria-current="page"{% endif %} class="flex-none rounded-full px-4 py-2 transition {% if current_path == '/cgv' %}bg-ink-900 text-white{% else %}text-ink-600 hover:bg-soft hover:text-ink-900{% endif %}">Terms of Sale</a>
+      <a href="/privacy" {% if current_path == '/privacy' %}aria-current="page"{% endif %} class="flex-none rounded-full px-4 py-2 transition {% if current_path == '/privacy' %}bg-ink-900 text-white{% else %}text-ink-600 hover:bg-soft hover:text-ink-900{% endif %}">Privacy</a>
+      <a href="/legal-notice" {% if current_path == '/legal-notice' %}aria-current="page"{% endif %} class="flex-none rounded-full px-4 py-2 transition {% if current_path == '/legal-notice' %}bg-ink-900 text-white{% else %}text-ink-600 hover:bg-soft hover:text-ink-900{% endif %}">Legal notice</a>
+    </div>
+  </nav>
+
+  <div class="mt-8 max-w-2xl">
+    <h1 class="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">Legal Notice</h1>
+    <p class="mt-3 text-base leading-7 text-ink-600">Who publishes this site, who hosts it, and how to reach us.</p>
+    <p class="mt-2 text-sm text-ink-400">Last updated: November 5, 2026</p>
+  </div>
+
+
+  <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-10">
+    <aside class="lg:sticky lg:top-28">
+      <details class="group rounded-2xl border border-line bg-white lg:hidden">
+        <summary class="flex cursor-pointer list-none items-center justify-between px-4 py-3.5 text-sm font-semibold text-ink-900">
+          On this page
+          <iconify-icon icon="ph:caret-down" class="block h-4 w-4 text-ink-400 transition group-open:rotate-180"></iconify-icon>
+        </summary>
+        <nav aria-label="On this page" class="border-t border-line px-2 py-2">
+          <ul class="grid gap-0.5 text-sm">
+            <li><a href="#publisher" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">1</span>Publisher</a></li>
+            <li><a href="#host" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">2</span>Hosting</a></li>
+            <li><a href="#data" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">3</span>Personal data</a></li>
+            <li><a href="#documents" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">4</span>Contractual documents</a></li>
+          </ul>
+        </nav>
+      </details>
+      <nav class="hidden lg:block" aria-label="On this page">
+        <p class="px-3 text-sm font-semibold text-ink-900">On this page</p>
+        <ul class="mt-3 space-y-0.5 border-l border-line text-sm">
+          <li><a href="#publisher" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">1</span>Publisher</a></li>
+          <li><a href="#host" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">2</span>Hosting</a></li>
+          <li><a href="#data" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">3</span>Personal data</a></li>
+          <li><a href="#documents" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">4</span>Contractual documents</a></li>
+        </ul>
+      </nav>
+      <p class="mt-6 hidden px-3 text-xs leading-5 text-ink-500 lg:block">Questions? <a href="/contact" class="font-semibold text-brand-700 hover:text-brand-600">Contact us</a></p>
+    </aside>
+
+    <article class="card min-w-0 space-y-8 p-5 sm:p-8">
+      <section id="publisher" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">1</span>
+          <span>Publisher</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><dl class="divide-y divide-line overflow-hidden rounded-xl border border-line"><div class="grid gap-1 px-4 py-3 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-4"><dt class="font-semibold text-ink-900">Company</dt><dd><span class="fill-me">[[COMPANY_NAME]]</span></dd></div><div class="grid gap-1 px-4 py-3 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-4"><dt class="font-semibold text-ink-900">Legal form</dt><dd><span class="fill-me">[[LEGAL_FORM]]</span></dd></div><div class="grid gap-1 px-4 py-3 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-4"><dt class="font-semibold text-ink-900">Share capital</dt><dd><span class="fill-me">[[SHARE_CAPITAL]]</span></dd></div><div class="grid gap-1 px-4 py-3 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-4"><dt class="font-semibold text-ink-900">Registered office</dt><dd><span class="fill-me">[[REGISTERED_ADDRESS]]</span></dd></div><div class="grid gap-1 px-4 py-3 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-4"><dt class="font-semibold text-ink-900">Registration</dt><dd><span class="fill-me">[[RCS_CITY_AND_NUMBER]]</span> (SIREN <span class="fill-me">[[SIREN]]</span>)</dd></div><div class="grid gap-1 px-4 py-3 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-4"><dt class="font-semibold text-ink-900">VAT number</dt><dd><span class="fill-me">[[VAT_NUMBER]]</span></dd></div><div class="grid gap-1 px-4 py-3 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-4"><dt class="font-semibold text-ink-900">Email</dt><dd><span class="fill-me">[[CONTACT_EMAIL]]</span></dd></div><div class="grid gap-1 px-4 py-3 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-4"><dt class="font-semibold text-ink-900">Phone</dt><dd><span class="fill-me">[[PHONE]]</span></dd></div></dl></div>
+      </section>
+      <section id="host" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">2</span>
+          <span>Hosting</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><dl class="divide-y divide-line overflow-hidden rounded-xl border border-line"><div class="grid gap-1 px-4 py-3 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-4"><dt class="font-semibold text-ink-900">Host</dt><dd><span class="fill-me">[[HOSTING_PROVIDER]]</span></dd></div><div class="grid gap-1 px-4 py-3 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-4"><dt class="font-semibold text-ink-900">Address</dt><dd><span class="fill-me">[[HOSTING_ADDRESS]]</span></dd></div><div class="grid gap-1 px-4 py-3 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-4"><dt class="font-semibold text-ink-900">Phone</dt><dd><span class="fill-me">[[HOSTING_PHONE]]</span></dd></div></dl></div>
+      </section>
+      <section id="data" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">3</span>
+          <span>Personal data</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>How we process personal data is explained in our <a href="/privacy" class="font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-600">Privacy Policy</a>.</p></div>
+      </section>
+      <section id="documents" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">4</span>
+          <span>Contractual documents</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>Use of the site is governed by our <a href="/terms" class="font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-600">Terms of Service</a>. Purchases are governed by our <a href="/cgv" class="font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-600">Terms of Sale</a>.</p></div>
+      </section>
+    </article>
+  </div>
+</section>
+{% endblock %}

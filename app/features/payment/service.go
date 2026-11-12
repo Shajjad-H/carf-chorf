@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"carf-chorf.com/app/app/domaine"
 	"carf-chorf.com/app/app/services/discord_service"
@@ -36,6 +37,15 @@ func CreatePayPalOrder(ctx context.Context, token string) (string, error) {
 		return "", transaction_service.ErrTransactionNotPending
 	}
 
+	// Reuse the existing provider order when possible so a refresh or double
+	// click cannot overwrite the PayPal id with a second pending order.
+	if transaction.Pid != "" {
+		order, err := paypal_service.GetOrder(ctx, transaction.Pid)
+		if err == nil && order != nil && order.Status != "VOIDED" && order.Status != "EXPIRED" {
+			return transaction.Pid, nil
+		}
+	}
+
 	pid, err := paypal_service.CreateOrder(ctx, transaction)
 	if err != nil {
 		simple_logger.Errorf("payment: create paypal order: %v", err)
@@ -58,6 +68,7 @@ func CapturePayPalOrder(ctx context.Context, token string) (string, error) {
 		return "", ErrTransactionNotFound
 	}
 
+	wasPending := transaction.Status != domaine.TransactionPaid
 	reportAccessToken := ""
 	if transaction.Status != domaine.TransactionPaid {
 		if transaction.Pid == "" {
@@ -113,6 +124,10 @@ func CapturePayPalOrder(ctx context.Context, token string) (string, error) {
 		return "", err
 	}
 
+	if wasPending && transaction.CacheRecord == nil {
+		sendPaymentConfirmationEmail(transaction.User.Email, transaction.Credits, transaction.Amount, transaction.Token, transaction.CreatedAt)
+	}
+
 	if transaction.CacheRecord != nil {
 
 		if order == nil || order.AccessToken == "" {
@@ -162,6 +177,14 @@ func sendReportEmail(to, accessToken, vin, vehicle string) {
 	go func() {
 		if err := mail_service.SendReport(to, report_service.URL(accessToken), vin, vehicle); err != nil {
 			simple_logger.Errorf("payment: send report email: %v", err)
+		}
+	}()
+}
+
+func sendPaymentConfirmationEmail(to string, credits, amount uint, reference string, purchasedAt time.Time) {
+	go func() {
+		if err := mail_service.SendPaymentConfirmation(to, credits, amount, reference, purchasedAt); err != nil {
+			simple_logger.Errorf("payment: send payment confirmation email: %v", err)
 		}
 	}()
 }

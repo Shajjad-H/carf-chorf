@@ -1,68 +1,206 @@
 {% extends "layouts/base.html" %}
 
-{% block title %}Terms and Conditions{% endblock %}
+{% block title %}Terms of Service{% endblock %}
+
+{% block head %}
+{# Surligne les champs [[...]] restant à compléter. Supprimer ce bloc une fois tout rempli. #}
+<style>.fill-me{background:#FEF3C7;color:#78350F;border-radius:4px;padding:0 4px;font-weight:600}</style>
+{% endblock %}
 
 {% block content %}
-<section class="relative isolate">
-  <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 -top-24 -z-10 flex justify-center overflow-hidden blur-3xl">
-    <div class="aspect-[1108/632] w-[69.25rem] flex-none bg-gradient-to-r from-indigo-200 via-sky-200 to-emerald-200 opacity-40"></div>
+<section class="mx-auto max-w-6xl">
+  {# Navigation entre les documents légaux #}
+  <nav class="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0" aria-label="Legal documents">
+    <div class="inline-flex gap-1 rounded-full border border-line bg-white p-1 text-sm font-medium shadow-sm">
+      <a href="/terms" {% if current_path == '/terms' %}aria-current="page"{% endif %} class="flex-none rounded-full px-4 py-2 transition {% if current_path == '/terms' %}bg-ink-900 text-white{% else %}text-ink-600 hover:bg-soft hover:text-ink-900{% endif %}">Terms</a>
+      <a href="/cgv" {% if current_path == '/cgv' %}aria-current="page"{% endif %} class="flex-none rounded-full px-4 py-2 transition {% if current_path == '/cgv' %}bg-ink-900 text-white{% else %}text-ink-600 hover:bg-soft hover:text-ink-900{% endif %}">Terms of Sale</a>
+      <a href="/privacy" {% if current_path == '/privacy' %}aria-current="page"{% endif %} class="flex-none rounded-full px-4 py-2 transition {% if current_path == '/privacy' %}bg-ink-900 text-white{% else %}text-ink-600 hover:bg-soft hover:text-ink-900{% endif %}">Privacy</a>
+      <a href="/legal-notice" {% if current_path == '/legal-notice' %}aria-current="page"{% endif %} class="flex-none rounded-full px-4 py-2 transition {% if current_path == '/legal-notice' %}bg-ink-900 text-white{% else %}text-ink-600 hover:bg-soft hover:text-ink-900{% endif %}">Legal notice</a>
+    </div>
+  </nav>
+
+  <div class="mt-8 max-w-2xl">
+    <h1 class="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">Terms of Service</h1>
+    <p class="mt-3 text-base leading-7 text-ink-600">The rules for using the site, the free lookup and the reports.</p>
+    <p class="mt-2 text-sm text-ink-400">Last updated: November 5, 2026</p>
   </div>
 
-  <div class="mx-auto max-w-3xl">
-    <div class="text-center">
-      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">Legal</p>
-      <h1 class="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Terms and Conditions</h1>
-      <p class="mt-3 text-sm leading-6 text-slate-600">Last updated: October 25, 2026</p>
-    </div>
+  <div class="mt-8 rounded-[1.75rem] bg-brand-50 p-5 sm:p-7">
+    <p class="text-sm font-semibold text-brand-800">The key points</p>
+    <ul class="mt-4 grid gap-4 text-sm leading-6 text-ink-700 md:grid-cols-2 md:gap-x-8">
+        <li class="flex gap-3">
+          <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-white text-brand-600 shadow-sm"><iconify-icon icon="ph:receipt" class="block h-4 w-4"></iconify-icon></span>
+          <span>Purchases follow the Terms of Sale. Once a report is generated, the sale is final in principle. If you changed your mind, bought the wrong pack, mistyped your VIN or have an issue with the report content, contact us: these requests are reviewed case by case. <a href="#purchases" class="whitespace-nowrap font-semibold text-brand-700 hover:text-brand-600">Read&nbsp;more</a></span>
+        </li>
+        <li class="flex gap-3">
+          <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-white text-brand-600 shadow-sm"><iconify-icon icon="ph:database" class="block h-4 w-4"></iconify-icon></span>
+          <span>Reports come from third-party data providers. They inform your decision, they are not an inspection or a warranty. <a href="#accuracy" class="whitespace-nowrap font-semibold text-brand-700 hover:text-brand-600">Read&nbsp;more</a></span>
+        </li>
+        <li class="flex gap-3">
+          <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-white text-brand-600 shadow-sm"><iconify-icon icon="ph:credit-card" class="block h-4 w-4"></iconify-icon></span>
+          <span>Contact us before opening a payment dispute. Unjustified chargebacks lead to suspension and recovery of costs. <a href="#chargebacks" class="whitespace-nowrap font-semibold text-brand-700 hover:text-brand-600">Read&nbsp;more</a></span>
+        </li>
+        </ul>
+    <p class="mt-5 text-xs text-ink-500">This summary is for convenience. The full text below applies.</p>
+  </div>
 
-    <div class="mt-8 rounded-[2rem] bg-gradient-to-br from-indigo-500/20 via-sky-400/10 to-emerald-400/20 p-px shadow-xl shadow-indigo-500/10">
-      <article class="space-y-8 rounded-[calc(2rem-1px)] bg-white/95 p-6 sm:p-10">
-        <!-- Replace this placeholder legal copy with counsel-approved terms before launch. -->
-        <section>
-          <h2 class="text-lg font-semibold text-slate-900">1. Acceptance of terms</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">
-            By purchasing report credits or using this website, you agree to these terms. If you do not agree, do not use the service.
-          </p>
-        </section>
+  <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-10">
+    <aside class="lg:sticky lg:top-28">
+      <details class="group rounded-2xl border border-line bg-white lg:hidden">
+        <summary class="flex cursor-pointer list-none items-center justify-between px-4 py-3.5 text-sm font-semibold text-ink-900">
+          On this page
+          <iconify-icon icon="ph:caret-down" class="block h-4 w-4 text-ink-400 transition group-open:rotate-180"></iconify-icon>
+        </summary>
+        <nav aria-label="On this page" class="border-t border-line px-2 py-2">
+          <ul class="grid gap-0.5 text-sm">
+            <li><a href="#about" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">1</span>About these Terms</a></li>
+            <li><a href="#service" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">2</span>What the Service does</a></li>
+            <li><a href="#accounts" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">3</span>Accounts and email verification</a></li>
+            <li><a href="#accuracy" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">4</span>Vehicle data and no warranty</a></li>
+            <li><a href="#acceptable-use" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">5</span>Acceptable use and suspension</a></li>
+            <li><a href="#purchases" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">6</span>Purchases, delivery and refunds</a></li>
+            <li><a href="#chargebacks" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">7</span>Payment disputes and chargebacks</a></li>
+            <li><a href="#ip" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">8</span>Intellectual property</a></li>
+            <li><a href="#liability" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">9</span>Limitation of liability</a></li>
+            <li><a href="#indemnity" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">10</span>Indemnity</a></li>
+            <li><a href="#privacy" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">11</span>Privacy</a></li>
+            <li><a href="#changes" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">12</span>Changes to these Terms</a></li>
+            <li><a href="#misc" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">13</span>General provisions</a></li>
+            <li><a href="#disputes" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">14</span>Disputes</a></li>
+            <li><a href="#contact" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">15</span>Contact</a></li>
+          </ul>
+        </nav>
+      </details>
+      <nav class="hidden lg:block" aria-label="On this page">
+        <p class="px-3 text-sm font-semibold text-ink-900">On this page</p>
+        <ul class="mt-3 space-y-0.5 border-l border-line text-sm">
+          <li><a href="#about" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">1</span>About these Terms</a></li>
+          <li><a href="#service" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">2</span>What the Service does</a></li>
+          <li><a href="#accounts" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">3</span>Accounts and email verification</a></li>
+          <li><a href="#accuracy" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">4</span>Vehicle data and no warranty</a></li>
+          <li><a href="#acceptable-use" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">5</span>Acceptable use and suspension</a></li>
+          <li><a href="#purchases" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">6</span>Purchases, delivery and refunds</a></li>
+          <li><a href="#chargebacks" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">7</span>Payment disputes and chargebacks</a></li>
+          <li><a href="#ip" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">8</span>Intellectual property</a></li>
+          <li><a href="#liability" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">9</span>Limitation of liability</a></li>
+          <li><a href="#indemnity" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">10</span>Indemnity</a></li>
+          <li><a href="#privacy" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">11</span>Privacy</a></li>
+          <li><a href="#changes" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">12</span>Changes to these Terms</a></li>
+          <li><a href="#misc" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">13</span>General provisions</a></li>
+          <li><a href="#disputes" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">14</span>Disputes</a></li>
+          <li><a href="#contact" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">15</span>Contact</a></li>
+        </ul>
+      </nav>
+      <p class="mt-6 hidden px-3 text-xs leading-5 text-ink-500 lg:block">Questions? <a href="/contact" class="font-semibold text-brand-700 hover:text-brand-600">Contact us</a></p>
+    </aside>
 
-        <section>
-          <h2 class="text-lg font-semibold text-slate-900">2. Credits and purchases</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">
-            Report credits are prepaid and are added to your account after payment is confirmed. Credits are not a cash balance and have no cash value.
-          </p>
-        </section>
-
-        <section>
-          <h2 class="text-lg font-semibold text-slate-900">3. Reports and vehicle data</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">
-            Vehicle history information is supplied by third-party data providers. We do not guarantee that a report is complete, accurate, or available for every vehicle.
-          </p>
-        </section>
-
-        <section>
-          <h2 class="text-lg font-semibold text-slate-900">4. Payments</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">
-            Payments are processed by our payment provider. By completing a purchase, you authorize the charge for the selected package.
-          </p>
-        </section>
-
-        <section>
-          <h2 class="text-lg font-semibold text-slate-900">5. Refunds</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">
-            Refund requests are reviewed individually. Credits that have already been used to retrieve a report are generally non-refundable.
-          </p>
-        </section>
-
-        <section>
-          <h2 class="text-lg font-semibold text-slate-900">6. Contact</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">
-            Questions about these terms can be sent through our
-            <a href="/contact" class="font-semibold text-indigo-600 transition hover:text-indigo-500">contact page</a>.
-          </p>
-        </section>
-
-      </article>
-    </div>
+    <article class="card min-w-0 space-y-8 p-5 sm:p-8">
+      <section id="about" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">1</span>
+          <span>About these Terms</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>These Terms of Service govern your access to and use of <span class="fill-me">[[SITE_DOMAIN]]</span> (the “Site”) and the related services (the “Service”), operated by <span class="fill-me">[[COMPANY_NAME]]</span> (“we”, “us”, “our”). Our full company details are in the <a href="/legal-notice" class="font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-600">Legal Notice</a>.</p><p>Purchases are also governed by our <a href="/cgv" class="font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-600">Terms of Sale</a>. Our <a href="/privacy" class="font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-600">Privacy Policy</a> explains how we handle personal data. Together, these documents form the agreement between you and us.</p><p>By using the Service, you accept these Terms. If you do not agree, do not use the Service.</p></div>
+      </section>
+      <section id="service" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">2</span>
+          <span>What the Service does</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>The Service lets you check a vehicle for free by VIN, or by US license plate and state, to see basic vehicle information and how many records are available. You can then buy prepaid credits. One credit unlocks one vehicle history report, delivered digitally.</p><p>Reports are compiled from information supplied by third-party data providers. We do not create, edit or verify the underlying records.</p></div>
+      </section>
+      <section id="accounts" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">3</span>
+          <span>Accounts and email verification</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>Access is verified with a one-time code sent to the email address you provide. If the address is not yet registered, an account is created for it automatically. There is no password to manage.</p><p>You are responsible for keeping access to your inbox secure and for all activity carried out through your account. Tell us promptly if you believe someone else has accessed it. We may refuse, suspend or close an account in the cases described in these Terms.</p></div>
+      </section>
+      <section id="accuracy" class="scroll-mt-28 rounded-2xl border border-amber-200 bg-amber-50/70 p-5 sm:p-6">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-amber-200 text-amber-900">4</span>
+          <span>Vehicle data and no warranty<span class="ml-2 inline-flex translate-y-[-1px] items-center rounded-full bg-amber-200 px-2 py-0.5 align-middle text-[11px] font-semibold text-amber-900">Important</span></span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-700 sm:pl-10"><p>Reports reflect the records available from our data providers at the time the report is generated. Not every event is reported to those providers, so records may be incomplete, inaccurate, delayed or missing. The absence of a record does not mean an event did not occur. Reports are not updated after they are generated.</p><p>A report is an information tool. It is not a mechanical inspection, an appraisal, a warranty, a guarantee of title, or legal or financial advice. Before buying a vehicle, have it inspected by a qualified mechanic and check its title, registration and odometer independently. The decision to buy, sell or price a vehicle is yours alone.</p><p>To the maximum extent permitted by law, the Service and the reports are provided “as is” and “as available”, without any express or implied warranty, including of accuracy, completeness, merchantability or fitness for a particular purpose. The legal guarantees that consumers cannot waive are not affected.</p></div>
+      </section>
+      <section id="acceptable-use" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">5</span>
+          <span>Acceptable use and suspension</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>You must be 18 or older to use the Service.</p><p>While a chargeback or payment dispute is open, we may suspend your account, including access to your reports and remaining credits, until it is resolved.</p><p>We may close an account and cancel pending orders in case of an abusive chargeback, suspected fraud or unauthorized payment, automated or abusive use of the Service (including bulk lookups or attempts to bypass our security), or a breach of these Terms or of the law. If we close an account, unused credits are refunded pro rata to the price paid, minus processing and payment fees and any amounts you owe us. No refund is due for an order already reversed through a chargeback.</p></div>
+      </section>
+      <section id="purchases" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">6</span>
+          <span>Purchases, delivery and refunds</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>Orders are governed by our <a href="/cgv" class="font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-600">Terms of Sale</a>. In short: reports and credits are digital and delivered immediately, and orders cannot be cancelled once paid. If you bought the wrong pack, mistyped your VIN or have an issue with the report content, contact us and we will review it case by case. We also correct technical errors. Credits are valid for 4 months. Reports remain available in your account as described in our Terms of Sale.</p></div>
+      </section>
+      <section id="chargebacks" class="scroll-mt-28 rounded-2xl border border-amber-200 bg-amber-50/70 p-5 sm:p-6">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-amber-200 text-amber-900">7</span>
+          <span>Payment disputes and chargebacks<span class="ml-2 inline-flex translate-y-[-1px] items-center rounded-full bg-amber-200 px-2 py-0.5 align-middle text-[11px] font-semibold text-amber-900">Important</span></span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-700 sm:pl-10"><p>If something is wrong with an order, contact us first: we answer quickly and most issues are solved without a dispute.</p><p>If you open a dispute or chargeback for an order that was delivered as described, for example a report that was generated or credits that were used, we will contest it. We will send the payment provider the evidence of your order, including the order details, the IP address used, and the delivery and access logs.</p><p>While a dispute is open, we may suspend your account and your access to reports and remaining credits until it is resolved. If the dispute is decided in our favor, we may recover the amounts owed and the fees and costs reasonably incurred, as permitted by law. If the dispute is abusive, we may also close your account. This does not affect your rights in case of an unauthorized payment.</p></div>
+      </section>
+      <section id="ip" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">8</span>
+          <span>Intellectual property</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>The Site, its software, design, texts, logos, illustrations and the presentation of reports are protected by intellectual property laws and belong to us or our licensors. You must not copy, reproduce, modify, distribute, frame or create derivative works from them without our written permission, except to view, download and print your own reports for your personal use.</p></div>
+      </section>
+      <section id="liability" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">9</span>
+          <span>Limitation of liability</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>To the maximum extent permitted by law, we are not liable for indirect or consequential losses, including any loss related to buying, selling or pricing a vehicle. Our total liability for any order is limited to the amount you paid for it.</p></div>
+      </section>
+      <section id="indemnity" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">10</span>
+          <span>Indemnity</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>You agree to indemnify and hold harmless us, our officers and our providers against any claim, loss, liability, penalty and reasonable cost, including legal fees, arising from your breach of these Terms, your misuse of the Service or a report, or your violation of any law or third-party right.</p></div>
+      </section>
+      <section id="privacy" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">11</span>
+          <span>Privacy</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>Our <a href="/privacy" class="font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-600">Privacy Policy</a> explains what personal data we collect, why, and your rights.</p></div>
+      </section>
+      <section id="changes" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">12</span>
+          <span>Changes to these Terms</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>We may update these Terms. The date at the top of this page shows the latest version. We will give reasonable notice of material changes. Continued use of the Service after a change means you accept the new version. Each order remains governed by the version in force when it was placed.</p></div>
+      </section>
+      <section id="misc" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">13</span>
+          <span>General provisions</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>If a provision of these Terms is held invalid, the rest remains in force. Our failure to enforce a provision is not a waiver of it. We may transfer our rights and obligations under these Terms to another company, provided your rights are not reduced. You may not transfer yours without our consent.</p></div>
+      </section>
+      <section id="disputes" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">14</span>
+          <span>Disputes</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>If you have a problem, contact us first. You agree to give us 30 days to resolve it before starting any payment dispute or legal action. This does not affect any rights you have under mandatory law.</p></div>
+      </section>
+      <section id="contact" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">15</span>
+          <span>Contact</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>Questions about these Terms: use our <a href="/contact" class="font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-600">contact page</a> or write to <span class="fill-me">[[CONTACT_EMAIL]]</span>.</p></div>
+      </section>
+    </article>
   </div>
 </section>
 {% endblock %}

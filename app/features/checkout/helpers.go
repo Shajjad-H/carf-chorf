@@ -12,6 +12,7 @@ import (
 	auth_service "carf-chorf.com/app/app/services/auth"
 	flashes_service "carf-chorf.com/app/app/services/flashes"
 	"carf-chorf.com/app/app/services/user_service"
+	"carf-chorf.com/app/pkg/money"
 	"carf-chorf.com/app/pkg/simple_logger"
 	"github.com/flosch/pongo2/v7"
 )
@@ -51,8 +52,8 @@ func selectedCheckoutCredits(requested uint, record *domaine.CacheRecord, authen
 	if authenticated {
 		return requested
 	}
-	if requested == 1 && record != nil {
-		return 1
+	if record != nil {
+		return requested
 	}
 	return 0
 }
@@ -77,13 +78,20 @@ func checkoutPageContext(token string, requested, selected uint, record *domaine
 	if user != nil {
 		ctx["user_credits"] = user.Credits
 	}
+	if tier, ok := ProTierFor(selected); ok {
+		total, _ := ProTotalCents(selected)
+		ctx["is_pro"] = true
+		ctx["pro_credits"] = selected
+		ctx["pro_per_report"] = money.FormatCents(tier.PerReportCents)
+		ctx["pro_total"] = money.FormatCents(total)
+	}
 
 	return ctx
 }
 
 func parsePurchaseRequest(r *http.Request) PurchaseRequest {
 	req := PurchaseRequest{
-		Credits:       parseCredits(r.PostFormValue("credits")),
+		Credits:       parseCreditCount(r.PostFormValue("credits")),
 		Email:         r.PostFormValue("email"),
 		ConfirmEmail:  r.PostFormValue("confirm_email"),
 		Token:         r.PostFormValue("token"),
@@ -98,8 +106,6 @@ func handlePurchaseError(w http.ResponseWriter, r *http.Request, req PurchaseReq
 	case errors.Is(err, ErrInactiveUser) && authenticated:
 		_ = auth_service.ClearCurrent(w, r)
 		redirectToLogin(w, r, req, "Please log in again.")
-	case errors.Is(err, ErrGuestCredits):
-		redirectToLogin(w, r, req, "Please log in to purchase 2 or 4 credits.")
 	case errors.Is(err, ErrVehicleNotFound):
 		redirectWithFlash(w, r, "/", "Vehicle record not found. Please run a new lookup.")
 	default:
@@ -118,13 +124,11 @@ func redirectWithFlash(w http.ResponseWriter, r *http.Request, target, message s
 	http.Redirect(w, r, target, http.StatusSeeOther)
 }
 
-// parseCredits returns 0 unless the value matches a catalog package.
-func parseCredits(raw string) uint {
+// parseCreditCount parses a requested quantity. Validity is checked by the
+// caller against public packs and pro tiers.
+func parseCreditCount(raw string) uint {
 	credits, err := strconv.ParseUint(strings.TrimSpace(raw), 10, 32)
 	if err != nil {
-		return 0
-	}
-	if _, ok := Find(uint(credits)); !ok {
 		return 0
 	}
 	return uint(credits)
@@ -144,6 +148,18 @@ func buildCheckoutURL(token string, credits uint) string {
 		return "/checkout"
 	}
 	return "/checkout?" + query.Encode()
+}
+
+// invalidCreditsMessage explains an unavailable quantity.
+func invalidCreditsMessage(credits uint) string {
+	switch {
+	case credits >= ProMinCredits:
+		return "That pro quantity is not available. Contact us for a custom quote."
+	case credits > 0:
+		return "Pro pricing starts at 10 reports. Choose a regular pack."
+	default:
+		return "Please select a valid package."
+	}
 }
 
 // purchaseErrorMessage maps internal checkout errors to user-facing copy.

@@ -1,0 +1,115 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Complete your pro order{% endblock %}
+
+{% block content %}
+<section class="mx-auto max-w-5xl">
+  <a href="/pro?reports={{ reports }}" class="inline-flex items-center gap-1 text-sm font-medium text-ink-500 transition hover:text-brand-700">
+    <iconify-icon icon="ph:caret-left" class="block h-4 w-4"></iconify-icon>
+    Back to pro pricing
+  </a>
+
+  <div class="mt-4 max-w-2xl">
+    <p class="eyebrow">Pro order</p>
+    <h1 class="mt-2 text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">Confirm your volume order</h1>
+    <p class="mt-3 text-sm leading-6 text-ink-600">You are buying {{ reports }} credits. One credit unlocks one report, whenever you need it.</p>
+  </div>
+
+  <form id="pro-checkout-form" method="POST" action="/pro/checkout"
+    class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start"
+    x-data="{ termsAccepted: false, submitting: false }" @submit="submitting = true">
+    {% include "components/forms/csrf.html" %}
+    <input type="hidden" name="reports" value="{{ reports }}" />
+
+    <div class="card p-6 sm:p-8">
+      <h2 class="text-lg font-semibold tracking-tight text-ink-900">Billing details</h2>
+
+      {% if authenticated %}
+      <div class="mt-4 flex items-center gap-3 rounded-2xl bg-soft/70 p-4">
+        <span class="grid h-10 w-10 flex-none place-items-center rounded-xl bg-white text-brand-600 shadow-sm ring-1 ring-line">
+          <iconify-icon icon="ph:user-circle" class="block h-5 w-5"></iconify-icon>
+        </span>
+        <div class="min-w-0">
+          <p class="text-sm font-semibold text-ink-900">{{ current_user_email }}</p>
+          <p class="mt-0.5 text-xs text-ink-500">Credits will be added to this account.</p>
+        </div>
+      </div>
+      {% else %}
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="email" class="block text-sm font-medium text-ink-700">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required
+            inputmode="email" autocapitalize="off" spellcheck="false"
+            placeholder="you@example.com" class="field mt-2" />
+        </div>
+        <div>
+          <label for="confirm_email" class="block text-sm font-medium text-ink-700">Confirm email</label>
+          <input id="confirm_email" name="confirm_email" type="email" autocomplete="email" required
+            inputmode="email" autocapitalize="off" spellcheck="false"
+            placeholder="you@example.com" class="field mt-2" />
+        </div>
+      </div>
+      <p class="mt-2 text-xs text-ink-400">New email? We create your account automatically. You can log in later.</p>
+      {% endif %}
+
+      <div class="mt-6 border-t border-line pt-6">
+        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-line bg-soft/50 p-4 text-sm text-ink-700 transition hover:border-brand-200">
+          <input id="pro-terms" type="checkbox" name="terms" x-model="termsAccepted" required class="peer sr-only" />
+          <span class="mt-px inline-flex h-6 w-6 flex-none items-center justify-center rounded-md border-2 border-ink-300 bg-white text-transparent transition peer-checked:border-emerald-500 peer-checked:bg-emerald-500 peer-checked:text-white peer-focus-visible:ring-4 peer-focus-visible:ring-brand-500/20">
+            <iconify-icon icon="ph:check-bold" class="block h-3.5 w-3.5" aria-hidden="true"></iconify-icon>
+          </span>
+          <span class="leading-6">
+            I agree to the
+            <a href="/terms" target="_blank" rel="noopener" @click.stop class="font-semibold text-brand-700 underline underline-offset-2 hover:text-brand-600">Terms of Service</a>
+            and
+            <a href="/cgv" target="_blank" rel="noopener" @click.stop class="font-semibold text-brand-700 underline underline-offset-2 hover:text-brand-600">Terms of Sale</a>.
+          </span>
+        </label>
+      </div>
+
+      <div class="mt-5 rounded-xl border border-line bg-soft/60 p-3">
+        <div class="cf-turnstile w-full" data-sitekey="{{ turnstile_site_key }}" data-theme="light" data-size="flexible"></div>
+      </div>
+    </div>
+
+    <aside class="lg:sticky lg:top-28">
+      <div class="relative isolate overflow-hidden rounded-[1.75rem] bg-[linear-gradient(135deg,#0B1220_0%,#0A3AA8_55%,#155DFC_100%)] p-6 text-white shadow-lift">
+        <span aria-hidden="true" class="pointer-events-none absolute -right-16 -top-16 -z-10 h-40 w-40 rounded-full bg-white/10 blur-2xl"></span>
+        <span aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.04)_0_1px,transparent_1px_8px)]"></span>
+
+        <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/60">Your order</p>
+        <p class="mt-3 text-2xl font-bold tracking-tight">{{ reports }} reports</p>
+
+        <div class="mt-5 space-y-3 border-t border-white/15 pt-5 text-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-white/60">Price per report</span>
+            <span class="font-semibold tabular-nums">{{ quote.PerReport }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-white/60">Total</span>
+            <span class="text-xl font-bold tabular-nums">{{ quote.Total }}</span>
+          </div>
+        </div>
+
+        {% if quote.SavingsPercent > 0 %}
+        <p class="mt-4 inline-flex rounded-full bg-amber-300 px-2.5 py-1 text-xs font-bold text-ink-900">Save {{ quote.SavingsPercent }}% vs single reports</p>
+        {% endif %}
+
+        <button type="submit" :disabled="!termsAccepted || submitting"
+          class="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-semibold text-brand-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-brand-50 disabled:cursor-not-allowed disabled:opacity-60">
+          <span x-show="!submitting">Continue to payment · {{ quote.Total }}</span>
+          <span x-show="submitting" x-cloak>Creating transaction...</span>
+        </button>
+        <a href="/pro?reports={{ reports }}" class="mt-3 block text-center text-xs font-semibold text-white/70 transition hover:text-white">Change quantity</a>
+        <p class="mt-3 text-center text-[11px] text-white/50">Credits valid 4 months · No subscription</p>
+      </div>
+
+      <p class="mt-3 px-1 text-xs leading-5 text-ink-500">One credit = one report. Credits are added to your account after payment. This purchase does not require a vehicle lookup.</p>
+    </aside>
+  </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+{% endblock %}

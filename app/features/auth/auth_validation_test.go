@@ -49,6 +49,8 @@ func TestSafeNext(t *testing.T) {
 		"//evil.example",
 		"/\\evil.example",
 		"/%5cevil.example",
+		"/%2f%2fevil.example",
+		"/%255cevil.example",
 		"evil.example",
 		"javascript:alert(1)",
 	}

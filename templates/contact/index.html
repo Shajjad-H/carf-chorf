@@ -3,135 +3,116 @@
 {% block title %}Contact us{% endblock %}
 
 {% block content %}
-<section class="relative isolate">
-  <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 -top-32 -z-10 flex justify-center overflow-hidden blur-3xl">
-    <div class="aspect-[1108/632] w-[69.25rem] flex-none bg-gradient-to-r from-indigo-100 via-sky-100 to-emerald-100 opacity-60"></div>
-  </div>
+<section class="mx-auto max-w-5xl">
+  <div class="grid gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-start lg:gap-10">
+    <div>
+      <p class="eyebrow">Contact</p>
+      <h1 class="mt-3 text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">How can we help?</h1>
+      <p class="mt-3 max-w-md text-sm leading-7 text-ink-600">
+        Questions about a report, a payment or your account? Send us a message and we will get back to you.
+      </p>
 
-  <div class="mx-auto max-w-5xl">
-    <div class="grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-start">
-      <div class="lg:pt-2">
-        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">Contact</p>
-        <h1 class="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">How can we help?</h1>
-        <p class="mt-3 max-w-md text-sm leading-7 text-slate-600">
-          Questions about a report, a payment, or your account? Send us a message and we'll get back to you.
-        </p>
-
-        <div class="mt-8 space-y-3">
-          <div class="flex gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <span class="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="9" />
-                <path d="M12 7v5l3 2" />
-              </svg>
+      <div class="mt-8 hidden space-y-3 lg:block">
+        <div class="card p-4">
+          <div class="flex gap-3">
+            <span class="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+              <iconify-icon icon="ph:clock" class="h-4 w-4"></iconify-icon>
             </span>
             <div>
-              <p class="text-sm font-medium text-slate-900">Quick response</p>
-              <p class="mt-0.5 text-xs leading-5 text-slate-500">We usually reply within one business day.</p>
-            </div>
-          </div>
-
-          <div class="flex gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <span class="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-sky-50 text-sky-600">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
-                <path d="M14 2v6h6" />
-              </svg>
-            </span>
-            <div>
-              <p class="text-sm font-medium text-slate-900">Reports &amp; orders</p>
-              <p class="mt-0.5 text-xs leading-5 text-slate-500">Include the VIN or order date to help us find it faster.</p>
-            </div>
-          </div>
-
-          <div class="flex gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <span class="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-            </span>
-            <div>
-              <p class="text-sm font-medium text-slate-900">Account &amp; credits</p>
-              <p class="mt-0.5 text-xs leading-5 text-slate-500">Use the email connected to your account so we can help.</p>
+              <p class="text-sm font-medium text-ink-900">Quick response</p>
+              <p class="mt-0.5 text-xs leading-5 text-ink-500">We usually reply within one business day.</p>
             </div>
           </div>
         </div>
 
-        <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
-          <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Quick links</p>
-          <div class="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm">
-            <a href="/pricing" class="font-medium text-slate-600 transition hover:text-slate-900">Pricing</a>
-            {% if authenticated %}
-            <a href="/dashboard" class="font-medium text-slate-600 transition hover:text-slate-900">Dashboard</a>
-            {% else %}
-            <a href="/login" class="font-medium text-slate-600 transition hover:text-slate-900">Log in</a>
-            {% endif %}
-            <a href="/terms" class="font-medium text-slate-600 transition hover:text-slate-900">Terms</a>
+        <div class="card p-4">
+          <div class="flex gap-3">
+            <span class="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+              <iconify-icon icon="ph:file-text" class="h-4 w-4"></iconify-icon>
+            </span>
+            <div>
+              <p class="text-sm font-medium text-ink-900">Reports &amp; orders</p>
+              <p class="mt-0.5 text-xs leading-5 text-ink-500">Include the VIN or order date to help us find it faster.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-4">
+          <div class="flex gap-3">
+            <span class="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+              <iconify-icon icon="ph:user" class="h-4 w-4"></iconify-icon>
+            </span>
+            <div>
+              <p class="text-sm font-medium text-ink-900">Account &amp; credits</p>
+              <p class="mt-0.5 text-xs leading-5 text-ink-500">Use the email connected to your account so we can help.</p>
+            </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <div>
-          <h2 class="text-base font-semibold text-slate-900">Send a message</h2>
-          <p class="mt-1 text-sm text-slate-500">Tell us what you need and we'll take it from there.</p>
-        </div>
+    <div class="card p-6 sm:p-8">
+      <h2 class="text-base font-semibold text-ink-900">Send a message</h2>
+      <p class="mt-1 text-sm text-ink-500">Tell us what you need and we will take it from there.</p>
 
-        <form method="POST" action="/contact" class="mt-6 space-y-5" x-data="{ sending: false }" @submit="sending = true">
-          {% include "components/forms/csrf.html" %}
+      <form method="POST" action="/contact" class="mt-6 space-y-5" x-data="{ sending: false }" @submit="sending = true">
+        {% include "components/forms/csrf.html" %}
 
-          <div class="grid gap-5 sm:grid-cols-2">
-            <div>
-              <label for="email" class="block text-sm font-medium text-slate-700">Email</label>
-              <input id="email" name="email" type="email" autocomplete="email" required value="{{ form.email }}"
-                class="mt-2 w-full rounded-lg border {% if field_errors.email %}border-red-300{% else %}border-slate-200{% endif %} bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
-                placeholder="you@example.com" />
-              {% if authenticated %}
-              <p class="mt-1.5 text-xs text-slate-400">Using your signed-in account email.</p>
-              {% endif %}
-              {% if field_errors.email %}
-              <p class="mt-2 text-sm text-red-600" role="alert">{{ field_errors.email }}</p>
-              {% endif %}
-            </div>
-
-            <div>
-              <label for="phone" class="block text-sm font-medium text-slate-700">
-                Phone <span class="font-normal text-slate-400">(US)</span>
-              </label>
-              <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required value="{{ form.phone }}"
-                class="mt-2 w-full rounded-lg border {% if field_errors.phone %}border-red-300{% else %}border-slate-200{% endif %} bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
-                placeholder="+1 (555) 123-4567" />
-              {% if field_errors.phone %}
-              <p class="mt-2 text-sm text-red-600" role="alert">{{ field_errors.phone }}</p>
-              {% endif %}
-            </div>
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label for="email" class="block text-sm font-medium text-ink-700">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required value="{{ form.email }}"
+              class="field {% if field_errors.email %}field-error{% endif %} mt-2" placeholder="you@example.com" />
+            {% if authenticated %}
+            <p class="mt-1.5 text-xs text-ink-400">Using your signed-in account email.</p>
+            {% endif %}
+            {% if field_errors.email %}
+            <p class="mt-2 text-sm text-red-600" role="alert">{{ field_errors.email }}</p>
+            {% endif %}
           </div>
 
           <div>
-            <div class="flex items-center justify-between gap-4">
-              <label for="message" class="block text-sm font-medium text-slate-700">Message</label>
-              <span class="text-xs text-slate-400">10–2000 characters</span>
-            </div>
-            <textarea id="message" name="message" rows="6" required minlength="10" maxlength="2000"
-              class="mt-2 w-full resize-y rounded-lg border {% if field_errors.message %}border-red-300{% else %}border-slate-200{% endif %} bg-white px-3.5 py-2.5 text-sm leading-6 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
-              placeholder="How can we help?">{{ form.message }}</textarea>
-            {% if field_errors.message %}
-            <p class="mt-2 text-sm text-red-600" role="alert">{{ field_errors.message }}</p>
+            <label for="phone" class="block text-sm font-medium text-ink-700">
+              Phone <span class="font-normal text-ink-400">(US)</span>
+            </label>
+            <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required value="{{ form.phone }}"
+              class="field {% if field_errors.phone %}field-error{% endif %} mt-2" placeholder="+1 (555) 123-4567" />
+            {% if field_errors.phone %}
+            <p class="mt-2 text-sm text-red-600" role="alert">{{ field_errors.phone }}</p>
             {% endif %}
           </div>
+        </div>
 
-          <div class="flex flex-col-reverse items-stretch gap-4 border-t border-slate-100 pt-5 sm:flex-row sm:items-center sm:justify-between">
-            <p class="text-xs text-slate-400">By sending, you agree to our <a href="/terms" class="underline transition hover:text-slate-600">Terms</a>.</p>
-            <button type="submit" :disabled="sending"
-              class="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/25 disabled:cursor-not-allowed disabled:opacity-70">
-              <span x-show="!sending">Send message</span>
-              <span x-show="sending" x-cloak>Sending…</span>
-            </button>
+        <div>
+          <div class="flex items-center justify-between gap-4">
+            <label for="message" class="block text-sm font-medium text-ink-700">Message</label>
+            <span class="text-xs text-ink-400">10–2000 characters</span>
           </div>
-        </form>
-      </div>
+          <textarea id="message" name="message" rows="6" required minlength="10" maxlength="2000"
+            class="field {% if field_errors.message %}field-error{% endif %} mt-2 resize-y leading-6"
+            placeholder="How can we help?">{{ form.message }}</textarea>
+          {% if field_errors.message %}
+          <p class="mt-2 text-sm text-red-600" role="alert">{{ field_errors.message }}</p>
+          {% endif %}
+        </div>
+
+        <div class="w-full min-w-0 overflow-hidden rounded-xl bg-soft/70 p-2.5">
+          <div class="cf-turnstile w-full" data-sitekey="{{ turnstile_site_key }}" data-theme="light" data-size="flexible"></div>
+        </div>
+
+        <div class="flex flex-col-reverse items-stretch gap-4 border-t border-line pt-5 sm:flex-row sm:items-center sm:justify-between">
+          <p class="text-xs text-ink-400">By sending, you agree to our <a href="/terms" class="underline transition hover:text-ink-600">Terms</a>.</p>
+          <button type="submit" :disabled="sending" class="btn-primary">
+            <span x-show="!sending">Send message</span>
+            <span x-show="sending" x-cloak>Sending...</span>
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 {% endblock %}

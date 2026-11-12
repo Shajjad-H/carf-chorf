@@ -1,0 +1,17 @@
+{# Correctif global de centrage et de taille des icônes Iconify. #}
+<style>
+  iconify-icon { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; line-height: 1; vertical-align: -0.125em; }
+  iconify-icon.block { display: flex; }
+  iconify-icon.hidden { display: none; }
+  iconify-icon.h-3 { font-size: 0.75rem; }
+  iconify-icon.h-3\.5 { font-size: 0.875rem; }
+  iconify-icon.h-4 { font-size: 1rem; }
+  iconify-icon.h-\[18px\] { font-size: 18px; }
+  iconify-icon.h-5 { font-size: 1.25rem; }
+  iconify-icon.h-6 { font-size: 1.5rem; }
+  iconify-icon.h-7 { font-size: 1.75rem; }
+  iconify-icon.h-8 { font-size: 2rem; }
+  @media (min-width: 640px) {
+    iconify-icon.sm\:block { display: flex; }
+  }
+</style>

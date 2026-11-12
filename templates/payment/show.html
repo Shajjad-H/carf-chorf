@@ -10,114 +10,117 @@
 {% endblock %}
 
 {% block content %}
-<section class="relative isolate"{% if is_pending %} x-data="paymentPage()" data-token="{{ token }}"
+<section class="mx-auto mt-2 max-w-6xl"{% if is_pending %} x-data="paymentPage()" data-token="{{ token }}"
   data-create-order-url="/payment/create-order" data-capture-order-url="/payment/capture-order"{% endif %}>
-  <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 -top-24 -z-10 flex justify-center overflow-hidden blur-3xl">
-    <div class="aspect-[1108/632] w-[69.25rem] flex-none bg-gradient-to-r from-indigo-200 via-sky-200 to-emerald-200 opacity-40"></div>
+  <div class="text-center">
+    <h1 class="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">Payment</h1>
+    <p class="mt-2 text-sm leading-6 text-ink-600">Your transaction is ready. Complete payment to add the credits to your account.</p>
   </div>
 
-  <div class="mx-auto max-w-3xl">
-    <div class="text-center">
-      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">Step 3 of 3</p>
-      <h1 class="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Payment</h1>
-      <p class="mt-3 text-sm leading-6 text-slate-600">Your transaction has been created. Complete payment to add the credits.</p>
-    </div>
+  <ol class="mx-auto mt-4 flex max-w-2xl items-center justify-between gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-400">
+    <li class="flex items-center gap-2"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-brand-500 text-white">✓</span>Vehicle</li>
+    <li class="h-px flex-1 bg-line"></li>
+    <li class="flex items-center gap-2"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-brand-500 text-white">✓</span>Package</li>
+    <li class="h-px flex-1 bg-line"></li>
+    <li class="flex items-center gap-2 text-brand-700"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-brand-500 text-white">3</span>Payment</li>
+  </ol>
 
-    <div class="mt-8 overflow-hidden rounded-3xl border border-slate-200/70 bg-white/80 shadow-xl shadow-slate-200/60 backdrop-blur">
-      <div class="flex items-center justify-between border-b border-slate-200/70 p-6 sm:p-8">
-        <h2 class="text-lg font-semibold text-slate-900">Order summary</h2>
-        <span class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold {% if is_pending %}bg-amber-50 text-amber-700{% else %}bg-emerald-50 text-emerald-700{% endif %}">
-          <span class="h-1.5 w-1.5 rounded-full {% if is_pending %}bg-amber-500{% else %}bg-emerald-500{% endif %}"></span>
-          {{ status }}
-        </span>
+  <div class="mt-6 grid gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
+    <div class="card p-5 sm:p-6">
+      <div class="border-b border-line pb-4">
+        <h2 class="text-base font-semibold text-ink-900">Order summary</h2>
       </div>
 
-      <div class="space-y-4 p-6 sm:p-8">
+      <div class="space-y-4 pt-4">
         <div class="flex items-center justify-between text-sm">
-          <span class="text-slate-500">Credits</span>
-          <span class="font-semibold text-slate-900">{{ credits }} credit{% if credits != 1 %}s{% endif %}</span>
+          <span class="text-ink-500">Credits</span>
+          <span class="font-semibold text-ink-900">{{ credits }} credit{% if credits != 1 %}s{% endif %}</span>
         </div>
         <div class="flex items-center justify-between text-sm">
-          <span class="text-slate-500">Amount</span>
-          <span class="font-semibold text-slate-900">{{ amount }}</span>
+          <span class="text-ink-500">Amount</span>
+          <span class="font-semibold text-ink-900">{{ amount }}</span>
         </div>
         <div class="flex items-center justify-between text-sm">
-          <span class="text-slate-500">Account email</span>
-          <span class="font-medium text-slate-900">{{ email }}</span>
+          <span class="text-ink-500">Account email</span>
+          <span class="max-w-[60%] truncate font-medium text-ink-900">{{ email }}</span>
         </div>
 
         {% if has_vehicle %}
-        <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
-          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Vehicle</p>
-          <p class="mt-2 font-semibold text-slate-900">{% if vehicle %}{{ vehicle }}{% else %}Vehicle record{% endif %}</p>
-          <p class="mt-1 font-mono text-xs uppercase tracking-widest text-slate-500">VIN {{ vin }}</p>
+        <div class="rounded-2xl border border-line bg-soft/60 p-4">
+          <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-400">Vehicle</p>
+          <p class="mt-2 font-semibold text-ink-900">{% if vehicle %}{{ vehicle }}{% else %}Vehicle record{% endif %}</p>
+          <p class="mt-1 font-mono text-xs uppercase tracking-widest text-ink-500">VIN {{ vin }}</p>
           {% if plate %}
-          <p class="mt-1 text-sm text-slate-500">Plate {{ plate }}{% if state %} · {{ state }}{% endif %}</p>
+          <p class="mt-1 text-sm text-ink-500">Plate {{ plate }}{% if state %} · {{ state }}{% endif %}</p>
           {% endif %}
         </div>
         {% endif %}
-
-        {% if is_pending %}
-        <div x-show="errors.length > 0" x-transition.opacity class="rounded-2xl border border-red-200 bg-red-50 p-4">
-          <ul class="space-y-1 text-sm font-medium text-red-700">
-            <template x-for="error in errors" :key="error">
-              <li x-text="error"></li>
-            </template>
-          </ul>
-        </div>
-
-        <div x-show="showCardFields" class="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 sm:p-6">
-          <div class="space-y-4">
-            <div>
-              <label class="mb-2 block text-sm font-medium text-slate-700">Cardholder Name</label>
-              <div id="card-name-field-container"></div>
-            </div>
-            <div>
-              <label class="mb-2 block text-sm font-medium text-slate-700">Card Number</label>
-              <div id="card-number-field-container"></div>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="mb-2 block text-sm font-medium text-slate-700">Expiry Date</label>
-                <div id="card-expiry-field-container"></div>
-              </div>
-              <div>
-                <label class="mb-2 block text-sm font-medium text-slate-700">CVV</label>
-                <div id="card-cvv-field-container"></div>
-              </div>
-            </div>
-          </div>
-
-          <button type="button" @click="submitCard" x-bind:disabled="processing || !sdkReady"
-            class="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60">
-            <span x-show="!processing">Pay {{ amount }}</span>
-            <span x-show="processing">Processing...</span>
-          </button>
-        </div>
-
-        <div x-show="showCardFields" class="relative py-2">
-          <div class="absolute inset-0 flex items-center">
-            <div class="w-full border-t border-slate-200"></div>
-          </div>
-          <div class="relative flex justify-center">
-            <span class="bg-white px-3 text-xs font-medium uppercase tracking-[0.2em] text-slate-400">Or pay with</span>
-          </div>
-        </div>
-
-        <div id="paypal-button-container" class="space-y-3"></div>
-
-        <p x-cloak x-show="!sdkReady" class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
-          Payment is temporarily unavailable. Please try again later.
-        </p>
-        {% endif %}
-
-        {% if not is_pending %}
-        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center">
-          <p class="text-sm font-semibold text-emerald-900">Payment complete</p>
-          <p class="mt-2 text-sm leading-6 text-emerald-800">Your credits have been added to your account.</p>
-        </div>
-        {% endif %}
       </div>
+
+    </div>
+
+    <div class="card p-5 sm:p-6">
+      {% if is_pending %}
+      <h2 class="text-base font-semibold text-ink-900">Payment method</h2>
+      <p class="mt-1 text-sm text-ink-500">Pay with a card or another secure payment method.</p>
+
+      <div x-show="errors.length > 0" x-transition.opacity class="mt-4 rounded-xl border border-red-200 bg-red-50 p-4">
+        <ul class="space-y-1 text-sm font-medium text-red-700">
+          <template x-for="error in errors" :key="error">
+            <li x-text="error"></li>
+          </template>
+        </ul>
+      </div>
+
+      <div x-show="showCardFields" class="mt-5 rounded-2xl border border-line bg-soft/50 p-4 sm:p-5">
+        <div class="space-y-4">
+          <div>
+            <label class="mb-2 block text-sm font-medium text-ink-700">Cardholder name</label>
+            <div id="card-name-field-container"></div>
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-medium text-ink-700">Card number</label>
+            <div id="card-number-field-container"></div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="mb-2 block text-sm font-medium text-ink-700">Expiry date</label>
+              <div id="card-expiry-field-container"></div>
+            </div>
+            <div>
+              <label class="mb-2 block text-sm font-medium text-ink-700">CVV</label>
+              <div id="card-cvv-field-container"></div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" @click="submitCard" x-bind:disabled="processing || !sdkReady" class="btn-primary mt-5 w-full">
+          <span x-show="!processing">Pay {{ amount }}</span>
+          <span x-show="processing">Processing...</span>
+        </button>
+
+        <div class="mt-3 flex items-center justify-center gap-2 rounded-xl bg-brand-50 px-3 py-2.5 text-xs text-brand-700">
+          <iconify-icon icon="ph:lock" class="h-4 w-4 flex-none"></iconify-icon>
+          Secure checkout
+        </div>
+      </div>
+
+      <div x-show="showCardFields" class="relative py-4">
+        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-line"></div></div>
+        <div class="relative flex justify-center"><span class="bg-white px-3 text-[11px] font-medium uppercase tracking-[0.18em] text-ink-400">Or pay with</span></div>
+      </div>
+
+      <div id="paypal-button-container" class="space-y-3"></div>
+
+      <p x-cloak x-show="!sdkReady" class="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+        Payment is temporarily unavailable. Please try again later.
+      </p>
+      {% else %}
+      <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center">
+        <p class="text-sm font-semibold text-emerald-900">Payment complete</p>
+        <p class="mt-2 text-sm leading-6 text-emerald-800">Your credits have been added to your account.</p>
+      </div>
+      {% endif %}
     </div>
   </div>
 </section>

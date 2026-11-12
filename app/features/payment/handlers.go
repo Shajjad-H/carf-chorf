@@ -80,6 +80,7 @@ func Success(w http.ResponseWriter, r *http.Request) {
 		"credits": transaction.Credits,
 		"amount":  money.FormatCents(transaction.Amount),
 		"email":   transaction.User.Email,
+		"balance": transaction.User.Credits,
 	})
 }
 

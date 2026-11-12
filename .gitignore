@@ -35,3 +35,27 @@ PLAN.md
 
 tmp
 var/
+
+# design handoff artifacts
+design-handoff/
+design-handoff.zip
+design-handoff-pages/
+design-handoff-pages.zip
+pricing-cards-pongo2.zip
+pricing-cards-pongo2.zip:Zone.Identifier
+footer-nav-sections-v2.zip
+footer-nav-sections-v2.zip:Zone.Identifier
+favicons.zip
+favicons.zip:Zone.Identifier
+black-legal-auth.zip
+black-legal-auth.zip:Zone.Identifier
+sample-report-page.zip
+sample-report-page.zip:Zone.Identifier
+sample-report-anonymized.html
+sample-report-anonymized.html:Zone.Identifier
+home-report-preview.zip
+home-report-preview.zip:Zone.Identifier
+pro-pricing.zip
+pro-pricing.zip:Zone.Identifier
+pro-home.zip
+pro-home.zip:Zone.Identifier

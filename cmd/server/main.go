@@ -6,6 +6,7 @@ import (
 
 	"carf-chorf.com/app/app/kernel"
 	ip_middleware "carf-chorf.com/app/app/middlewares/ip"
+	security_middleware "carf-chorf.com/app/app/middlewares/security"
 	"carf-chorf.com/app/app/routes"
 	"carf-chorf.com/app/app/services/database"
 	session_service "carf-chorf.com/app/app/services/session"
@@ -21,10 +22,11 @@ func main() {
 
 	r := chi.NewRouter()
 
-	r.Use(middleware.ClientIPFromHeader("X-Forwarded-For"))
+	r.Use(ip_middleware.ResolveClientIP(kernel.Server.TrustedProxies))
 	r.Use(ip_middleware.WriteRemoteAddr)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(security_middleware.Headers)
 
 	if kernel.IsDev() {
 		r.Use(func(next http.Handler) http.Handler {

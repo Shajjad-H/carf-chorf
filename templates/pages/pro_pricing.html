@@ -1,0 +1,237 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Pro pricing{% endblock %}
+
+{% block content %}
+<section class="mx-auto max-w-6xl pb-24 lg:pb-0" x-data="proPricing()"
+  data-initial="{{ initial_reports }}"
+  data-single="{% for p in packages %}{% if p.Credits == 1 %}{{ p.PerCredit }}{% endif %}{% endfor %}">
+
+  {# ================= HERO + CALCULATEUR ================= #}
+  <div class="relative isolate overflow-hidden rounded-[2rem] bg-[#1046D9] px-4 py-6 text-white shadow-[0_30px_70px_-40px_rgba(10,42,143,0.8)] ring-1 ring-inset ring-white/10 sm:px-10 sm:py-12">
+    <span aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(135deg,#0A2A8F_0%,#0F3FCB_38%,#155DFC_72%,#2F6BFF_100%)]"></span>
+    <span aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(50%_80%_at_85%_40%,rgba(120,165,255,0.35),transparent_70%)]"></span>
+    <span aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.035)_0_1px,transparent_1px_9px)] [mask-image:linear-gradient(120deg,black,transparent_70%)]"></span>
+    <span aria-hidden="true" class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent"></span>
+
+    <div class="grid grid-cols-1 gap-5 sm:gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start lg:gap-14">
+      <div>
+        <span class="hidden items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-brand-700 shadow-sm ring-1 ring-white/20 sm:inline-flex">
+          <iconify-icon icon="ph:briefcase-fill" class="block h-3.5 w-3.5 text-brand-600"></iconify-icon>
+          Pro pricing
+        </span>
+        <h1 class="mt-0 text-3xl font-bold leading-[1.1] tracking-tight text-white sm:mt-5 sm:text-5xl">Volume pricing for dealers and pros.</h1>
+        <p class="mt-4 hidden max-w-md text-base leading-7 text-white/75 sm:block">Buy report credits in bulk and pay less for each one. Enter how many you need: your price updates instantly.</p>
+        <p class="mt-2 max-w-md text-sm leading-6 text-white/75 sm:hidden">Enter how many you need: your price updates instantly.</p>
+        <ul class="mt-7 hidden space-y-3 text-sm text-white/85 sm:block">
+          <li class="flex items-center gap-3"><span class="grid h-7 w-7 flex-none place-items-center rounded-full bg-white/12 text-white ring-1 ring-white/15"><iconify-icon icon="ph:stack-bold" class="block h-3.5 w-3.5"></iconify-icon></span>From <span x-text="min" class="font-semibold text-white">10</span> credits, any quantity</li>
+          <li class="flex items-center gap-3"><span class="grid h-7 w-7 flex-none place-items-center rounded-full bg-white/12 text-white ring-1 ring-white/15"><iconify-icon icon="ph:trend-down-bold" class="block h-3.5 w-3.5"></iconify-icon></span>The more you buy, the less each report costs</li>
+          <li class="flex items-center gap-3"><span class="grid h-7 w-7 flex-none place-items-center rounded-full bg-white/12 text-white ring-1 ring-white/15"><iconify-icon icon="ph:folders-bold" class="block h-3.5 w-3.5"></iconify-icon></span>Every report saved in one account</li>
+        </ul>
+      </div>
+
+      {# ---- Calculateur ---- #}
+      <div class="min-w-0 rounded-[1.5rem] bg-white p-4 text-ink-900 shadow-[0_40px_80px_-30px_rgba(5,20,80,0.65)] ring-1 ring-white/60 sm:p-7">
+        <label for="qty" class="text-sm font-semibold text-ink-900">How many reports do you need?</label>
+
+        <div class="mt-3 flex items-stretch gap-2">
+          <button type="button" @click="set(qty - step())" :disabled="qty <= min" aria-label="Fewer credits"
+            class="grid w-12 flex-none place-items-center rounded-xl border border-line bg-white text-ink-700 transition hover:border-brand-300 hover:text-brand-600 disabled:opacity-40">
+            <iconify-icon icon="ph:minus-bold" class="block h-4 w-4"></iconify-icon>
+          </button>
+          <div class="relative min-w-0 flex-1">
+            <input id="qty" type="number" inputmode="numeric" :min="min" step="1" x-model.number="qty" @blur="set(qty)" @keydown.enter.prevent="set(qty)"
+              class="field h-14 w-full min-w-0 text-center text-2xl font-bold tabular-nums [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none" value="25" />
+            <span class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm text-ink-400">credits</span>
+          </div>
+          <button type="button" @click="set(qty + step())" aria-label="More credits"
+            class="grid w-12 flex-none place-items-center rounded-xl border border-line bg-white text-ink-700 transition hover:border-brand-300 hover:text-brand-600">
+            <iconify-icon icon="ph:plus-bold" class="block h-4 w-4"></iconify-icon>
+          </button>
+        </div>
+
+        <input type="range" :min="min" :max="max" step="1" x-model.number="qty" aria-label="Number of credits"
+          class="mt-4 w-full accent-brand-500" />
+        <div class="mt-2 flex flex-wrap gap-2">
+          <template x-for="n in [10, 25, 50, 100, 250, 500]" :key="n">
+            <button type="button" @click="set(n)" x-text="n"
+              :class="qty === n ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-line bg-white text-ink-600 hover:border-brand-200'"
+              class="rounded-full border px-3 py-1 text-xs font-semibold tabular-nums transition"></button>
+          </template>
+        </div>
+
+        {# Résultat #}
+        <div x-show="!quote" class="mt-6 rounded-2xl bg-soft p-4 sm:p-5">
+          <div class="flex items-end justify-between gap-4">
+            <div>
+              <p class="text-xs font-medium text-ink-500">Price per report</p>
+              <p class="mt-1 flex items-baseline gap-2">
+                <span class="text-4xl font-extrabold tracking-tight tabular-nums text-brand-600" x-text="fmt(unit)">$14.99</span>
+                <s class="text-sm text-ink-400 tabular-nums" x-text="fmt(single)">$49.99</s>
+              </p>
+            </div>
+            <div class="text-right">
+              <p class="text-xs font-medium text-ink-500">Total</p>
+              <p class="mt-1 text-xl font-bold tabular-nums" x-text="fmt(total)">$374.75</p>
+            </div>
+          </div>
+          <p class="mt-3 flex items-center gap-2 text-sm font-semibold text-emerald-700">
+            <iconify-icon icon="ph:piggy-bank-fill" class="block h-4 w-4"></iconify-icon>
+            <span>You save <span x-text="fmt(saved)">$875.00</span> (<span x-text="pct">70</span>%) vs single reports</span>
+          </p>
+          {# Incitation au palier suivant #}
+          <button type="button" x-show="next" @click="set(next && next.min)"
+            class="mt-3 flex w-full items-center justify-between gap-3 rounded-xl border border-dashed border-brand-300 bg-white px-3.5 py-2.5 text-left text-sm text-ink-700 transition hover:border-brand-500">
+            <span>Add <strong class="tabular-nums" x-text="toNext">25</strong> more to pay <strong class="text-brand-600 tabular-nums" x-text="next && fmt(next.price)">$12.99</strong> per report</span>
+            <span class="flex-none rounded-full bg-brand-500 px-2.5 py-1 text-xs font-semibold text-white">+<span x-text="toNext">25</span></span>
+          </button>
+        </div>
+
+        {# Au-delà du dernier palier : devis #}
+        <div x-show="quote" x-cloak class="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 sm:p-5">
+          <p class="font-semibold">More than <span x-text="max">500</span> credits?</p>
+          <p class="mt-1">We prepare a custom price for large volumes. Tell us what you need and we reply within one business day.</p>
+        </div>
+
+        <a :href="quote ? '/contact' : '/pro/checkout?reports=' + qty" href="/pro/checkout?reports=25"
+          class="btn-primary mt-5 w-full py-4 text-[15px]">
+          <span x-show="!quote">Buy <span x-text="qty">25</span> credits for <span x-text="fmt(total)">$437.50</span></span>
+          <span x-show="quote" x-cloak>Request a custom quote</span>
+          <iconify-icon icon="ph:arrow-right-bold" class="block h-4 w-4"></iconify-icon>
+        </a>
+        <p class="mt-5 flex items-center justify-center gap-1.5 text-center text-xs text-ink-500">
+          <iconify-icon icon="ph:lock-simple" class="block h-3.5 w-3.5 flex-none text-emerald-600"></iconify-icon>
+          Encrypted checkout
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {# ================= PALIERS (source unique des prix, lue par le calculateur) ================= #}
+  <div class="mt-14">
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p class="eyebrow">Volume tiers</p>
+        <h2 class="section-title mt-2">Your price drops at every tier.</h2>
+      </div>
+      <p class="text-sm text-ink-500">Single report: <span class="font-semibold text-ink-900" x-text="fmt(single)">$49.99</span></p>
+    </div>
+
+    {# Pour changer les prix : modifier data-min, data-max et data-price ici. Le calculateur s'y adapte. #}
+    <ol class="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-6">
+      {% for t in tiers %}
+      <li data-tier data-min="{{ t.MinReports }}" data-max="{{ t.MaxReports }}" data-price="{{ t.PriceNumber }}"
+        :class="isTier({{ t.MinReports }}) ? 'border-brand-500 bg-brand-50 ring-4 ring-brand-500/10' : 'border-line bg-white'" class="rounded-2xl border-2 p-4 transition">
+        <p class="text-xs font-semibold text-ink-500">{{ t.RangeLabel }}</p>
+        <p class="mt-2 text-2xl font-extrabold tracking-tight tabular-nums text-ink-900">{{ t.PerReport }}</p>
+        <p class="text-xs text-ink-500">per report</p>
+      </li>
+      {% endfor %}
+      <li :class="quote ? 'border-amber-400 bg-amber-50 ring-4 ring-amber-300/20' : 'border-dashed border-ink-300 bg-white'" class="col-span-2 rounded-2xl border-2 p-4 transition lg:col-span-1">
+        <p class="text-xs font-semibold text-ink-500" x-text="max + '+'">500+</p>
+        <p class="mt-2 text-2xl font-extrabold tracking-tight text-ink-900">Custom</p>
+        <a href="/contact" class="text-xs font-semibold text-brand-700 hover:text-brand-600">Ask for a quote</a>
+      </li>
+    </ol>
+  </div>
+
+  {# ================= POUR QUI ================= #}
+  <div class="mt-16 grid gap-3 sm:grid-cols-3">
+    <div class="rounded-2xl border border-line bg-white p-5">
+      <iconify-icon icon="ph:storefront" class="block h-6 w-6 text-brand-500"></iconify-icon>
+      <p class="mt-3 font-semibold text-ink-900">Dealers and car lots</p>
+      <p class="mt-1 text-sm leading-6 text-ink-500">Check every trade-in and auction buy before it hits your lot.</p>
+    </div>
+    <div class="rounded-2xl border border-line bg-white p-5">
+      <iconify-icon icon="ph:airplane-tilt" class="block h-6 w-6 text-brand-500"></iconify-icon>
+      <p class="mt-3 font-semibold text-ink-900">Brokers and exporters</p>
+      <p class="mt-1 text-sm leading-6 text-ink-500">Screen vehicles at volume before you commit to shipping.</p>
+    </div>
+    <div class="rounded-2xl border border-line bg-white p-5">
+      <iconify-icon icon="ph:truck" class="block h-6 w-6 text-brand-500"></iconify-icon>
+      <p class="mt-3 font-semibold text-ink-900">Fleet and auction buyers</p>
+      <p class="mt-1 text-sm leading-6 text-ink-500">Keep one account and one balance for all your purchases.</p>
+    </div>
+  </div>
+
+  {# ================= FAQ ================= #}
+  <div class="mt-16 grid gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-12">
+    <div>
+      <p class="eyebrow">Pro FAQ</p>
+      <h2 class="section-title mt-2">Before you buy in bulk.</h2>
+      <p class="mt-3 text-sm leading-6 text-ink-600">Another question? <a href="/contact" class="font-semibold text-brand-700 hover:text-brand-600">Contact us</a>.</p>
+    </div>
+    <div class="divide-y divide-line rounded-2xl border border-line bg-white px-5">
+      <details class="group py-4">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-ink-900">How do bulk credits work?<iconify-icon icon="ph:plus" class="block h-4 w-4 flex-none text-brand-500 transition group-open:rotate-45"></iconify-icon></summary>
+        <p class="mt-2 text-sm leading-6 text-ink-600">Exactly like regular credits: one credit unlocks one report, for any vehicle, whenever you need it. Your balance is shown in your account.</p>
+      </details>
+      <details class="group py-4">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-ink-900">How long are bulk credits valid?<iconify-icon icon="ph:plus" class="block h-4 w-4 flex-none text-brand-500 transition group-open:rotate-45"></iconify-icon></summary>
+        <p class="mt-2 text-sm leading-6 text-ink-600">4 months, like regular credits.</p>
+      </details>
+      <details class="group py-4">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-ink-900">Is there a minimum order?<iconify-icon icon="ph:plus" class="block h-4 w-4 flex-none text-brand-500 transition group-open:rotate-45"></iconify-icon></summary>
+        <p class="mt-2 text-sm leading-6 text-ink-600">Pro pricing starts at <span x-text="min">10</span> credits. For fewer reports, see our <a href="/pricing" class="font-semibold text-brand-700 hover:text-brand-600">regular packs</a>.</p>
+      </details>
+      <details class="group py-4">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-ink-900">Can I get a refund on unused credits?<iconify-icon icon="ph:plus" class="block h-4 w-4 flex-none text-brand-500 transition group-open:rotate-45"></iconify-icon></summary>
+        <p class="mt-2 text-sm leading-6 text-ink-600">Credits follow our <a href="/cgv" class="font-semibold text-brand-700 hover:text-brand-600">Terms of Sale</a>. Buy the volume you expect to use within the validity period.</p>
+      </details>
+    </div>
+  </div>
+
+  {# ================= BARRE MOBILE ================= #}
+  <div class="fixed inset-x-3 bottom-3 z-30 lg:hidden">
+    <div class="flex items-center justify-between gap-3 rounded-2xl border border-line bg-white/95 py-3 pl-4 pr-3 shadow-lift backdrop-blur">
+      <div class="min-w-0">
+        <p class="truncate text-xs text-ink-500"><span x-text="qty">25</span> credits<span x-show="!quote">, <span x-text="fmt(unit)">$14.99</span> each</span></p>
+        <p class="text-lg font-bold leading-tight tabular-nums text-ink-900" x-text="quote ? 'Custom quote' : fmt(total)">$374.75</p>
+      </div>
+      <a :href="quote ? '/contact' : '/pro/checkout?reports=' + qty" href="/pro/checkout?reports=25" class="btn-primary flex-none px-5 py-3 text-sm">
+        <span x-text="quote ? 'Contact us' : 'Buy credits'">Buy credits</span>
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Calculateur de prix pro. Les paliers sont lus dans la liste « Volume tiers » (attributs data-*).
+  function proPricing() {
+    return {
+      tiers: [], min: 10, max: 500, qty: 25, single: 49.99,
+      init() {
+        this.tiers = [...this.$root.querySelectorAll('[data-tier]')].map((el) => ({
+          min: Number(el.dataset.min), max: Number(el.dataset.max), price: Number(el.dataset.price),
+        }));
+        this.min = this.tiers[0].min;
+        this.max = this.tiers[this.tiers.length - 1].max;
+        const initial = Number(this.$root.dataset.initial || 25);
+        if (Number.isFinite(initial)) this.qty = Math.min(this.max, Math.max(this.min, initial));
+        const s = parseFloat((this.$root.dataset.single || '').replace(/[^0-9.]/g, ''));
+        if (s > 0) this.single = s;
+        // Quantité pré-remplie depuis la home : /pro?credits=50
+        const q = parseInt(new URLSearchParams(location.search).get('credits'), 10);
+        if (q > 0) this.set(q);
+      },
+      get quote() { return Number(this.qty) > this.max; },
+      get tier() {
+        const q = Number(this.qty);
+        return this.tiers.find((t) => q >= t.min && q <= t.max) || this.tiers[this.tiers.length - 1];
+      },
+      get unit() { return this.tier.price; },
+      get total() { return Math.round(this.unit * Number(this.qty) * 100) / 100; },
+      get saved() { return Math.max(0, this.single * Number(this.qty) - this.total); },
+      get pct() { return Math.round((this.saved / (this.single * Number(this.qty))) * 100); },
+      get next() { const i = this.tiers.indexOf(this.tier); return this.quote ? null : this.tiers[i + 1] || null; },
+      get toNext() { return this.next ? this.next.min - Number(this.qty) : 0; },
+      isTier(min) { return !this.quote && this.tier && this.tier.min === min; },
+      step() { return Number(this.qty) >= 100 ? 10 : Number(this.qty) >= 50 ? 5 : 1; },
+      set(n) { n = parseInt(n, 10); this.qty = isNaN(n) ? this.min : Math.max(this.min, n); },
+      fmt(n) { return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n || 0); },
+    };
+  }
+</script>
+{% endblock %}

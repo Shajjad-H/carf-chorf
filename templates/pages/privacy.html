@@ -1,0 +1,157 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Privacy Policy{% endblock %}
+
+{% block head %}
+{# Surligne les champs [[...]] restant à compléter. Supprimer ce bloc une fois tout rempli. #}
+<style>.fill-me{background:#FEF3C7;color:#78350F;border-radius:4px;padding:0 4px;font-weight:600}</style>
+{% endblock %}
+
+{% block content %}
+<section class="mx-auto max-w-6xl">
+  {# Navigation entre les documents légaux #}
+  <nav class="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0" aria-label="Legal documents">
+    <div class="inline-flex gap-1 rounded-full border border-line bg-white p-1 text-sm font-medium shadow-sm">
+      <a href="/terms" {% if current_path == '/terms' %}aria-current="page"{% endif %} class="flex-none rounded-full px-4 py-2 transition {% if current_path == '/terms' %}bg-ink-900 text-white{% else %}text-ink-600 hover:bg-soft hover:text-ink-900{% endif %}">Terms</a>
+      <a href="/cgv" {% if current_path == '/cgv' %}aria-current="page"{% endif %} class="flex-none rounded-full px-4 py-2 transition {% if current_path == '/cgv' %}bg-ink-900 text-white{% else %}text-ink-600 hover:bg-soft hover:text-ink-900{% endif %}">Terms of Sale</a>
+      <a href="/privacy" {% if current_path == '/privacy' %}aria-current="page"{% endif %} class="flex-none rounded-full px-4 py-2 transition {% if current_path == '/privacy' %}bg-ink-900 text-white{% else %}text-ink-600 hover:bg-soft hover:text-ink-900{% endif %}">Privacy</a>
+      <a href="/legal-notice" {% if current_path == '/legal-notice' %}aria-current="page"{% endif %} class="flex-none rounded-full px-4 py-2 transition {% if current_path == '/legal-notice' %}bg-ink-900 text-white{% else %}text-ink-600 hover:bg-soft hover:text-ink-900{% endif %}">Legal notice</a>
+    </div>
+  </nav>
+
+  <div class="mt-8 max-w-2xl">
+    <h1 class="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">Privacy Policy</h1>
+    <p class="mt-3 text-base leading-7 text-ink-600">What personal data we collect, why, how long we keep it and your rights.</p>
+    <p class="mt-2 text-sm text-ink-400">Last updated: November 5, 2026</p>
+  </div>
+
+  <div class="mt-8 rounded-[1.75rem] bg-brand-50 p-5 sm:p-7">
+    <p class="text-sm font-semibold text-brand-800">The key points</p>
+    <ul class="mt-4 grid gap-4 text-sm leading-6 text-ink-700 md:grid-cols-2 md:gap-x-8">
+        <li class="flex gap-3">
+          <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-white text-brand-600 shadow-sm"><iconify-icon icon="ph:user-focus" class="block h-4 w-4"></iconify-icon></span>
+          <span>We collect only what we need: your email, your orders, the vehicles you look up, and security data. <a href="#data" class="whitespace-nowrap font-semibold text-brand-700 hover:text-brand-600">Read&nbsp;more</a></span>
+        </li>
+        <li class="flex gap-3">
+          <span class="grid h-8 w-8 flex-none place-items-center rounded-lg bg-white text-brand-600 shadow-sm"><iconify-icon icon="ph:hand-palm" class="block h-4 w-4"></iconify-icon></span>
+          <span>You can access, correct or delete your data, and complain to the CNIL. <a href="#rights" class="whitespace-nowrap font-semibold text-brand-700 hover:text-brand-600">Read&nbsp;more</a></span>
+        </li>
+    </ul>
+    <p class="mt-5 text-xs text-ink-500">This summary is for convenience. The full text below applies.</p>
+  </div>
+
+  <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-10">
+    <aside class="lg:sticky lg:top-28">
+      <details class="group rounded-2xl border border-line bg-white lg:hidden">
+        <summary class="flex cursor-pointer list-none items-center justify-between px-4 py-3.5 text-sm font-semibold text-ink-900">
+          On this page
+          <iconify-icon icon="ph:caret-down" class="block h-4 w-4 text-ink-400 transition group-open:rotate-180"></iconify-icon>
+        </summary>
+        <nav aria-label="On this page" class="border-t border-line px-2 py-2">
+          <ul class="grid gap-0.5 text-sm">
+            <li><a href="#controller" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">1</span>Who is responsible</a></li>
+            <li><a href="#data" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">2</span>What we collect</a></li>
+            <li><a href="#purposes" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">3</span>Why we use it, and on what legal basis</a></li>
+            <li><a href="#recipients" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">4</span>Who receives your data</a></li>
+            <li><a href="#transfers" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">5</span>Transfers outside the EU</a></li>
+            <li><a href="#retention" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">6</span>How long we keep it</a></li>
+            <li><a href="#rights" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">7</span>Your rights</a></li>
+            <li><a href="#cookies" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">8</span>Cookies and local storage</a></li>
+            <li><a href="#security" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">9</span>Security</a></li>
+            <li><a href="#changes" class="flex gap-2 rounded-lg px-2 py-2 text-ink-600 transition hover:bg-soft hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-400">10</span>Changes to this policy</a></li>
+          </ul>
+        </nav>
+      </details>
+      <nav class="hidden lg:block" aria-label="On this page">
+        <p class="px-3 text-sm font-semibold text-ink-900">On this page</p>
+        <ul class="mt-3 space-y-0.5 border-l border-line text-sm">
+          <li><a href="#controller" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">1</span>Who is responsible</a></li>
+          <li><a href="#data" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">2</span>What we collect</a></li>
+          <li><a href="#purposes" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">3</span>Why we use it, and on what legal basis</a></li>
+          <li><a href="#recipients" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">4</span>Who receives your data</a></li>
+          <li><a href="#transfers" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">5</span>Transfers outside the EU</a></li>
+          <li><a href="#retention" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">6</span>How long we keep it</a></li>
+          <li><a href="#rights" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">7</span>Your rights</a></li>
+          <li><a href="#cookies" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">8</span>Cookies and local storage</a></li>
+          <li><a href="#security" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">9</span>Security</a></li>
+          <li><a href="#changes" class="-ml-px flex gap-2 border-l-2 border-transparent py-1.5 pl-3 text-ink-500 transition hover:border-brand-500 hover:text-ink-900"><span class="w-5 flex-none text-right tabular-nums text-ink-300">10</span>Changes to this policy</a></li>
+        </ul>
+      </nav>
+      <p class="mt-6 hidden px-3 text-xs leading-5 text-ink-500 lg:block">Questions? <a href="/contact" class="font-semibold text-brand-700 hover:text-brand-600">Contact us</a></p>
+    </aside>
+
+    <article class="card min-w-0 space-y-8 p-5 sm:p-8">
+      <section id="controller" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">1</span>
+          <span>Who is responsible</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>The data controller is <span class="fill-me">[[COMPANY_NAME]]</span>, <span class="fill-me">[[REGISTERED_ADDRESS]]</span> (see our <a href="/legal-notice" class="font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-600">Legal Notice</a>). For any privacy question or request, write to <span class="fill-me">[[PRIVACY_EMAIL]]</span> or use our <a href="/contact" class="font-semibold text-brand-700 underline decoration-brand-200 underline-offset-2 hover:text-brand-600">contact page</a>.</p></div>
+      </section>
+      <section id="data" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">2</span>
+          <span>What we collect</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><ul class="list-disc space-y-1.5 pl-5"><li><strong>Account and order data</strong>: email address, one-time verification codes (stored in hashed form), orders, credits, reports generated.</li><li><strong>Vehicle lookups</strong>: VIN, or license plate and state, and the vehicle information returned. This information concerns vehicles, we do not look up or provide owner names.</li><li><strong>Payment data</strong>: transaction references and amounts provided by our third-party payment service. We never receive your full card details.</li><li><strong>Support data</strong>: the email address, phone number and message you send through the contact form.</li><li><strong>Technical and security data</strong>: IP address, browser information, logs, and the signals used by Cloudflare Turnstile to block bots.</li><li><strong>On your device only</strong>: the last VINs you looked up, saved in your browser’s local storage so you can reuse them. They are not sent to us, and you can clear them at any time.</li></ul></div>
+      </section>
+      <section id="purposes" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">3</span>
+          <span>Why we use it, and on what legal basis</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><div class="overflow-x-auto rounded-xl border border-line"><table class="w-full min-w-[34rem] text-left text-[13px] leading-6"><thead class="bg-soft"><th class="px-3 py-2.5 text-left font-semibold text-ink-900">Purpose</th><th class="px-3 py-2.5 text-left font-semibold text-ink-900">Legal basis</th></thead><tbody><tr class="border-t border-line align-top"><td class="px-3 py-2.5">Creating your account and verifying your email</td><td class="px-3 py-2.5">Performance of the contract</td></tr><tr class="border-t border-line align-top"><td class="px-3 py-2.5">Running lookups, processing orders, generating and delivering reports, managing credits</td><td class="px-3 py-2.5">Performance of the contract</td></tr><tr class="border-t border-line align-top"><td class="px-3 py-2.5">Sending order confirmations, report links and credit reminders</td><td class="px-3 py-2.5">Performance of the contract</td></tr><tr class="border-t border-line align-top"><td class="px-3 py-2.5">Accounting, invoicing and tax obligations</td><td class="px-3 py-2.5">Legal obligation</td></tr><tr class="border-t border-line align-top"><td class="px-3 py-2.5">Preventing fraud, abuse and chargebacks, securing the Service, defending legal claims</td><td class="px-3 py-2.5">Legitimate interest</td></tr><tr class="border-t border-line align-top"><td class="px-3 py-2.5">Answering your messages</td><td class="px-3 py-2.5">Legitimate interest, or the contract if it concerns an order</td></tr></tbody></table></div></div>
+      </section>
+      <section id="recipients" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">4</span>
+          <span>Who receives your data</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>We share data only with service providers that process it on our behalf (hosting, payment, email delivery, security and vehicle data). Vehicle data providers receive only the VIN or license plate and state. We do not sell your data.</p></div>
+      </section>
+      <section id="transfers" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">5</span>
+          <span>Transfers outside the EU</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>Your data is stored in the United States. These transfers are protected by the European Commission's standard contractual clauses or the EU-US Data Privacy Framework. Contact us for more information.</p></div>
+      </section>
+      <section id="retention" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">6</span>
+          <span>How long we keep it</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><div class="overflow-x-auto rounded-xl border border-line"><table class="w-full min-w-[34rem] text-left text-[13px] leading-6"><thead class="bg-soft"><th class="px-3 py-2.5 text-left font-semibold text-ink-900">Data</th><th class="px-3 py-2.5 text-left font-semibold text-ink-900">Retention</th></thead><tbody><tr class="border-t border-line align-top"><td class="px-3 py-2.5">Account</td><td class="px-3 py-2.5">Until you delete it, or 1 year after your last activity, after notice by email</td></tr><tr class="border-t border-line align-top"><td class="px-3 py-2.5">Orders and invoices</td><td class="px-3 py-2.5">10 years (accounting obligation)</td></tr><tr class="border-t border-line align-top"><td class="px-3 py-2.5">Vehicle lookups and reports</td><td class="px-3 py-2.5">As long as your account is active</td></tr><tr class="border-t border-line align-top"><td class="px-3 py-2.5">Evidence of consent and delivery (chargeback defense)</td><td class="px-3 py-2.5">For the duration of the possible dispute period, then archived as needed for legal claims</td></tr><tr class="border-t border-line align-top"><td class="px-3 py-2.5">Contact messages</td><td class="px-3 py-2.5">3 years after our last exchange</td></tr><tr class="border-t border-line align-top"><td class="px-3 py-2.5">Security logs</td><td class="px-3 py-2.5">12 months</td></tr></tbody></table></div></div>
+      </section>
+      <section id="rights" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">7</span>
+          <span>Your rights</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>You have the right to access, correct and delete your data, to restrict or object to its processing, to data portability, and to give instructions about what happens to your data after your death. Write to <span class="fill-me">[[PRIVACY_EMAIL]]</span>, we may ask you to prove your identity. We reply within one month.</p><p>Deleting your account also deletes access to your reports and unused credits. Data we must keep by law, such as invoices, is archived for the required period.</p><p>You can also lodge a complaint with the French data protection authority, the CNIL (www.cnil.fr).</p></div>
+      </section>
+      <section id="cookies" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">8</span>
+          <span>Cookies and local storage</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>We only use what the Service needs to work: a session cookie to keep you signed in, a security cookie protecting forms (CSRF), the elements needed by Cloudflare Turnstile, and your recent VINs in local storage. These are strictly necessary, so they do not require your consent.</p></div>
+      </section>
+      <section id="security" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">9</span>
+          <span>Security</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>We protect your data with appropriate measures: encrypted connections (HTTPS), hashed verification codes, access restricted to authorized personnel, and bot protection. No system is completely secure, if a breach affects your data, we will inform you and the authorities as required by law.</p></div>
+      </section>
+      <section id="changes" class="scroll-mt-28 ">
+        <h2 class="flex items-start gap-3 text-lg font-semibold tracking-tight text-ink-900">
+          <span class="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg text-xs font-bold tabular-nums bg-soft text-ink-600">10</span>
+          <span>Changes to this policy</span>
+        </h2>
+        <div class="mt-3 space-y-3 text-[15px] leading-7 text-ink-600 sm:pl-10"><p>We may update this policy. The date at the top shows the latest version. We will inform you of any significant change.</p></div>
+      </section>
+    </article>
+  </div>
+</section>
+{% endblock %}

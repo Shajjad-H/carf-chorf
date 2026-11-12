@@ -1,40 +1,342 @@
 {% extends "layouts/base.html" %}
 
-{% block title %}Check a vehicle's CARFAX records{% endblock %}
+{% block title %}Don't Let a Bad Decision Cost You Thousands.{% endblock %}
 
 {% block content %}
-<section class="relative isolate">
-  <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 -top-24 -z-10 flex justify-center overflow-hidden blur-3xl">
-    <div class="aspect-[1108/632] w-[69.25rem] flex-none bg-gradient-to-r from-indigo-200 via-sky-200 to-emerald-200 opacity-40"></div>
+<section id="lookup" class="relative isolate -mt-4 scroll-mt-24 lg:-mt-11">
+
+  <div class="grid items-center gap-10 lg:mx-auto lg:block lg:max-w-3xl">
+    <div>
+      <h1 class="mx-auto mt-4 max-w-2xl text-center text-4xl font-bold leading-[1.08] tracking-tight text-ink-900 sm:mt-0 sm:text-5xl lg:max-w-3xl lg:text-[3.35rem]">
+        Don't Let a <span class="text-brand-500">Bad Decision</span> Cost You <span class="text-brand-500">Thousands.</span>
+      </h1>
+      <p class="mx-auto mt-5 max-w-xl text-center text-base leading-7 text-ink-600 lg:max-w-2xl">
+        Check a VIN or a US license plate to see the vehicle and how many CARFAX records are available. Only pay when you are ready for the full report.
+      </p>
+
+      <div class="card mt-7 p-5 sm:p-6 lg:p-8">
+        {% include "components/vehicle/lookup_form.html" %}
+        <a href="/sample-report" class="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-ink-800 px-4 py-3 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-white/10 transition hover:bg-ink-900">
+          <iconify-icon icon="ph:file-text" class="block h-4 w-4 text-white"></iconify-icon>
+          See a sample report
+          <iconify-icon icon="ph:arrow-right" class="block h-3.5 w-3.5 text-white/80"></iconify-icon>
+        </a>
+        <hr class="mt-4 border-t border-line">
+        <a href="/pro" class="btn-secondary mt-4 w-full">
+          <iconify-icon icon="ph:briefcase" class="block h-4 w-4 text-brand-500"></iconify-icon>
+          Pro pricing
+          <iconify-icon icon="ph:arrow-right" class="block h-3.5 w-3.5 text-ink-400"></iconify-icon>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="mt-16">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <div class="max-w-xl">
+      <p class="eyebrow">Pricing</p>
+      <h2 class="section-title mt-2">Buy only the credits you need.</h2>
+      <p class="mt-3 text-sm leading-7 text-ink-600">One credit unlocks one report. Bundles lower the price per report.</p>
+    </div>
+    <a href="/pricing" class="btn-secondary hidden w-fit sm:inline-flex">See all pricing</a>
   </div>
 
-  <div class="mx-auto max-w-3xl">
-    <div class="text-center">
-      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">Vehicle history, simplified</p>
-      <h1 class="mt-4 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">Check a vehicle's CARFAX records</h1>
-      <p class="mx-auto mt-4 max-w-xl text-base leading-7 text-slate-600">
-        Enter a VIN or a US license plate to see the vehicle and how many CARFAX records are available.
-      </p>
+  <div class="mt-8 grid gap-4 md:grid-cols-3">
+    {% for p in packages %}
+    {% include "components/pricing/price_card.html" %}
+    {% endfor %}
+  </div>
+
+  <a href="/pricing" class="mt-4 flex items-center justify-center gap-1.5 text-sm font-semibold text-brand-600 sm:hidden">
+    See all pricing
+    <iconify-icon icon="ph:arrow-right" class="block h-3.5 w-3.5"></iconify-icon>
+  </a>
+
+  {% include "components/pricing/pro_band.html" %}
+</section>
+
+{# ===================== WHY START HERE : ticket gratuit / 1 crédit ===================== #}
+<section class="mt-24">
+  <div class="max-w-2xl">
+    <p class="eyebrow">Why start here</p>
+    <h2 class="section-title mt-2">Check first. Pay only when it matters.</h2>
+    <p class="mt-3 text-sm leading-7 text-ink-600">Our lookup gives you a useful answer before you commit to a full report. No account required to check.</p>
+  </div>
+
+  <div class="mt-8 grid overflow-hidden rounded-[1.75rem] border border-line bg-white md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+    <div class="p-6 sm:p-8">
+      <div class="flex items-baseline justify-between gap-4">
+        <p class="text-sm font-semibold text-ink-900">Free lookup</p>
+        <p class="text-3xl font-bold tracking-tight text-ink-900">$0</p>
+      </div>
+      <ul class="mt-5 space-y-3 text-sm text-ink-600">
+        <li class="flex gap-3"><iconify-icon icon="ph:check-bold" class="mt-0.5 block h-4 w-4 flex-none text-ink-400"></iconify-icon>Vehicle information from the provider</li>
+        <li class="flex gap-3"><iconify-icon icon="ph:check-bold" class="mt-0.5 block h-4 w-4 flex-none text-ink-400"></iconify-icon>Number of CARFAX records available</li>
+        <li class="flex gap-3"><iconify-icon icon="ph:check-bold" class="mt-0.5 block h-4 w-4 flex-none text-ink-400"></iconify-icon>No account needed</li>
+      </ul>
     </div>
 
-    <div class="mt-10 rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-xl shadow-slate-200/60 backdrop-blur sm:p-8">
-      {% include "components/vehicle/lookup_form.html" %}
+    {# Séparateur pointillé avec encoches, comme un ticket #}
+    <div class="relative flex items-center md:flex-col" aria-hidden="true">
+      <span class="-ml-3 h-6 w-6 flex-none rounded-full border border-line bg-canvas md:-mt-3 md:ml-0"></span>
+      <span class="flex-1 border-t-2 border-dashed border-line md:h-full md:border-l-2 md:border-t-0"></span>
+      <span class="-mr-3 h-6 w-6 flex-none rounded-full border border-line bg-canvas md:-mb-3 md:mr-0"></span>
     </div>
 
-    <div class="mt-10 grid gap-4 sm:grid-cols-3">
-      <div class="rounded-2xl border border-slate-200/70 bg-white/70 p-5">
-        <p class="text-sm font-semibold text-slate-900">Instant check</p>
-        <p class="mt-1 text-sm leading-6 text-slate-600">Records are cached so repeat lookups are fast.</p>
+    <div class="bg-brand-50/60 p-6 sm:p-8">
+      <div class="flex items-baseline justify-between gap-4">
+        <p class="text-sm font-semibold text-brand-800">Full report</p>
+        <p class="text-3xl font-bold tracking-tight text-brand-600">1 credit</p>
       </div>
-      <div class="rounded-2xl border border-slate-200/70 bg-white/70 p-5">
-        <p class="text-sm font-semibold text-slate-900">CARFAX data</p>
-        <p class="mt-1 text-sm leading-6 text-slate-600">Vehicle details come directly from our data provider.</p>
+      <ul class="mt-5 space-y-3 text-sm text-ink-700">
+        <li class="flex gap-3"><iconify-icon icon="ph:check-bold" class="mt-0.5 block h-4 w-4 flex-none text-brand-500"></iconify-icon>Open the report right after payment</li>
+        <li class="flex gap-3"><iconify-icon icon="ph:check-bold" class="mt-0.5 block h-4 w-4 flex-none text-brand-500"></iconify-icon>Keep it in your account for later</li>
+        <li class="flex gap-3"><iconify-icon icon="ph:check-bold" class="mt-0.5 block h-4 w-4 flex-none text-brand-500"></iconify-icon>One credit unlocks one report</li>
+      </ul>
+      <a href="/pricing" class="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 hover:text-brand-600">
+        Compare credit packs
+        <iconify-icon icon="ph:arrow-right-bold" class="block h-3.5 w-3.5"></iconify-icon>
+      </a>
+    </div>
+  </div>
+</section>
+
+{# ===================== WHAT'S INSIDE : sommaire du rapport, 2 colonnes mobile ===================== #}
+<section class="mt-24">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <div class="max-w-2xl">
+      <p class="eyebrow">What's inside</p>
+      <h2 class="section-title mt-2">A report built around the questions that matter.</h2>
+      <p class="mt-3 text-sm leading-7 text-ink-600">Depending on what the provider has on file, your report can include the sections below.</p>
+    </div>
+    <a href="/sample-report" class="inline-flex w-fit flex-none items-center gap-1.5 text-sm font-semibold text-brand-700 hover:text-brand-600">
+      See a sample report
+      <iconify-icon icon="ph:arrow-right-bold" class="block h-3.5 w-3.5"></iconify-icon>
+    </a>
+  </div>
+
+  {# Grille à filets fins : le fond "line" passe entre les cellules #}
+  <div class="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-[1.75rem] border border-line bg-line lg:grid-cols-3">
+    <div class="bg-white p-4 sm:p-6">
+      <iconify-icon icon="ph:car-simple" class="block h-6 w-6 text-brand-500"></iconify-icon>
+      <p class="mt-4 text-sm font-semibold text-ink-900 sm:text-base">Accidents &amp; damage</p>
+      <p class="mt-1 text-xs leading-5 text-ink-500 sm:text-sm sm:leading-6">See recorded damage events and accident history.</p>
+    </div>
+    <div class="bg-white p-4 sm:p-6">
+      <iconify-icon icon="ph:gauge" class="block h-6 w-6 text-brand-500"></iconify-icon>
+      <p class="mt-4 text-sm font-semibold text-ink-900 sm:text-base">Mileage</p>
+      <p class="mt-1 text-xs leading-5 text-ink-500 sm:text-sm sm:leading-6">Check odometer readings and possible inconsistencies.</p>
+    </div>
+    <div class="bg-white p-4 sm:p-6">
+      <iconify-icon icon="ph:users-three" class="block h-6 w-6 text-brand-500"></iconify-icon>
+      <p class="mt-4 text-sm font-semibold text-ink-900 sm:text-base">Ownership</p>
+      <p class="mt-1 text-xs leading-5 text-ink-500 sm:text-sm sm:leading-6">Review ownership and registration history.</p>
+    </div>
+    <div class="bg-white p-4 sm:p-6">
+      <iconify-icon icon="ph:seal-check" class="block h-6 w-6 text-brand-500"></iconify-icon>
+      <p class="mt-4 text-sm font-semibold text-ink-900 sm:text-base">Title &amp; theft</p>
+      <p class="mt-1 text-xs leading-5 text-ink-500 sm:text-sm sm:leading-6">Check title brands, liens and theft records when available.</p>
+    </div>
+    <div class="bg-white p-4 sm:p-6">
+      <iconify-icon icon="ph:engine" class="block h-6 w-6 text-brand-500"></iconify-icon>
+      <p class="mt-4 text-sm font-semibold text-ink-900 sm:text-base">Specs &amp; equipment</p>
+      <p class="mt-1 text-xs leading-5 text-ink-500 sm:text-sm sm:leading-6">Confirm the vehicle details and factory equipment.</p>
+    </div>
+    <div class="bg-white p-4 sm:p-6">
+      <iconify-icon icon="ph:wrench" class="block h-6 w-6 text-brand-500"></iconify-icon>
+      <p class="mt-4 text-sm font-semibold text-ink-900 sm:text-base">Service records</p>
+      <p class="mt-1 text-xs leading-5 text-ink-500 sm:text-sm sm:leading-6">See maintenance and inspection entries when available.</p>
+    </div>
+  </div>
+</section>
+
+{# ===================== HOW IT WORKS : vraie séquence, avec mini-maquettes ===================== #}
+<section class="mt-24">
+  <div class="max-w-2xl">
+    <p class="eyebrow">How it works</p>
+    <h2 class="section-title mt-2">Three steps, no subscription.</h2>
+  </div>
+
+  <ol class="mt-8 grid gap-4 sm:grid-cols-3">
+    <li class="flex gap-4 rounded-2xl border border-line bg-white p-4 sm:block sm:rounded-[1.75rem] sm:p-5">
+      {# Maquette : champ VIN #}
+      <div class="hidden h-28 items-center justify-center rounded-2xl bg-soft px-4 sm:flex" aria-hidden="true">
+        <div class="flex w-full max-w-[13rem] items-center gap-2 rounded-xl border border-line bg-white py-1.5 pl-3 pr-1.5 shadow-sm">
+          <span class="flex-1 truncate font-mono text-[11px] tracking-widest text-ink-700">1HGCM8263…</span>
+          <span class="rounded-lg bg-brand-500 px-2 py-1 text-[10px] font-semibold text-white">Check</span>
+        </div>
       </div>
-      <div class="rounded-2xl border border-slate-200/70 bg-white/70 p-5">
-        <p class="text-sm font-semibold text-slate-900">No signup to check</p>
-        <p class="mt-1 text-sm leading-6 text-slate-600">Create an account only when you are ready to order.</p>
+      <span class="grid h-8 w-8 flex-none place-items-center rounded-full bg-brand-500 text-sm font-bold text-white sm:hidden">1</span>
+      <div>
+      <p class="mt-5 hidden text-xs font-semibold text-brand-600 sm:block">Step 1</p>
+      <p class="text-base font-semibold text-ink-900 sm:mt-1">Check the vehicle</p>
+      <p class="mt-1 text-sm leading-6 text-ink-500">Use a VIN or a plate and state. No account needed.</p>
+      </div>
+    </li>
+    <li class="flex gap-4 rounded-2xl border border-line bg-white p-4 sm:block sm:rounded-[1.75rem] sm:p-5">
+      {# Maquette : choix du pack #}
+      <div class="hidden h-28 items-center justify-center gap-2 rounded-2xl bg-soft sm:flex" aria-hidden="true">
+        <span class="grid h-12 w-10 place-items-center rounded-xl border border-line bg-white text-sm font-semibold text-ink-500">1</span>
+        <span class="grid h-14 w-12 place-items-center rounded-xl border-2 border-brand-500 bg-brand-50 text-base font-bold text-brand-600 shadow-sm">3</span>
+        <span class="grid h-12 w-10 place-items-center rounded-xl border border-line bg-white text-sm font-semibold text-ink-500">5</span>
+      </div>
+      <span class="grid h-8 w-8 flex-none place-items-center rounded-full bg-brand-500 text-sm font-bold text-white sm:hidden">2</span>
+      <div>
+      <p class="mt-5 hidden text-xs font-semibold text-brand-600 sm:block">Step 2</p>
+      <p class="text-base font-semibold text-ink-900 sm:mt-1">Choose your credits</p>
+      <p class="mt-1 text-sm leading-6 text-ink-500">Pay securely. Credits go to your account.</p>
+      </div>
+    </li>
+    <li class="flex gap-4 rounded-2xl border border-line bg-white p-4 sm:block sm:rounded-[1.75rem] sm:p-5">
+      {# Maquette : rapport prêt #}
+      <div class="hidden h-28 items-center justify-center rounded-2xl bg-soft sm:flex" aria-hidden="true">
+        <div class="relative w-32 rounded-xl border border-line bg-white p-3 shadow-sm">
+          <span class="block h-1.5 w-14 rounded-full bg-brand-500"></span>
+          <span class="mt-2 block h-1.5 w-20 rounded-full bg-line"></span>
+          <span class="mt-1.5 block h-1.5 w-16 rounded-full bg-line"></span>
+          <span class="mt-1.5 block h-1.5 w-[4.5rem] rounded-full bg-line"></span>
+          <span class="absolute -right-2.5 -top-2.5 grid h-6 w-6 place-items-center rounded-full bg-emerald-500 text-white ring-4 ring-soft">
+            <iconify-icon icon="ph:check-bold" class="block h-3 w-3"></iconify-icon>
+          </span>
+        </div>
+      </div>
+      <span class="grid h-8 w-8 flex-none place-items-center rounded-full bg-brand-500 text-sm font-bold text-white sm:hidden">3</span>
+      <div>
+      <p class="mt-5 hidden text-xs font-semibold text-brand-600 sm:block">Step 3</p>
+      <p class="text-base font-semibold text-ink-900 sm:mt-1">Open your report</p>
+      <p class="mt-1 text-sm leading-6 text-ink-500">Your report is ready right after payment, and saved in your dashboard.</p>
+      </div>
+    </li>
+  </ol>
+</section>
+
+{# ===================== NO VIN? : anatomie du VIN + où le trouver ===================== #}
+<section id="find-vin" class="mt-24 scroll-mt-24 grid gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-center lg:gap-14">
+  <div>
+    <p class="eyebrow">Where to find it</p>
+    <h2 class="section-title mt-2">No VIN? No problem.</h2>
+    <p class="mt-3 text-sm leading-7 text-ink-600">A VIN is 17 characters. You can usually find it in one of these places, or use the license plate and state instead.</p>
+    <a href="/#lookup" class="btn-secondary mt-6">Start a lookup</a>
+  </div>
+
+  <div class="rounded-[1.75rem] border border-line bg-white p-5 sm:p-7">
+    {# Les 17 caractères, regroupés par rôle #}
+    <p class="text-sm font-semibold text-ink-900">How to read a VIN</p>
+    <div class="mt-4 grid grid-cols-[3fr_5fr_1fr_8fr] gap-1.5" aria-label="Example VIN 1HGCM82633A004352">
+      <div>
+        <div class="grid grid-cols-3 gap-0.5 font-mono text-xs font-semibold sm:text-sm">
+          <span class="grid h-8 place-items-center rounded-md bg-brand-500 text-white sm:h-10">1</span>
+          <span class="grid h-8 place-items-center rounded-md bg-brand-500 text-white sm:h-10">H</span>
+          <span class="grid h-8 place-items-center rounded-md bg-brand-500 text-white sm:h-10">G</span>
+        </div>
+        <p class="mt-2 text-[10px] leading-4 text-ink-500 sm:text-xs">Maker</p>
+      </div>
+      <div>
+        <div class="grid grid-cols-5 gap-0.5 font-mono text-xs font-semibold sm:text-sm">
+          <span class="grid h-8 place-items-center rounded-md bg-brand-100 text-brand-800 sm:h-10">C</span>
+          <span class="grid h-8 place-items-center rounded-md bg-brand-100 text-brand-800 sm:h-10">M</span>
+          <span class="grid h-8 place-items-center rounded-md bg-brand-100 text-brand-800 sm:h-10">8</span>
+          <span class="grid h-8 place-items-center rounded-md bg-brand-100 text-brand-800 sm:h-10">2</span>
+          <span class="grid h-8 place-items-center rounded-md bg-brand-100 text-brand-800 sm:h-10">6</span>
+        </div>
+        <p class="mt-2 text-[10px] leading-4 text-ink-500 sm:text-xs">Model &amp; body</p>
+      </div>
+      <div>
+        <div class="font-mono text-xs font-semibold sm:text-sm">
+          <span class="grid h-8 place-items-center rounded-md bg-amber-100 text-amber-800 sm:h-10">3</span>
+        </div>
+        <p class="mt-2 text-[10px] leading-4 text-ink-500 sm:text-xs">Check</p>
+      </div>
+      <div>
+        <div class="grid grid-cols-8 gap-0.5 font-mono text-xs font-semibold sm:text-sm">
+          <span class="grid h-8 place-items-center rounded-md bg-soft text-ink-700 sm:h-10">3</span>
+          <span class="grid h-8 place-items-center rounded-md bg-soft text-ink-700 sm:h-10">A</span>
+          <span class="grid h-8 place-items-center rounded-md bg-soft text-ink-700 sm:h-10">0</span>
+          <span class="grid h-8 place-items-center rounded-md bg-soft text-ink-700 sm:h-10">0</span>
+          <span class="grid h-8 place-items-center rounded-md bg-soft text-ink-700 sm:h-10">4</span>
+          <span class="grid h-8 place-items-center rounded-md bg-soft text-ink-700 sm:h-10">3</span>
+          <span class="grid h-8 place-items-center rounded-md bg-soft text-ink-700 sm:h-10">5</span>
+          <span class="grid h-8 place-items-center rounded-md bg-soft text-ink-700 sm:h-10">2</span>
+        </div>
+        <p class="mt-2 text-[10px] leading-4 text-ink-500 sm:text-xs">Year, plant &amp; serial</p>
       </div>
     </div>
+    <p class="mt-3 text-xs text-ink-500">Never contains the letters I, O or Q.</p>
+
+    {# Où le trouver #}
+    <ul class="mt-6 divide-y divide-line border-t border-line text-sm">
+      <li class="flex items-center gap-3 py-3.5">
+        <iconify-icon icon="ph:steering-wheel" class="block h-5 w-5 flex-none text-brand-500"></iconify-icon>
+        <span class="w-24 flex-none font-semibold text-ink-900 sm:w-28">Dashboard</span>
+        <span class="text-ink-500">Visible through the windshield on the driver side.</span>
+      </li>
+      <li class="flex items-center gap-3 py-3.5">
+        <iconify-icon icon="ph:door-open" class="block h-5 w-5 flex-none text-brand-500"></iconify-icon>
+        <span class="w-24 flex-none font-semibold text-ink-900 sm:w-28">Driver door</span>
+        <span class="text-ink-500">On the door jamb or the door frame label.</span>
+      </li>
+      <li class="flex items-center gap-3 py-3.5">
+        <iconify-icon icon="ph:files" class="block h-5 w-5 flex-none text-brand-500"></iconify-icon>
+        <span class="w-24 flex-none font-semibold text-ink-900 sm:w-28">Paperwork</span>
+        <span class="text-ink-500">Title, registration, insurance card or service records.</span>
+      </li>
+      <li class="py-3.5">
+        <a href="/#lookup" class="flex items-center gap-3 font-semibold text-brand-700 hover:text-brand-600">
+          <iconify-icon icon="ph:identification-card" class="block h-5 w-5 flex-none"></iconify-icon>
+          <span class="flex-1">Use your plate: select the license plate tab and enter the state.</span>
+          <iconify-icon icon="ph:arrow-right-bold" class="block h-4 w-4 flex-none"></iconify-icon>
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+{# ===================== FAQ ===================== #}
+<section class="mt-24 grid gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-14">
+  <div>
+    <p class="eyebrow">FAQ</p>
+    <h2 class="section-title mt-2">Questions buyers ask first.</h2>
+    <p class="mt-3 text-sm leading-7 text-ink-600">Still stuck? <a href="/contact" class="font-semibold text-brand-700 underline decoration-brand-200 decoration-2 underline-offset-4 hover:decoration-brand-500">Send us a message</a>.</p>
+  </div>
+  <div class="border-t border-ink-900">
+    <details class="group border-b border-line py-5">
+      <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-ink-900">
+        What is a VIN?
+        <span class="grid h-7 w-7 flex-none place-items-center rounded-full bg-soft text-ink-600 transition group-open:rotate-45 group-open:bg-brand-500 group-open:text-white">
+          <iconify-icon icon="ph:plus-bold" class="block h-3.5 w-3.5"></iconify-icon>
+        </span>
+      </summary>
+      <p class="mt-3 max-w-xl pr-10 text-sm leading-6 text-ink-600">A VIN is the 17-character vehicle identification number. It is unique to the car and lets us look up its record.</p>
+    </details>
+    <details class="group border-b border-line py-5">
+      <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-ink-900">
+        Do I need an account to check a vehicle?
+        <span class="grid h-7 w-7 flex-none place-items-center rounded-full bg-soft text-ink-600 transition group-open:rotate-45 group-open:bg-brand-500 group-open:text-white">
+          <iconify-icon icon="ph:plus-bold" class="block h-3.5 w-3.5"></iconify-icon>
+        </span>
+      </summary>
+      <p class="mt-3 max-w-xl pr-10 text-sm leading-6 text-ink-600">No. You can check a vehicle and buy any pack without logging in. Your email keeps your credits and reports accessible for later.</p>
+    </details>
+    <details class="group border-b border-line py-5">
+      <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-ink-900">
+        How do credits work?
+        <span class="grid h-7 w-7 flex-none place-items-center rounded-full bg-soft text-ink-600 transition group-open:rotate-45 group-open:bg-brand-500 group-open:text-white">
+          <iconify-icon icon="ph:plus-bold" class="block h-3.5 w-3.5"></iconify-icon>
+        </span>
+      </summary>
+      <p class="mt-3 max-w-xl pr-10 text-sm leading-6 text-ink-600">One credit unlocks one report. Credits are added to your account after payment and are valid for 4 months.</p>
+    </details>
+    <details class="group border-b border-line py-5">
+      <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-ink-900">
+        What if I cannot find the VIN?
+        <span class="grid h-7 w-7 flex-none place-items-center rounded-full bg-soft text-ink-600 transition group-open:rotate-45 group-open:bg-brand-500 group-open:text-white">
+          <iconify-icon icon="ph:plus-bold" class="block h-3.5 w-3.5"></iconify-icon>
+        </span>
+      </summary>
+      <p class="mt-3 max-w-xl pr-10 text-sm leading-6 text-ink-600">Use the license plate tab and select the state. We will look up the vehicle from the plate and state.</p>
+    </details>
   </div>
 </section>
 {% endblock %}

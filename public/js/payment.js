@@ -9,6 +9,10 @@
       showCardFields: true,
       errors: [],
       cardFields: null,
+      nameField: null,
+      numberField: null,
+      expiryField: null,
+      cvvField: null,
 
       init() {
         this.token = this.$el.dataset.token || '';
@@ -106,6 +110,25 @@
         }
       },
 
+      handleCardChange(data) {
+        if (!data || !data.fields) {
+          return;
+        }
+
+        const fields = data.fields;
+        if (data.emittedBy === 'number' && fields.cardNumberField && !fields.cardNumberField.isEmpty && fields.cardNumberField.isValid) {
+          if (this.expiryField) {
+            this.expiryField.focus();
+          }
+          return;
+        }
+        if (data.emittedBy === 'expiry' && fields.cardExpiryField && !fields.cardExpiryField.isEmpty && fields.cardExpiryField.isValid) {
+          if (this.cvvField) {
+            this.cvvField.focus();
+          }
+        }
+      },
+
       renderCardFields() {
         if (typeof window.paypal.CardFields !== 'function') {
           this.showCardFields = false;
@@ -117,12 +140,15 @@
             createOrder: () => this.createOrder(),
             onApprove: () => this.captureOrder(),
             onError: (error) => this.handleError(error),
+            inputEvents: {
+              onChange: (data) => this.handleCardChange(data),
+            },
             style: {
               input: {
                 'padding': '0.75rem 1rem',
                 'font-size': '0.9375rem',
-                'border': '2px solid #e2e8f0',
-                'border-radius': '0.5rem',
+                'border': '1px solid #E7EAF0',
+                'border-radius': '0.75rem',
                 'background': 'white',
               },
             },
@@ -133,10 +159,17 @@
             return;
           }
 
-          this.cardFields.NameField({ placeholder: 'John Doe' }).render('#card-name-field-container');
-          this.cardFields.NumberField({ placeholder: '1234 5678 9012 3456' }).render('#card-number-field-container');
-          this.cardFields.CVVField().render('#card-cvv-field-container');
-          this.cardFields.ExpiryField().render('#card-expiry-field-container');
+          this.nameField = this.cardFields.NameField({ placeholder: 'John Doe' });
+          this.nameField.render('#card-name-field-container');
+
+          this.numberField = this.cardFields.NumberField({ placeholder: '1234 5678 9012 3456' });
+          this.numberField.render('#card-number-field-container');
+
+          this.expiryField = this.cardFields.ExpiryField();
+          this.expiryField.render('#card-expiry-field-container');
+
+          this.cvvField = this.cardFields.CVVField();
+          this.cvvField.render('#card-cvv-field-container');
         } catch (error) {
           this.showCardFields = false;
         }

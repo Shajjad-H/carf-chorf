@@ -1,22 +1,7 @@
 (function () {
-  const CHECKOUT_PATH = '/checkout';
-
-  function checkoutURL(token, credits) {
-    const params = new URLSearchParams();
-    if (token) {
-      params.set('token', token);
-    }
-    if (credits) {
-      params.set('credits', credits);
-    }
-    return CHECKOUT_PATH + (params.toString() ? '?' + params.toString() : '');
-  }
-
   window.checkoutPage = function () {
     return {
       selected: 0,
-      pendingCredits: 0,
-      loginOpen: false,
       authenticated: false,
       hasVehicle: false,
       termsAccepted: false,
@@ -26,52 +11,79 @@
       init() {
         const data = this.$el.dataset;
         this.selected = Number(data.selected || 0);
-        this.pendingCredits = Number(data.requested || 0);
-        this.loginOpen = data.loginOpen === 'true';
         this.authenticated = data.authenticated === 'true';
         this.hasVehicle = data.hasVehicle === 'true';
         this.token = data.token || '';
+
+        window.addEventListener('pageshow', (event) => {
+          if (event.persisted) {
+            this.submitting = false;
+          }
+        });
       },
 
       selectPackage(credits) {
-        if (!this.authenticated && credits > 1) {
-          this.pendingCredits = credits;
-          this.loginOpen = true;
-          return;
-        }
-
-        if (!this.authenticated && credits === 1 && !this.hasVehicle) {
-          window.location.href = '/';
+        if (!this.authenticated && !this.hasVehicle) {
+          window.location.href = '/#lookup';
           return;
         }
 
         this.selected = credits;
       },
+    };
+  };
+})();
 
-      packageActionLabel(credits) {
-        if (this.authenticated) {
-          return this.selected === credits ? 'Selected' : 'Select package';
+// Champs email du checkout invité : suggestion de domaine mal tapé + vérification de la confirmation.
+// Purement visuel : la validation serveur (ErrInvalidEmail, ErrEmailMismatch) reste la référence.
+(function () {
+  var DOMAINS = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com', 'aol.com', 'live.com', 'msn.com', 'comcast.net', 'proton.me', 'protonmail.com'];
+
+  function distance(a, b) {
+    if (Math.abs(a.length - b.length) > 2) return 3;
+    var prev = [];
+    for (var j = 0; j <= b.length; j++) prev.push(j);
+    for (var i = 1; i <= a.length; i++) {
+      var cur = [i];
+      for (var k = 1; k <= b.length; k++) {
+        cur[k] = Math.min(prev[k] + 1, cur[k - 1] + 1, prev[k - 1] + (a[i - 1] === b[k - 1] ? 0 : 1));
+      }
+      prev = cur;
+    }
+    return prev[b.length];
+  }
+
+  window.emailFields = function () {
+    return {
+      email: '',
+      confirm: '',
+      confirmTouched: false,
+
+      get suggestion() {
+        var at = this.email.lastIndexOf('@');
+        if (at < 1) return '';
+        var domain = this.email.slice(at + 1).toLowerCase();
+        if (domain.length < 4 || DOMAINS.indexOf(domain) !== -1) return '';
+        for (var i = 0; i < DOMAINS.length; i++) {
+          var d = distance(domain, DOMAINS[i]);
+          if (d > 0 && d <= 2) return this.email.slice(0, at + 1) + DOMAINS[i];
         }
-        if (credits > 1) {
-          return 'Login to choose';
-        }
-        if (!this.hasVehicle) {
-          return 'Look up a vehicle';
-        }
-        return this.selected === credits ? 'Selected' : 'Buy 1 credit';
+        return '';
       },
 
-      goLogin() {
-        this.goToAuth('/login');
+      get matches() {
+        return this.confirm !== '' && this.confirm.toLowerCase() === this.email.toLowerCase();
       },
 
-      goGetStarted() {
-        this.goToAuth('/getstarted');
+      get showMismatch() {
+        if (this.confirm === '' || this.matches) return false;
+        return this.confirmTouched || this.confirm.length >= this.email.length;
       },
 
-      goToAuth(path) {
-        const next = checkoutURL(this.token, this.pendingCredits);
-        window.location.href = path + '?next=' + encodeURIComponent(next);
+      applySuggestion() {
+        var fixed = this.suggestion;
+        if (this.confirm.toLowerCase() === this.email.toLowerCase()) this.confirm = fixed;
+        this.email = fixed;
       },
     };
   };

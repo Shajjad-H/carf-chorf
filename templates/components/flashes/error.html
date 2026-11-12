@@ -1,9 +1,15 @@
 {% if errors %}
-<div class="mx-auto mt-4 w-full max-w-5xl px-4">
-  <div role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800">
-    {% for message in errors %}
-    <p>{{ message }}</p>
-    {% endfor %}
+<div class="mx-auto w-full max-w-6xl px-4 pt-4 sm:px-6">
+  <div x-data="{ show: true }" x-show="show" x-transition.opacity role="alert" class="alert-error">
+    <iconify-icon icon="ph:warning-circle" class="mt-0.5 h-4 w-4 flex-none text-red-600"></iconify-icon>
+    <div class="min-w-0 flex-1">
+      {% for message in errors %}
+      <p>{{ message }}</p>
+      {% endfor %}
+    </div>
+    <button type="button" @click="show = false" aria-label="Dismiss" class="flex-none rounded-md p-1 text-red-600/70 transition hover:bg-red-100 hover:text-red-800">
+      <iconify-icon icon="ph:x" class="h-4 w-4"></iconify-icon>
+    </button>
   </div>
 </div>
 {% endif %}
